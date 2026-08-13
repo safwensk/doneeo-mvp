@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1786210817408,
+      "tag": "0000_silly_omega_flight",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1786211834542,
+      "tag": "0001_daffy_anthem",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1786215367675,
+      "tag": "0002_colossal_legion",
+      "breakpoints": true
+    }
+  ]
+}
