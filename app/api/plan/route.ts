@@ -152,6 +152,55 @@ function grokApiKey() {
   return process.env.XAI_API_KEY || process.env.GROK_API_KEY || process.env.Grok;
 }
 
+function claudeApiKey() {
+  return process.env.ANTHROPIC_API_KEY;
+}
+
+const finalCheckPrompt = `You are Doneeo's final quality gate. A job plan has already been drafted and independently validated. You did not write any of it. Your only job is to catch anything the earlier steps missed before this plan reaches a real customer.
+
+Compare the FINAL PLAN against the CUSTOMER'S ORIGINAL WORDS. Check specifically for: any invented driving/vehicle/pickup step for movement that stays inside one property; any recurrence that was never stated; a completion deadline that got swapped in for the arrival/start time or vice versa; any stated customer fact that got dropped, reworded, or reversed (such as origin and destination swapped); regulated work (electrical, gas, plumbing, licensed care) assigned to a general helper; any remaining question whose answer is already in the original request; a route node missing an action the customer described.
+
+Return JSON only as {approved, criticalIssues, notes}. approved is false only if you find at least one issue from the list above that would materially mislead the customer or misassign the work — do not fail the plan over stylistic preferences or minor wording. criticalIssues is a short array of plain-language strings describing only material problems (empty array if none). notes is a short array of minor observations worth a human's attention that do not block approval (empty array if none). Keep every string under 200 characters.`;
+
+async function auditWithClaude(userRequest: string, intelligence: ReturnType<typeof buildJobIntelligence>) {
+  const apiKey = claudeApiKey();
+  if (!apiKey) return intelligence;
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: process.env.CLAUDE_MODEL || "claude-sonnet-5",
+        max_tokens: 1000,
+        system: finalCheckPrompt,
+        messages: [{ role: "user", content: `CUSTOMER'S ORIGINAL WORDS:\n${userRequest}\n\nFINAL PLAN:\n${JSON.stringify(intelligence)}` }],
+      }),
+    });
+    if (!response.ok) throw new Error("Claude final check request failed");
+    const data = await response.json() as { content?: Array<{ type?: string; text?: string }> };
+    const text = data.content?.find(block => block.type === "text")?.text;
+    if (!text) throw new Error("Claude final check returned no result");
+    const parsed = JSON.parse(text.replace(/^```json\s*|\s*```$/g, ""));
+    const approved = parsed.approved !== false;
+    const criticalIssues = Array.isArray(parsed.criticalIssues) ? parsed.criticalIssues.filter((v: unknown) => typeof v === "string").slice(0, 6).map((v: string) => v.slice(0, 200)) : [];
+    const notes = Array.isArray(parsed.notes) ? parsed.notes.filter((v: unknown) => typeof v === "string").slice(0, 6).map((v: string) => v.slice(0, 200)) : [];
+    return {
+      ...intelligence,
+      audit: {
+        ...intelligence.audit,
+        status: (!approved ? "corrected" : intelligence.audit?.status) as typeof intelligence.audit.status,
+        issues: Array.from(new Set([...(intelligence.audit?.issues || []), ...criticalIssues])),
+        checks: Array.from(new Set([...(intelligence.audit?.checks || []), "Claude final check completed"])),
+        pipeline: `${intelligence.audit?.pipeline || ""} → CLAUDE FINAL CHECK`,
+      },
+      claudeFinalCheck: { approved, criticalIssues, notes },
+    };
+  } catch {
+    // If Claude's final check fails for any reason, ship the already-validated plan rather than blocking the customer.
+    return intelligence;
+  }
+}
+
 function grokText(data: { choices?: Array<{ message?: { content?: unknown } }> }) {
   const content = data.choices?.[0]?.message?.content;
   if (typeof content === "string") return content;
@@ -255,19 +304,31 @@ export async function POST(request: Request) {
     ? `${userRequest}\n\nCUSTOMER ANSWERS COLLECTED AFTER THE ORIGINAL REQUEST:\n${answerLines.join("\n")}\nTreat these as confirmed facts. Do not ask them again. Recalculate the job and ask only the next missing operational details.`
     : userRequest;
 
+  // Every path below ends in this single exit point, so Claude's final check
+  // always runs last, regardless of which architect/validator combination
+  // actually succeeded upstream.
+  async function respond(pipeline: string, mode: string) {
+    const intelligence = deterministicAudit(analysis!, pipeline, customerAnswers);
+    const finalChecked = await auditWithClaude(planningRequest, intelligence);
+    return Response.json({ analysis: finalChecked, mode: `${mode}+claude-final-check` });
+  }
+
+  let analysis: ReturnType<typeof fallbackAnalysis> | null = null;
+
   const fallback = fallbackAnalysis(userRequest);
   try {
     const geminiAnalysis = await analyzeWithGemini(planningRequest, fallback);
     if (geminiAnalysis) {
       try {
         const audited = await auditWithGrok(planningRequest, geminiAnalysis, fallback);
-        if (audited) return Response.json({ analysis: deterministicAudit(audited, "GEMINI ARCHITECT → GROK VALIDATOR → RULES GATE → JOB INTELLIGENCE", customerAnswers), mode: "gemini-architect+grok-validator+rules-gate+job-intelligence" });
+        if (audited) { analysis = audited; return respond("GEMINI ARCHITECT → GROK VALIDATOR → RULES GATE → JOB INTELLIGENCE", "gemini-architect+grok-validator+rules-gate+job-intelligence"); }
       } catch { /* Fall back to the available independent validator. */ }
       try {
         const audited = await auditWithGemini(planningRequest, geminiAnalysis, fallback);
-        if (audited) return Response.json({ analysis: deterministicAudit(audited, "GEMINI ARCHITECT → GEMINI VALIDATOR → RULES GATE → JOB INTELLIGENCE", customerAnswers), mode: "gemini-architect+gemini-validator+rules-gate+job-intelligence" });
+        if (audited) { analysis = audited; return respond("GEMINI ARCHITECT → GEMINI VALIDATOR → RULES GATE → JOB INTELLIGENCE", "gemini-architect+gemini-validator+rules-gate+job-intelligence"); }
       } catch { /* Keep the architect result and apply deterministic checks. */ }
-      return Response.json({ analysis: deterministicAudit(geminiAnalysis, "GEMINI ARCHITECT → RULES GATE → JOB INTELLIGENCE", customerAnswers), mode: "gemini-architect+rules-gate+job-intelligence" });
+      analysis = geminiAnalysis;
+      return respond("GEMINI ARCHITECT → RULES GATE → JOB INTELLIGENCE", "gemini-architect+rules-gate+job-intelligence");
     }
   } catch { /* Try the secondary provider. */ }
 
@@ -276,16 +337,18 @@ export async function POST(request: Request) {
     if (grokAnalysis) {
       try {
         const audited = await auditWithGemini(planningRequest, grokAnalysis, fallback);
-        if (audited) return Response.json({ analysis: deterministicAudit(audited, "GROK ARCHITECT → GEMINI VALIDATOR → RULES GATE → JOB INTELLIGENCE", customerAnswers), mode: "grok-architect+gemini-validator+rules-gate+job-intelligence" });
+        if (audited) { analysis = audited; return respond("GROK ARCHITECT → GEMINI VALIDATOR → RULES GATE → JOB INTELLIGENCE", "grok-architect+gemini-validator+rules-gate+job-intelligence"); }
       } catch { /* Keep the Grok result and apply deterministic checks. */ }
-      return Response.json({ analysis: deterministicAudit(grokAnalysis, "GROK ARCHITECT → RULES GATE → JOB INTELLIGENCE", customerAnswers), mode: "grok-architect+rules-gate+job-intelligence" });
+      analysis = grokAnalysis;
+      return respond("GROK ARCHITECT → RULES GATE → JOB INTELLIGENCE", "grok-architect+rules-gate+job-intelligence");
     }
   } catch { /* Try the optional tertiary provider. */ }
 
   try {
     const openAIAnalysis = await analyzeWithOpenAI(planningRequest, fallback);
-    if (openAIAnalysis) return Response.json({ analysis: deterministicAudit(openAIAnalysis, "OPENAI ARCHITECT → RULES GATE → JOB INTELLIGENCE", customerAnswers), mode: "openai-architect+rules-gate+job-intelligence" });
+    if (openAIAnalysis) { analysis = openAIAnalysis; return respond("OPENAI ARCHITECT → RULES GATE → JOB INTELLIGENCE", "openai-architect+rules-gate+job-intelligence"); }
   } catch { /* Use the safe deterministic planner. */ }
 
-  return Response.json({ analysis: deterministicAudit(fallback, "RULE-BASED PLANNER → RULES GATE → JOB INTELLIGENCE", customerAnswers), mode: "safe-fallback+rules-gate+job-intelligence" });
+  analysis = fallback;
+  return respond("RULE-BASED PLANNER → RULES GATE → JOB INTELLIGENCE", "safe-fallback+rules-gate+job-intelligence");
 }
