@@ -249,32 +249,53 @@ async function runIndependentValidation(userRequest: string, intelligence: Retur
   };
 }
 
+// Pull the provider's own error text out of a failed response so the reason
+// reaches the audit trail instead of a generic "request failed".
+async function describeHttpFailure(response: Response) {
+  const detail = await response.text().catch(() => "");
+  let apiMessage: string | undefined;
+  try {
+    const parsed = JSON.parse(detail);
+    apiMessage = parsed?.error?.message || parsed?.message;
+  } catch { /* Non-JSON body; fall back to the status alone. */ }
+  return `HTTP ${response.status}${apiMessage ? ` — ${String(apiMessage).slice(0, 160)}` : ""}`;
+}
+
 async function analyzeWithGemini(userRequest: string, fallback: ReturnType<typeof fallbackAnalysis>) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return null;
   const model = process.env.GEMINI_MODEL || "gemini-3.6-flash";
+  // Gemini 3.x thinks by default at HIGH, and thinking tokens are billed
+  // against maxOutputTokens. At a low ceiling the reasoning consumes the
+  // budget and the JSON comes back truncated mid-string. Give the schema real
+  // headroom and cap the reasoning depth. Never send thinkingLevel together
+  // with the legacy thinkingBudget — the request is rejected outright.
+  const thinkingLevel = process.env.GEMINI_THINKING_LEVEL || "medium";
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
     method: "POST",
     headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: systemPrompt }] },
       contents: [{ role: "user", parts: [{ text: userRequest }] }],
-      generationConfig: { responseMimeType: "application/json", maxOutputTokens: 1400, temperature: 0.1 },
+      generationConfig: {
+        responseMimeType: "application/json",
+        maxOutputTokens: 8192,
+        temperature: 0.1,
+        thinkingConfig: { thinkingLevel },
+      },
     }),
   });
-  if (!response.ok) {
-    // Carry the real reason forward. A retired model name and a bad key both
-    // produce a silent fallback otherwise, which is indistinguishable from
-    // having configured nothing at all.
-    const detail = await response.text().catch(() => "");
-    const apiMessage = (() => {
-      try { return JSON.parse(detail)?.error?.message as string | undefined; } catch { return undefined; }
-    })();
-    throw new Error(`HTTP ${response.status}${apiMessage ? ` — ${apiMessage.slice(0, 160)}` : ""}`);
-  }
+  if (!response.ok) throw new Error(await describeHttpFailure(response));
   const data = await response.json();
+  // A hit ceiling otherwise surfaces as "Unterminated string in JSON", which
+  // points at parsing rather than at the actual cause.
+  const finishReason = data.candidates?.[0]?.finishReason;
+  if (finishReason === "MAX_TOKENS") {
+    const thoughts = data.usageMetadata?.thoughtsTokenCount;
+    throw new Error(`response hit the token ceiling before the JSON closed${thoughts ? ` (${thoughts} tokens went to thinking)` : ""} — raise maxOutputTokens or lower GEMINI_THINKING_LEVEL`);
+  }
   const text = data.candidates?.[0]?.content?.parts?.map((part: { text?: string }) => part.text || "").join("");
-  if (!text) throw new Error("Gemini returned no analysis");
+  if (!text) throw new Error(`returned no analysis${finishReason ? ` (finishReason: ${finishReason})` : ""}`);
   return normalizeAnalysis(text, fallback);
 }
 
@@ -292,9 +313,9 @@ async function analyzeWithGrok(userRequest: string, fallback: ReturnType<typeof 
       max_tokens: 2400,
     }),
   });
-  if (!response.ok) throw new Error("Grok planner request failed");
+  if (!response.ok) throw new Error(await describeHttpFailure(response));
   const text = grokText(await response.json());
-  if (!text) throw new Error("Grok returned no analysis");
+  if (!text) throw new Error("returned no analysis");
   return normalizeAnalysis(text, fallback);
 }
 
@@ -310,11 +331,11 @@ async function analyzeWithOpenAI(userRequest: string, fallback: ReturnType<typeo
       max_output_tokens: 1400,
     }),
   });
-  if (!response.ok) throw new Error("OpenAI planner request failed");
+  if (!response.ok) throw new Error(await describeHttpFailure(response));
   const data = await response.json();
   const text = data.output?.flatMap((item: { content?: Array<{ type?: string; text?: string }> }) => item.content || [])
     .find((part: { type?: string }) => part.type === "output_text")?.text;
-  if (!text) throw new Error("OpenAI returned no analysis");
+  if (!text) throw new Error("returned no analysis");
   return normalizeAnalysis(text, fallback);
 }
 
