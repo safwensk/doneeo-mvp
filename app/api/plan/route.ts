@@ -262,7 +262,16 @@ async function analyzeWithGemini(userRequest: string, fallback: ReturnType<typeo
       generationConfig: { responseMimeType: "application/json", maxOutputTokens: 1400, temperature: 0.1 },
     }),
   });
-  if (!response.ok) throw new Error("Gemini planner request failed");
+  if (!response.ok) {
+    // Carry the real reason forward. A retired model name and a bad key both
+    // produce a silent fallback otherwise, which is indistinguishable from
+    // having configured nothing at all.
+    const detail = await response.text().catch(() => "");
+    const apiMessage = (() => {
+      try { return JSON.parse(detail)?.error?.message as string | undefined; } catch { return undefined; }
+    })();
+    throw new Error(`HTTP ${response.status}${apiMessage ? ` — ${apiMessage.slice(0, 160)}` : ""}`);
+  }
   const data = await response.json();
   const text = data.candidates?.[0]?.content?.parts?.map((part: { text?: string }) => part.text || "").join("");
   if (!text) throw new Error("Gemini returned no analysis");
@@ -324,6 +333,14 @@ export async function POST(request: Request) {
 
   const fallback = fallbackAnalysis(userRequest);
 
+  // Why-not diagnostics. Graceful degradation is correct behaviour, but a
+  // fallback that never says why is indistinguishable from a fallback caused
+  // by a missing key, a dead model name, or a network failure.
+  const architectNotes: string[] = [];
+  const noteFailure = (name: string, error: unknown) => {
+    architectNotes.push(`${name} unavailable: ${error instanceof Error ? error.message : "unknown error"}`);
+  };
+
   // Architect stage: Gemini drafts. If it's unavailable or fails outright,
   // Grok then OpenAI are emergency fallback drafters, in that order. The
   // deterministic rule-based planner is the final fallback if none respond.
@@ -331,23 +348,26 @@ export async function POST(request: Request) {
   let pipeline = "RULE-BASED PLANNER";
   let mode = "safe-fallback";
 
+  if (!process.env.GEMINI_API_KEY) architectNotes.push("Gemini skipped: GEMINI_API_KEY not set");
   try {
     const geminiAnalysis = await analyzeWithGemini(planningRequest, fallback);
     if (geminiAnalysis) { analysis = geminiAnalysis; pipeline = "GEMINI ARCHITECT"; mode = "gemini-architect"; }
-  } catch { /* Try the secondary provider. */ }
+  } catch (error) { noteFailure("Gemini", error); }
 
   if (mode === "safe-fallback") {
+    if (!grokApiKey()) architectNotes.push("Grok skipped: XAI_API_KEY not set");
     try {
       const grokAnalysis = await analyzeWithGrok(planningRequest, fallback);
       if (grokAnalysis) { analysis = grokAnalysis; pipeline = "GROK ARCHITECT"; mode = "grok-architect"; }
-    } catch { /* Try the tertiary provider. */ }
+    } catch (error) { noteFailure("Grok", error); }
   }
 
   if (mode === "safe-fallback") {
+    if (!openAIApiKey()) architectNotes.push("OpenAI skipped: OPENAI_API_KEY not set");
     try {
       const openAIAnalysis = await analyzeWithOpenAI(planningRequest, fallback);
       if (openAIAnalysis) { analysis = openAIAnalysis; pipeline = "OPENAI ARCHITECT"; mode = "openai-architect"; }
-    } catch { /* Use the safe deterministic planner. */ }
+    } catch (error) { noteFailure("OpenAI", error); }
   }
 
   // Deterministic rules gate + job intelligence always runs, regardless of
@@ -356,5 +376,8 @@ export async function POST(request: Request) {
   // as the last step before the plan is returned.
   const intelligence = deterministicAudit(analysis, `${pipeline} → RULES GATE → JOB INTELLIGENCE`, customerAnswers);
   const finalChecked = await runIndependentValidation(planningRequest, intelligence);
-  return Response.json({ analysis: finalChecked, mode: `${mode}+rules-gate+job-intelligence+independent-validation` });
+  const withDiagnostics = mode === "safe-fallback" && architectNotes.length
+    ? { ...finalChecked, audit: { ...finalChecked.audit, issues: [...(finalChecked.audit?.issues || []), ...architectNotes] } }
+    : finalChecked;
+  return Response.json({ analysis: withDiagnostics, mode: `${mode}+rules-gate+job-intelligence+independent-validation`, architectNotes });
 }
