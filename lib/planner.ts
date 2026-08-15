@@ -42,6 +42,7 @@ export type PlannerAnalysis = {
   stops: string[];
   routeNodes: RouteNode[];
   scheduleWindow: ScheduleWindow | null;
+  preparation: PreparationStep[];
   items: string[];
   customerCanHelp: boolean | null;
   equipment: EquipmentRequirement[];
@@ -166,6 +167,27 @@ export type ScheduleWindow = {
   deadlineTime?: string;
   arrivalLabel: string;
   deadlineLabel?: string;
+  /**
+   * Derived backward from arrivalTime when the job needs preparation. This is
+   * when the executor's day starts, NOT when the customer is owed anyone on
+   * site. Preparation must never push arrival later.
+   */
+  preparationStartTime?: string;
+  preparationStartLabel?: string;
+};
+
+/**
+ * Work performed before arriving at the customer: collecting equipment, buying
+ * materials, picking up a rental. Executor-side by default. It becomes visible
+ * to the customer only when the customer asked for the purchase or rental, so
+ * that what they are paying for is legible.
+ */
+export type PreparationStep = {
+  step: string;
+  kind: "equipment" | "materials" | "rental";
+  durationMinutes: number;
+  /** True when the customer requested this purchase or rental. Drives customer visibility. */
+  billable: boolean;
 };
 
 export type EquipmentRequirement = {
@@ -803,6 +825,10 @@ export function fallbackAnalysis(request: string): PlannerAnalysis {
     stops,
     routeNodes,
     scheduleWindow,
+    // The deterministic planner never invents preparation. It has no basis for
+    // knowing whether a rental or purchase was requested, and inventing one
+    // would put unasked-for cost in front of the customer.
+    preparation: [] as PreparationStep[],
     items,
     customerCanHelp,
     equipment: equipmentFor(category, request),
@@ -873,4 +899,56 @@ export function enforceSafety(analysis: PlannerAnalysis): PlannerAnalysis {
     .filter((fact, index, all) => all.findIndex(candidate => candidate.toLowerCase() === fact.toLowerCase()) === index)
     .slice(0, 16);
   return { ...analysis, stops, routeNodes, scheduleWindow, understoodFacts, questions: mergedQuestions };
+}
+
+/**
+ * Derives when the executor must start preparing so that arrival still happens
+ * at the time the customer was promised.
+ *
+ * The invariant this protects: preparation NEVER moves arrival later. A
+ * customer who said 10:00 is owed someone on site at 10:00, not an executor
+ * beginning a rental pickup at 10:00. Enforced here rather than asked of a
+ * model, because "usually right" is not an acceptable standard for a
+ * commitment the customer made a decision on.
+ */
+export function derivePreparationStart(schedule: ScheduleWindow | null, preparation: PreparationStep[]): ScheduleWindow | null {
+  if (!schedule) return schedule;
+  const totalMinutes = preparation.reduce((sum, step) => sum + (Number.isFinite(step.durationMinutes) ? Math.max(0, step.durationMinutes) : 0), 0);
+  if (!totalMinutes || !schedule.arrivalTime) {
+    const { preparationStartTime: _unusedTime, preparationStartLabel: _unusedLabel, ...rest } = schedule;
+    return rest;
+  }
+  const parsed = parseClockTime(schedule.arrivalTime);
+  if (parsed === null) return schedule;
+  // Wrap within the day rather than going negative; a preparation block longer
+  // than the time before arrival is a real scheduling problem, and the rules
+  // gate reports it instead of this silently producing a nonsense time.
+  const startMinutes = ((parsed - totalMinutes) % 1440 + 1440) % 1440;
+  const preparationStartTime = formatClockTime(startMinutes);
+  return {
+    ...schedule,
+    preparationStartTime,
+    preparationStartLabel: `Executor starts preparation at ${preparationStartTime} to arrive by ${schedule.arrivalTime}`,
+  };
+}
+
+/** Minutes since midnight for "9:00 AM", "09:00", "1:30 PM". Null when unparseable. */
+export function parseClockTime(value: string): number | null {
+  const match = /(\d{1,2})\s*[:h.]?\s*(\d{2})?\s*(a\.?m\.?|p\.?m\.?)?/i.exec(value.trim());
+  if (!match) return null;
+  let hours = Number(match[1]);
+  const minutes = match[2] ? Number(match[2]) : 0;
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes) || hours > 23 || minutes > 59) return null;
+  const meridiem = match[3]?.toLowerCase().replace(/\./g, "");
+  if (meridiem === "pm" && hours < 12) hours += 12;
+  if (meridiem === "am" && hours === 12) hours = 0;
+  return hours * 60 + minutes;
+}
+
+function formatClockTime(totalMinutes: number) {
+  const hours24 = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  const meridiem = hours24 >= 12 ? "PM" : "AM";
+  const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
+  return `${hours12}:${String(minutes).padStart(2, "0")} ${meridiem}`;
 }

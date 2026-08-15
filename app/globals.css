@@ -307,3 +307,14 @@ h1,h2{font-family:var(--font-geist-sans),Arial,sans-serif;font-weight:800;color:
 /* Item-aware household knowledge, kept compact so it clarifies without interrupting intake. */
 .household-knowledge-match{display:grid;grid-template-columns:1fr 1.25fr;gap:18px;align-items:center;margin:12px 0 18px;padding:15px 17px;border:1px solid #b9ddd5;border-radius:14px;background:#f2faf8}.household-knowledge-match small,.household-knowledge-match strong,.household-knowledge-match span{display:block}.household-knowledge-match small{color:var(--teal);font-size:7px;font-weight:900;letter-spacing:.1em}.household-knowledge-match strong{margin-top:4px;color:var(--navy);font-size:13px;text-transform:capitalize}.household-knowledge-match span{margin-top:4px;color:var(--muted);font-size:8px}.household-knowledge-match p{margin:0;color:#315b52;font-size:9px;line-height:1.55}
 @media(max-width:650px){.household-knowledge-match{grid-template-columns:1fr}}
+
+/* Executor preparation — the block that runs before arrival. Visually distinct
+   from the execution steps so it never reads as part of the on-site work. */
+.preparation-block{border:1px dashed var(--line);border-radius:10px;padding:12px 14px;margin:0 0 14px;background:#fbfcfa}
+.preparation-head small{display:block;font-size:9px;letter-spacing:.12em;color:var(--muted);font-weight:700}
+.preparation-head strong{display:block;font-size:12px;color:var(--ink);margin-top:3px}
+.preparation-step{display:grid;grid-template-columns:22px 1fr;gap:9px;align-items:start;margin-top:9px}
+.preparation-step>b{width:22px;height:22px;display:grid;place-items:center;border-radius:6px;background:#edf4f0;color:var(--green);font-size:9px;font-weight:700}
+.preparation-step strong{display:block;font-size:11.5px}
+.preparation-step small{display:block;margin-top:2px;color:#586560;font-size:9.5px}
+.preparation-block>p{margin:10px 0 0;font-size:9.5px;color:var(--muted)}

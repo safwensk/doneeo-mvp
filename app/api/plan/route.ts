@@ -1,4 +1,4 @@
-import { enforceSafety, fallbackAnalysis, type JobCategory } from "../../../lib/planner";
+import { derivePreparationStart, enforceSafety, fallbackAnalysis, type JobCategory } from "../../../lib/planner";
 import { applyDoneeoRulesGate } from "../../../lib/rules-gate";
 import { applyCustomerAnswers, buildJobIntelligence } from "../../../lib/job-intelligence";
 import { augmentWithHouseholdKnowledge } from "../../../lib/work-ontology";
@@ -11,7 +11,9 @@ const systemPrompt = `You are Doneeo's universal job architect for real-world ho
 
 You are not limited to the domains listed above or to any fixed catalog of job types — reason about the actual request the way a competent human dispatcher would, including situations you have not been given explicit instructions for. If a request describes property damage, water, mold, fire, structural, pest, or any situation where severity or scope genuinely cannot be judged from the words given, do not guess a category, team size or price to fill the schema. Instead, ask real diagnostic questions specific to that exact situation — the kind a professional would actually need answered to assess it (for water: how much, how long ago, source stopped or ongoing, any smell, which materials are affected; adapt this pattern to whatever the actual hazard is, do not reuse this example verbatim) — and state plainly in summary that scope will be confirmed once those answers are in. An honest "I need to understand this better before I can plan it" is correct behavior, not a failure to fill out the form.
 
-Return JSON only with: category, title, summary, safetyNote, tasks, stops, routeNodes, scheduleWindow, items, customerCanHelp, extractedAnswers, questions, equipment, recurrence, recommendedTeamSize, skillRequirements, executionSteps, understoodFacts, and estimate. routeNodes is the ordered execution route as [{location,actions}], where actions lists every pickup, delivery, handoff or service performed at that exact location. scheduleWindow is {dateLabel,arrivalTime,deadlineTime,arrivalLabel,deadlineLabel}; keep the arrival/start commitment separate from the completion deadline. If a request says “Tomorrow at 9 a.m.” and “finish before 1 p.m.”, arrivalTime is 9:00 AM and deadlineTime is 1:00 PM—the deadline must never replace the start. When “then take the old item to X” follows a delivery at Y, Y has both “Deliver new item” and “Pick up old item,” while X has “Deliver old item.” Preserve this chain even when the customer uses pronouns such as it or them.
+Return JSON only with: category, title, summary, safetyNote, tasks, stops, routeNodes, scheduleWindow, preparation, items, customerCanHelp, extractedAnswers, questions, equipment, recurrence, recommendedTeamSize, skillRequirements, executionSteps, understoodFacts, and estimate. routeNodes is the ordered execution route as [{location,actions}], where actions lists every pickup, delivery, handoff or service performed at that exact location. scheduleWindow is {dateLabel,arrivalTime,deadlineTime,arrivalLabel,deadlineLabel}; keep the arrival/start commitment separate from the completion deadline. If a request says “Tomorrow at 9 a.m.” and “finish before 1 p.m.”, arrivalTime is 9:00 AM and deadlineTime is 1:00 PM—the deadline must never replace the start. When “then take the old item to X” follows a delivery at Y, Y has both “Deliver new item” and “Pick up old item,” while X has “Deliver old item.” Preserve this chain even when the customer uses pronouns such as it or them.
+
+A stated time is when the customer is owed someone ON SITE, never when the executor's day begins. Any work that must happen before arriving — collecting equipment, buying materials, picking up a rental — goes in preparation as [{step,kind,durationMinutes,billable}], where kind is equipment, materials or rental. Never fold preparation into executionSteps, never push arrivalTime later to make room for it, and never add travel to the job's service time to cover it: the start time the customer gave stays exactly as they gave it. Only list preparation the job genuinely requires. Set billable true only when the customer asked for that purchase or rental, because billable steps are the ones shown to the customer as part of what they are paying for; an executor fetching their own tools is not billable. executionSteps covers only work from arrival onward, and is the same plan the customer approves and the executor receives — preparation is the executor's earlier prefix, not a different plan.
 
 understoodFacts must list every concrete customer fact already supplied. estimate is {serviceMinutesPerVisit,travelMinutes,people,recurringVisits,materialsSummary}. questions must be a short array of missing-information objects {id,label,help,type,options,required}. type is text, boolean or choice; options are required only for choice. First determine what is known and what is truly missing. Generate questions specifically for this exact request and its execution risks. For each detected work domain, ask only the facts needed to calculate quantity/area, condition/complexity, access, materials ownership, equipment availability, safe crew size, required qualification and completion proof. Do not select questions from a generic category checklist. Ask only facts that materially affect scope, matching, access, safety, schedule, equipment, price, coordination or completion proof. Never ask anything already stated or ask the customer to reconfirm it; record stated facts in extractedAnswers and understoodFacts instead. A named place followed by a street number and street is an address already supplied. For a multi-stop job, preserve every named place and its following street address as one ordered stop. Never ask for a generic office, service, pickup or delivery address when that location is already paired with an address in the request. If one stop is unresolved, name only that stop in the question. Do not estimate price, route or completion until required missing information has been collected.
 
@@ -40,6 +42,21 @@ function normalizeAnalysis(text: string, fallback: ReturnType<typeof fallbackAna
     deadlineLabel: typeof parsed.scheduleWindow.deadlineLabel === "string" ? parsed.scheduleWindow.deadlineLabel.slice(0, 90) : undefined,
   } : null;
   const scheduleWindow = fallback.scheduleWindow?.arrivalTime ? fallback.scheduleWindow : parsedSchedule || fallback.scheduleWindow;
+  const preparation = Array.isArray(parsed.preparation) ? parsed.preparation
+    .filter((step: unknown) => step && typeof step === "object")
+    .slice(0, 6)
+    .map((step: { step?: unknown; kind?: unknown; durationMinutes?: unknown; billable?: unknown }) => ({
+      step: typeof step.step === "string" ? step.step.slice(0, 180) : "",
+      kind: step.kind === "materials" || step.kind === "rental" ? step.kind : "equipment" as const,
+      // Bound the duration: an unbounded value would push the derived start
+      // time to something nonsensical.
+      durationMinutes: Number.isFinite(Number(step.durationMinutes)) ? Math.min(480, Math.max(0, Math.round(Number(step.durationMinutes)))) : 30,
+      billable: step.billable === true,
+    }))
+    .filter((step: { step: string }) => step.step) : [];
+  // Arrival is a commitment to the customer. Preparation is scheduled backward
+  // from it in code, never left to the model to arrive at by itself.
+  const scheduleWithPreparation = derivePreparationStart(scheduleWindow, preparation);
   return enforceSafety({
     category,
     title: typeof parsed.title === "string" ? parsed.title.slice(0, 90) : fallback.title,
@@ -57,7 +74,8 @@ function normalizeAnalysis(text: string, fallback: ReturnType<typeof fallbackAna
     tasks: Array.isArray(parsed.tasks) ? parsed.tasks.filter((v: unknown) => typeof v === "string").slice(0, 8) : fallback.tasks,
     stops: routeNodes.length ? routeNodes.map((node: { location: string }) => node.location) : Array.isArray(parsed.stops) ? parsed.stops.filter((v: unknown) => typeof v === "string").slice(0, 8) : fallback.stops,
     routeNodes,
-    scheduleWindow,
+    scheduleWindow: scheduleWithPreparation,
+    preparation,
     items: Array.isArray(parsed.items) ? parsed.items.filter((v: unknown) => typeof v === "string").slice(0, 8) : fallback.items,
     customerCanHelp,
     equipment: Array.isArray(parsed.equipment) ? parsed.equipment.filter((item: unknown) => item && typeof item === "object").slice(0, 12).map((item: { id?: unknown; name?: unknown; purpose?: unknown; required?: unknown; rentalEstimate?: unknown; supplyType?: unknown }, index: number) => ({
