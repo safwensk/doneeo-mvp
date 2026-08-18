@@ -131,3 +131,86 @@ export const rentalReservations = sqliteTable("rental_reservations", {
   pickupByExecutorId: text("pickup_by_executor_id").references(() => executors.id),
   createdAt: text("created_at").notNull(),
 });
+
+/* ==================================================================== *
+ * Control spine — Platform Architecture §12 P0/P1
+ *
+ * Added 2026-08-18. These four tables are the boundary between the
+ * Intelligence layer and everything downstream. Domain logic lives in
+ * lib/requirement-contract.ts and lib/domain-events.ts; these are storage
+ * only. See those modules for the invariants each column protects.
+ * ==================================================================== */
+
+/**
+ * A versioned, immutable snapshot of what the customer approved.
+ *
+ * (contractId, version) is the primary key: one row per version, never an
+ * update in place. Superseding inserts a new row and marks the old one.
+ */
+export const requirementContracts = sqliteTable("requirement_contracts", {
+  contractId: text("contract_id").notNull(),
+  version: integer("version").notNull(),
+  status: text("status", { enum: ["DRAFT", "PUBLISHED", "SUPERSEDED"] }).notNull().default("DRAFT"),
+  /** Serialized JobIntelligence. Immutable once status is PUBLISHED. */
+  content: text("content").notNull(),
+  /** Deterministic digest of content — equal hashes mean an equal plan. */
+  contentHash: text("content_hash").notNull(),
+  publishedAt: text("published_at"),
+  supersededBy: integer("superseded_by"),
+  supersedeReason: text("supersede_reason"),
+  correlationId: text("correlation_id").notNull(),
+  createdAt: text("created_at").notNull(),
+}, table => [primaryKey({ columns: [table.contractId, table.version] })]);
+
+/**
+ * The three-lifecycle TaskBlock split.
+ *
+ * requirementId is stable for the life of the WorkCase. fulfillmentId clears on
+ * provider decline; executionId clears on re-execution. Keeping them in separate
+ * columns is what stops a decline from invalidating the customer's requirement.
+ */
+export const taskBlockIdentities = sqliteTable("task_block_identities", {
+  contractId: text("contract_id").notNull(),
+  contractVersion: integer("contract_version").notNull(),
+  requirementId: text("requirement_id").notNull(),
+  fulfillmentId: text("fulfillment_id"),
+  executionId: text("execution_id"),
+  updatedAt: text("updated_at").notNull(),
+}, table => [primaryKey({ columns: [table.contractId, table.contractVersion, table.requirementId] })]);
+
+/**
+ * Append-only event store. Never updated, never deleted.
+ *
+ * (streamId, sequence) is unique — the optimistic-concurrency guard. Two writers
+ * racing on the same stream produce a constraint violation rather than a lost
+ * write, which is the property that makes forward-only physical work safe.
+ */
+export const domainEvents = sqliteTable("domain_events", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  streamId: text("stream_id").notNull(),
+  sequence: integer("sequence").notNull(),
+  eventType: text("event_type").notNull(),
+  payload: text("payload").notNull(),
+  correlationId: text("correlation_id").notNull(),
+  causationId: text("causation_id"),
+  occurredAt: text("occurred_at").notNull(),
+}, table => [uniqueIndex("domain_events_stream_sequence").on(table.streamId, table.sequence)]);
+
+/**
+ * Idempotency ledger.
+ *
+ * A retried command with the same key returns the recorded result instead of
+ * repeating the effect. Physical work is forward-only: a duplicated dispatch
+ * means a second crew at someone's door.
+ */
+export const commandLog = sqliteTable("command_log", {
+  commandKey: text("command_key").primaryKey(),
+  commandType: text("command_type").notNull(),
+  /** Digest of the command arguments — detects key reuse with different intent. */
+  requestHash: text("request_hash").notNull(),
+  status: text("status", { enum: ["IN_FLIGHT", "SUCCEEDED", "FAILED"] }).notNull(),
+  result: text("result"),
+  correlationId: text("correlation_id").notNull(),
+  createdAt: text("created_at").notNull(),
+  completedAt: text("completed_at"),
+});

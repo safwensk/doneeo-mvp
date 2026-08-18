@@ -1,108 +1,125 @@
-# vinext-starter
+# Doneeo Intelligence MVP
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+Doneeo is the intelligence layer between a customer's problem and the successful completion of physical work. This repository is the canonical build: a Next.js app on Cloudflare whose core is a deterministic planning engine that turns a plain-language request into a structured, validated, costed work order.
 
-## Prerequisites
+The full order is the product. Planning does not end at booking.
+
+## Requirements
 
 - Node.js `>=22.13.0`
-- Linux with `flock`, `curl`, and GNU `timeout`
+- A POSIX shell for the lifecycle scripts (Git Bash on Windows is what this project is developed on)
 
-## Sites Lifecycle
+## Running locally
 
-The Sites lifecycle CLI runs the locked dependency install before returning this checkout. Edit the source under `app/`, then checkpoint when a coherent milestone is ready to inspect or share. The remote Sites builder runs `npm run build` against the pushed commit. Do not repeat install or build as a normal pre-checkpoint step.
-
-This starter does not use `wrangler.jsonc`.
-
-`install:ci` is intentionally a single, non-retrying `npm ci`. It refuses a concurrent install for the same project, consumes a matching image-seeded npm cache with `--prefer-offline` while retaining registry fallback for a missing cache object, otherwise downloads and verifies the complete vinext tarball recorded in `package-lock.json`, limits npm to one socket, and terminates a stalled install. `build` applies a short timeout and then validates the Sites artifact. These helpers target Linux and use GNU `timeout`; they are not native macOS scripts.
-
-Scripts that need writable project-scoped home, npm, XDG, and temporary paths use `scripts/sites-env.sh`. The `dev` and `start` scripts honor the caller's runtime environment and keep Wrangler logs inside the checkout. The generated `.sites-runtime/` directory is disposable and ignored by Git.
-
-## Included Shape
-
-- edit site code under `app/`
-- `app/chatgpt-auth.ts` provides optional dispatch-owned ChatGPT sign-in helpers
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/index.ts` reads the D1 binding from the Cloudflare Worker environment
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
-
-## Workspace Auth Headers
-
-OpenAI workspace sites can read the current user's email from
-`oai-authenticated-user-email`.
-
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
-
-Treat the full name as optional and fall back to email when it is absent:
-
-```tsx
-import { headers } from "next/headers";
-
-export default async function Home() {
-  const requestHeaders = await headers();
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
-
-  const displayName = fullName ?? email;
-  // ...
-}
+```bash
+npm run install:ci   # one bounded, non-retrying lockfile install
+npm run dev          # Vite + vinext; Miniflare emulates Cloudflare and D1
 ```
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+No Cloudflare account is needed for local development. Miniflare emulates the Worker runtime and the D1 binding, and the database self-seeds executors on first use.
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+```bash
+npm run build             # build and validate the deployable Sites artifact
+npm test                  # build, verify rendered HTML, run the engine test suite
+npm run lint
+npm run db:generate       # regenerate Drizzle migrations after editing db/schema.ts
+npm run validate:artifact # recheck an existing artifact's manifest and ESM export
+```
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+`npm run build` and `npm run validate:artifact` are diagnostic tools for use after a remote failure. They are not part of the normal checkpoint path — the remote Sites builder runs the build against the pushed commit.
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
+## Environment
 
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
+Secrets live only in `.env.local`, which is git-ignored and never committed.
 
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
+| Variable | Purpose | Required |
+|---|---|---|
+| `GEMINI_API_KEY` | The drafting model. Without it the deterministic planner handles every request. | Recommended |
+| `GEMINI_MODEL` | Defaults to `gemini-3.6-flash`. | No |
+| `GEMINI_THINKING_LEVEL` | Defaults to `medium`. Lower it if responses hit the token ceiling. | No |
+| `XAI_API_KEY` | Enables the Grok validator. | No |
+| `OPENAI_API_KEY` | Enables the OpenAI validator. | No |
+| `ANTHROPIC_API_KEY` | Enables the Claude validator. `CLAUDE_MODEL` overrides the default. | No |
+| `GOOGLE_MAPS_API_KEY` | Multi-stop routing and traffic-aware ETAs. The legacy name `GOOglemap_API_KEY` is still honoured. | No |
 
-## Diagnostic Commands
+Every model key is optional. A validator with no key returns null and simply does not count; the route endpoint returns 503 rather than failing silently.
 
-- `npm run install:ci`: perform the one bounded lockfile install
-- `npm run dev`: start the Vite/Vinext development server
-- `npm run build`: build and validate the deployable Sites artifact
-- `npm run start`: start the built Vinext application
-- `npm test`: build, validate, and verify the rendered development-preview metadata
-- `npm run validate:artifact`: recheck an existing artifact's manifest and ESM `default.fetch` export
-- `npm run db:generate`: generate Drizzle migrations after schema changes
+## Architecture
 
-Use build and validation commands for targeted diagnosis after a remote failure, not as part of the normal checkpoint path.
+Three stages run on every planning request, in this order:
 
-The timeout defaults can be overridden for a controlled canary with `SITES_INSTALL_TIMEOUT`, `SITES_INSTALL_KILL_AFTER`, `SITES_BUILD_TIMEOUT`, and `SITES_BUILD_KILL_AFTER`. A timeout fails the command; the helpers never retry an unchanged install or build.
+**1. Architect — Gemini drafts.** Drafting is deliberately not split across model families. If Gemini is unavailable or fails, the deterministic rule-based planner takes over: a narrower plan, but a predictable one. No other vendor drafts.
 
-## Learn More
+**2. Deterministic core — always runs.** The rules gate and job intelligence execute regardless of which architect produced the draft, and regardless of whether any model ran at all. This is where the product's actual guarantees live.
 
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+**3. Independent validation — parallel, flag-only.** Grok, OpenAI and Claude review the finished plan against the customer's original words, concurrently and independently. They flag; they never rewrite. If any validator that ran rejects the plan, the audit status is marked `corrected` so a human sees that something needs a second look.
+
+The value is in stage 2. Models are replaceable; the rules, schemas, ontology and accumulated execution data are not.
+
+## Layout
+
+```
+app/
+  page.tsx              customer experience
+  _domain/              plan types, executor pool, option building, formatting
+  _components/          shared UI pieces
+  provider/             executor portal
+  track/                live execution tracker
+  data/                 data inspection surface
+  api/plan/             planning endpoint (architect → rules gate → validation)
+  api/operations/       work orders, assignments, equipment, rentals
+  api/route/            Google Routes proxy
+lib/                    the intelligence engine — no framework dependencies
+db/                     Drizzle schema and the D1 binding
+drizzle/                generated migrations
+worker/                 Cloudflare Worker entry point
+tests/                  engine and schedule test suites
+scripts/                Sites lifecycle helpers
+```
+
+### `lib/` — the engine
+
+`lib/` has no framework dependencies and runs standalone under `node --test`. That property is what made the v36 source recovery verifiable, and it is worth preserving: the engine should never need Next, React or Cloudflare to execute.
+
+| File | Role |
+|---|---|
+| `work-ontology.ts` | 12 work domains, qualification tiers, phase definitions, resource catalog |
+| `planner.ts` | Types and deterministic primitives — schedule, route, access, addresses, safety |
+| `household-catalog.ts` | Household item recognition and item-specific questions |
+| `job-intelligence.ts` | Assembles the full job intelligence object |
+| `rules-gate.ts` | The rules gate |
+| `work-orders.ts` | Work-order payload and persistence |
+
+### The rules gate
+
+`applyDoneeoRulesGate()` evaluates ten domains — request, scope, locations, people, equipment, safety, schedule, routing, commercial, execution — and carries eight safeguards on every run, including: lock customer-supplied facts and never ask for them again; produce no matching, route, time or price until required facts are complete; require customer approval before extra work or added charges.
+
+The gate exists to prevent regression. When fixing a bug it exposes, fix the general rule, not the specific scenario — and add a test that would have caught it.
+
+## Tests
+
+```bash
+node --import tsx --test tests/job-intelligence.test.ts
+node --import tsx --test tests/preparation-schedule.test.ts
+```
+
+`tests/job-intelligence.test.ts` protects the behaviors the gate exists to enforce: same-property work never invents a van or a route, composite orders stay composite, regulated work cannot be matched to a general helper, a simple bulb change is not treated like circuit work, supplied facts remove only the questions they answer, arrival commitment stays separate from completion deadline.
+
+`tests/preparation-schedule.test.ts` covers backward-scheduled preparation — preparation never pushes arrival later.
+
+Do not overfit to the scenario that exposed a bug. Test across varied realistic jobs with different constraints.
+
+## Data model
+
+Eleven tables in D1/SQLite. The parts worth knowing:
+
+- `work_orders.status` walks `draft → matching → team_pending → equipment_check → ready → in_progress → awaiting_customer → completed`, plus `rematching`.
+- `work_order_stops` makes each stop a stateful object with its own `access_json` — access is per stop, never global to the order.
+- `equipment_responses` records `profile_listed` alongside the answer, so a provider is never asked to reconfirm equipment their profile already lists.
+- `work_order_events` is the audit log for arrival, milestones, delays and scope changes.
+
+## Provenance
+
+The canonical source was recovered in August 2026 from the `doneeo-intelligence` ChatGPT/Codex Sites export (36 iterations, Aug 7–12, 2026), replacing an earlier standalone Python prototype. See `RECOVERY_NOTES.md`.
+
+22 binary assets — fonts under `.vinext/fonts/` and brand images under `public/brand/` — are referenced but not yet retrieved from the companion export ZIP.

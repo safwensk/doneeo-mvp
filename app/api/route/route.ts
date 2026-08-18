@@ -2,7 +2,11 @@ export const runtime = "edge";
 
 export async function POST(request: Request) {
   try {
-    const key = process.env.GOOglemap_API_KEY;
+    // GOOglemap_API_KEY is the legacy variable name and is still honoured so
+    // an existing .env.local keeps working unchanged. Prefer
+    // GOOGLE_MAPS_API_KEY; the legacy name can be dropped once every
+    // environment has been updated.
+    const key = process.env.GOOGLE_MAPS_API_KEY || process.env.GOOglemap_API_KEY;
     if (!key) return Response.json({ error: "Google Maps key is not configured" }, { status: 503 });
     const body = await request.json() as { addresses?: string[] };
     const addresses = (body.addresses || []).map(value => String(value).trim()).filter(value => value.length > 4).slice(0, 8);

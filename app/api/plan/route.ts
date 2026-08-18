@@ -317,46 +317,6 @@ async function analyzeWithGemini(userRequest: string, fallback: ReturnType<typeo
   return normalizeAnalysis(text, fallback);
 }
 
-async function analyzeWithGrok(userRequest: string, fallback: ReturnType<typeof fallbackAnalysis>) {
-  const apiKey = grokApiKey();
-  if (!apiKey) return null;
-  const response = await fetch("https://api.x.ai/v1/chat/completions", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: process.env.GROK_MODEL || "grok-4.5",
-      messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userRequest }],
-      response_format: { type: "json_object" },
-      temperature: 0.1,
-      max_tokens: 2400,
-    }),
-  });
-  if (!response.ok) throw new Error(await describeHttpFailure(response));
-  const text = grokText(await response.json());
-  if (!text) throw new Error("returned no analysis");
-  return normalizeAnalysis(text, fallback);
-}
-
-async function analyzeWithOpenAI(userRequest: string, fallback: ReturnType<typeof fallbackAnalysis>) {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return null;
-  const response = await fetch("https://api.openai.com/v1/responses", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "gpt-5-mini",
-      input: [{ role: "system", content: systemPrompt }, { role: "user", content: userRequest }],
-      max_output_tokens: 1400,
-    }),
-  });
-  if (!response.ok) throw new Error(await describeHttpFailure(response));
-  const data = await response.json();
-  const text = data.output?.flatMap((item: { content?: Array<{ type?: string; text?: string }> }) => item.content || [])
-    .find((part: { type?: string }) => part.type === "output_text")?.text;
-  if (!text) throw new Error("returned no analysis");
-  return normalizeAnalysis(text, fallback);
-}
-
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
   const userRequest = typeof body.request === "string" ? body.request.trim().slice(0, 2000) : "";
@@ -380,9 +340,14 @@ export async function POST(request: Request) {
     architectNotes.push(`${name} unavailable: ${error instanceof Error ? error.message : "unknown error"}`);
   };
 
-  // Architect stage: Gemini drafts. If it's unavailable or fails outright,
-  // Grok then OpenAI are emergency fallback drafters, in that order. The
-  // deterministic rule-based planner is the final fallback if none respond.
+  // Architect stage: Gemini is the sole drafter. Drafting is deliberately NOT
+  // split across model families — a second family drafting the same job would
+  // produce a differently-shaped plan for reasons the customer never sees, and
+  // the plan's quality would silently depend on which vendor happened to be
+  // reachable. When Gemini is unavailable or fails, the deterministic
+  // rule-based planner takes over: a narrower plan, but a predictable one.
+  // Grok, OpenAI and Claude review the finished plan downstream; they never
+  // draft it.
   let analysis: ReturnType<typeof fallbackAnalysis> = fallback;
   let pipeline = "RULE-BASED PLANNER";
   let mode = "safe-fallback";
@@ -392,22 +357,6 @@ export async function POST(request: Request) {
     const geminiAnalysis = await analyzeWithGemini(planningRequest, fallback);
     if (geminiAnalysis) { analysis = geminiAnalysis; pipeline = "GEMINI ARCHITECT"; mode = "gemini-architect"; }
   } catch (error) { noteFailure("Gemini", error); }
-
-  if (mode === "safe-fallback") {
-    if (!grokApiKey()) architectNotes.push("Grok skipped: XAI_API_KEY not set");
-    try {
-      const grokAnalysis = await analyzeWithGrok(planningRequest, fallback);
-      if (grokAnalysis) { analysis = grokAnalysis; pipeline = "GROK ARCHITECT"; mode = "grok-architect"; }
-    } catch (error) { noteFailure("Grok", error); }
-  }
-
-  if (mode === "safe-fallback") {
-    if (!openAIApiKey()) architectNotes.push("OpenAI skipped: OPENAI_API_KEY not set");
-    try {
-      const openAIAnalysis = await analyzeWithOpenAI(planningRequest, fallback);
-      if (openAIAnalysis) { analysis = openAIAnalysis; pipeline = "OPENAI ARCHITECT"; mode = "openai-architect"; }
-    } catch (error) { noteFailure("OpenAI", error); }
-  }
 
   // Deterministic rules gate + job intelligence always runs, regardless of
   // which architect drafted the plan. Independent validation (Grok, OpenAI,
