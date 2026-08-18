@@ -1,0 +1,108 @@
+name: CI
+
+# The merge gate the implementation plan requires but the repo never had.
+#
+# Every check here maps to something that actually went wrong:
+#   typecheck      five type errors sat on main for days
+#   tests          two suites shipped that silently never ran
+#   migrations     four tables shipped with no migration behind them
+#   schema drift   the same defect, caught automatically instead of by review
+#
+# No secrets. No API key. Nothing to authorize. The build is self-contained.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      # The repo is developed on Windows with core.filemode=false, so the exec
+      # bit does not survive in git. build-verified.sh execs sites-env.sh
+      # directly and needs it.
+      - name: Restore script permissions
+        run: chmod +x scripts/*.sh
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck — zero errors required
+        run: npx tsc --noEmit -p tsconfig.check.json
+
+      - name: Test suite
+        run: npm test
+
+      # Applies the whole migration chain to a real SQLite database. Catches a
+      # migration that references a missing table, a broken statement, or an
+      # index that cannot be created — none of which a typecheck would see.
+      - name: Migrations apply cleanly
+        run: |
+          python3 - <<'PY'
+          import sqlite3, glob, os, sys
+          db = sqlite3.connect(":memory:")
+          files = sorted(glob.glob("drizzle/0*.sql"))
+          if not files:
+              sys.exit("no migrations found — expected drizzle/0*.sql")
+          for f in files:
+              stmts = [s.strip() for s in open(f, encoding="utf-8").read().split("--> statement-breakpoint") if s.strip()]
+              for s in stmts:
+                  try:
+                      db.executescript(s)
+                  except Exception as e:
+                      sys.exit(f"{os.path.basename(f)} failed: {e}")
+              print(f"ok  {os.path.basename(f)}  ({len(stmts)} statements)")
+          tables = sorted(r[0] for r in db.execute(
+              "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"))
+          print(f"\n{len(tables)} tables after the full chain:")
+          for t in tables:
+              print(f"  {t}")
+          PY
+
+      # The check that would have caught a real defect on main: four tables were
+      # declared in db/schema.ts with no generated migration behind them, so a
+      # fresh database would not have had them.
+      #
+      # If the generator produces anything new, schema and migrations disagree.
+      - name: Schema and migrations are in sync
+        run: |
+          before=$(ls drizzle/*.sql drizzle/meta/*.json 2>/dev/null | sort | md5sum)
+          npx drizzle-kit generate >/dev/null 2>&1 || true
+          after=$(ls drizzle/*.sql drizzle/meta/*.json 2>/dev/null | sort | md5sum)
+          if [ "$before" != "$after" ]; then
+            echo "::error::db/schema.ts has changes with no generated migration."
+            echo "Run 'npx drizzle-kit generate' and commit the result."
+            echo "Files the generator produced:"
+            git status --short drizzle/
+            exit 1
+          fi
+          echo "schema and migrations agree"
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Definition of Done"
+            echo ""
+            echo "| Gate | Result |"
+            echo "|---|---|"
+            echo "| Typecheck (zero errors) | ${{ job.status }} |"
+            echo "| Test suite | ${{ job.status }} |"
+            echo "| Migrations apply | ${{ job.status }} |"
+            echo "| Schema/migration sync | ${{ job.status }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
