@@ -35,9 +35,9 @@ export class WorkCaseService {
     return { workCase, replayed: false };
   }
 
-  async recordArchitecture(input: { commandKey: string; workCaseId: string; expectedVersion: number; taskCandidates: readonly TaskIdentityCandidate[]; correlationId: string; now: string }): Promise<{ workCase: WorkCaseControlState; tasks: ReturnType<typeof reconcileTaskIdentities>; replayed: boolean }> {
+  async recordArchitecture(input: { commandKey: string; workCaseId: string; expectedVersion: number; taskCandidates: readonly TaskIdentityCandidate[]; confirmedAnswers?: Readonly<Record<string, string | boolean>>; latestAnalysis?: unknown; correlationId: string; now: string }): Promise<{ workCase: WorkCaseControlState; tasks: ReturnType<typeof reconcileTaskIdentities>; replayed: boolean }> {
     const current = await requiredWorkCase(this.store, input.workCaseId);
-    const requestHash = await sha256Stable({ type: "RecordArchitecture", workCaseId: input.workCaseId, expectedVersion: input.expectedVersion, taskCandidates: input.taskCandidates, correlationId: input.correlationId });
+    const requestHash = await sha256Stable({ type: "RecordArchitecture", workCaseId: input.workCaseId, expectedVersion: input.expectedVersion, taskCandidates: input.taskCandidates, confirmedAnswers: input.confirmedAnswers ?? {}, correlationId: input.correlationId });
     const replay = await this.replay(input.commandKey, requestHash);
     if (replay) return { workCase: replay, tasks: await this.store.getTasks(input.workCaseId), replayed: true };
 
@@ -49,6 +49,8 @@ export class WorkCaseService {
       previous: current,
       next,
       tasks,
+      confirmedAnswers: input.confirmedAnswers,
+      latestAnalysis: input.latestAnalysis,
       command,
       event: { streamId: stream(next.workCaseId), sequence: next.stateVersion, eventType: "WorkCaseArchitecting", payload: JSON.stringify({ activeTaskIds: tasks.filter(task => task.status === "ACTIVE").map(task => task.taskId) }), correlationId: input.correlationId, causationId: input.commandKey, occurredAt: input.now },
     });

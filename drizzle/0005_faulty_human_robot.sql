@@ -1,0 +1,1 @@
+ALTER TABLE `intelligence_requests` ADD `confirmed_answers_json` text DEFAULT '{}' NOT NULL;

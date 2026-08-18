@@ -74,7 +74,6 @@ export class RequirementContractService {
       contentHash,
       taskBlocks,
       correlationId: command.correlationId,
-      publishedAt: command.publishedAt,
     });
 
     const replay = await this.replayIfPresent(command.commandKey, requestHash);
@@ -131,7 +130,6 @@ export class RequirementContractService {
       taskBlocks,
       reason: command.reason.trim(),
       correlationId: command.correlationId,
-      publishedAt: command.publishedAt,
     });
 
     const replay = await this.replayIfPresent(command.commandKey, requestHash);

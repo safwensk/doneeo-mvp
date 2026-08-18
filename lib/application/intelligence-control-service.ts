@@ -28,6 +28,7 @@ export class IntelligenceControlService {
     workCaseId: string;
     expectedWorkCaseVersion: number;
     analysis: PlannerAnalysis;
+    confirmedAnswers?: Readonly<Record<string, string | boolean>>;
     correlationId: string;
     commandKey: string;
     now: string;
@@ -40,6 +41,8 @@ export class IntelligenceControlService {
       workCaseId: input.workCaseId,
       expectedVersion: input.expectedWorkCaseVersion,
       taskCandidates: intelligence.workstreams.map(stream => ({ title: stream.title, domain: stream.domain, ordinal: stream.sequence })),
+      confirmedAnswers: input.confirmedAnswers,
+      latestAnalysis: input.analysis,
       correlationId: input.correlationId,
       now: input.now,
     });
