@@ -32,7 +32,7 @@ type WorkOrderInput = {
     domains?: string[];
     fulfillment?: { mode?: "single_team" | "coordinated_specialists"; groups?: Array<{ id?: string; title?: string; executorRole?: string; taskSequences?: number[]; vehicleRequired?: boolean; handoffAfterTask?: number | null }> };
   };
-  route_plan?: { pickup?: string; destination?: string; stops?: Array<string | { location?: string; actions?: string[]; access?: Record<string, unknown>; contactName?: string }> };
+  route_plan?: { pickup?: string; destination?: string; status?: string; stops?: Array<string | { location?: string; actions?: string[]; access?: Record<string, unknown>; contactName?: string }> };
   work_steps?: string[];
 };
 

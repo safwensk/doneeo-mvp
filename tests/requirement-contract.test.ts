@@ -7,7 +7,6 @@ import {
   assignFulfillment,
   beginExecution,
   contentChanged,
-  contentHash,
   currentVersion,
   draftContract,
   publish,
@@ -18,6 +17,7 @@ import {
   supersede,
 } from "../lib/requirement-contract";
 import type { JobIntelligence } from "../lib/planner";
+import { digestContent, digestsEqual, sha256Hex } from "../lib/content-digest";
 
 /* ------------------------------------------------------------------ *
  * Fixtures
@@ -56,6 +56,13 @@ function plan(overrides: Partial<JobIntelligence> = {}): JobIntelligence {
   } as JobIntelligence;
 }
 
+/**
+ * Digesting is async and lives at the application boundary, so tests precompute.
+ * Structural tests only need a well-formed digest; the change-detection tests
+ * compute their own and assert on the value.
+ */
+const PLAN_HASH = await digestContent(plan());
+
 const T1 = "2026-08-18T10:00:00.000Z";
 const T2 = "2026-08-18T11:30:00.000Z";
 
@@ -66,6 +73,7 @@ function published(): RequirementContract {
       content: plan(),
       correlationId: "corr-1",
       requirementIds: ["rq-pickup", "rq-carry", "rq-place"],
+      contentHash: PLAN_HASH,
     }),
     T1,
   );
@@ -90,20 +98,72 @@ test("stableStringify ignores undefined values but keeps explicit null", () => {
   assert.notEqual(stableStringify({ a: 1, b: null }), stableStringify({ a: 1 }));
 });
 
-test("contentHash is deterministic across key ordering", () => {
-  const one = plan();
-  const two = JSON.parse(JSON.stringify(plan(), Object.keys(plan()).sort()));
-  assert.equal(contentHash(one), contentHash({ ...two, ...one }));
+test("digestContent is deterministic across key ordering", async () => {
+  const a = plan();
+  const b = plan();
+  assert.equal(await digestContent(a), await digestContent(b));
 });
 
-test("contentHash changes when the plan changes", () => {
-  const before = contentHash(plan());
-  const after = contentHash(plan({ manpower: { minimum: 3, recommended: 3, reason: "sectional", alternatives: [] } }));
+test("digestContent changes when the plan changes", async () => {
+  const before = await digestContent(plan());
+  const after = await digestContent(
+    plan({ manpower: { minimum: 3, recommended: 3, reason: "sectional", alternatives: [] } }),
+  );
   assert.notEqual(before, after);
 });
 
-test("contentHash is a fixed-width hex digest", () => {
-  assert.match(contentHash(plan()), /^[0-9a-f]{16}$/);
+test("digestContent is a 64-character lowercase hex SHA-256", async () => {
+  assert.match(await digestContent(plan()), /^[0-9a-f]{64}$/);
+});
+
+/**
+ * CONFORMANCE — the test whose absence let a real defect ship.
+ *
+ * The previous implementation was documented as FNV-1a 64-bit and was not. Its tests
+ * asserted determinism and change-sensitivity, both of which a wrong hash satisfies,
+ * so nothing failed. Any hash claiming to be a named standard must be checked against
+ * that standard's published vectors, not merely against itself.
+ */
+test("sha256Hex matches published SHA-256 test vectors", async () => {
+  assert.equal(
+    await sha256Hex(""),
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  );
+  assert.equal(
+    await sha256Hex("abc"),
+    "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+  );
+});
+
+test("digestContent hashes the canonical form, not raw JSON.stringify", async () => {
+  const reordered = { estimate: plan().estimate, version: plan().version };
+  const sameShape = { version: plan().version, estimate: plan().estimate };
+  assert.notEqual(JSON.stringify(reordered), JSON.stringify(sameShape));
+  assert.equal(await digestContent(reordered), await digestContent(sameShape));
+});
+
+test("digestsEqual compares digests without early exit", () => {
+  const a = "a".repeat(64);
+  assert.equal(digestsEqual(a, a), true);
+  assert.equal(digestsEqual(a, "b" + "a".repeat(63)), false);
+  assert.equal(digestsEqual(a, "a".repeat(63)), false);
+});
+
+test("a malformed digest is rejected at the domain boundary", () => {
+  for (const bad of ["", "abc", "A".repeat(64), "z".repeat(64), "a".repeat(63), "a".repeat(65)]) {
+    assert.throws(
+      () =>
+        draftContract({
+          contractId: "WC-1",
+          content: plan(),
+          correlationId: "c",
+          requirementIds: ["rq-a"],
+          contentHash: bad,
+        }),
+      (e: ContractInvariantError) => e.invariant === "CONTENT_DIGEST",
+      `expected ${JSON.stringify(bad)} to be rejected`,
+    );
+  }
 });
 
 /* ------------------------------------------------------------------ *
@@ -116,6 +176,7 @@ test("a draft starts at version 1 and is not publishable downstream", () => {
     content: plan(),
     correlationId: "corr-1",
     requirementIds: ["rq-a"],
+      contentHash: PLAN_HASH,
   });
   assert.equal(draft.version, 1);
   assert.equal(draft.status, "DRAFT");
@@ -125,14 +186,14 @@ test("a draft starts at version 1 and is not publishable downstream", () => {
 
 test("a contract requires at least one task block", () => {
   assert.throws(
-    () => draftContract({ contractId: "WC-1", content: plan(), correlationId: "c", requirementIds: [] }),
+    () => draftContract({ contractId: "WC-1", content: plan(), correlationId: "c", requirementIds: [], contentHash: PLAN_HASH }),
     (e: ContractInvariantError) => e.invariant === "TASK_BLOCKS_REQUIRED",
   );
 });
 
 test("duplicate requirement ids are rejected", () => {
   assert.throws(
-    () => draftContract({ contractId: "WC-1", content: plan(), correlationId: "c", requirementIds: ["a", "a"] }),
+    () => draftContract({ contractId: "WC-1", content: plan(), correlationId: "c", requirementIds: ["a", "a"], contentHash: PLAN_HASH }),
     (e: ContractInvariantError) => e.invariant === "TASK_BLOCK_ID",
   );
 });
@@ -168,6 +229,7 @@ test("superseding produces v2 and links the lineage both ways", () => {
     reason: "customer corrected the floor count",
     correlationId: "corr-2",
     requirementIds: ["rq-pickup", "rq-carry", "rq-place"],
+      contentHash: PLAN_HASH,
     publishedAt: T2,
   });
 
@@ -190,6 +252,7 @@ test("superseding without a reason is refused — silent replacement is the fail
           reason,
           correlationId: "c",
           requirementIds: ["rq-pickup"],
+      contentHash: PLAN_HASH,
           publishedAt: T2,
         }),
       (e: ContractInvariantError) => e.invariant === "SUPERSEDE_REASON",
@@ -203,6 +266,7 @@ test("only a PUBLISHED contract can be superseded", () => {
     content: plan(),
     correlationId: "c",
     requirementIds: ["rq-a"],
+      contentHash: PLAN_HASH,
   });
   assert.throws(
     () =>
@@ -212,6 +276,7 @@ test("only a PUBLISHED contract can be superseded", () => {
         reason: "why not",
         correlationId: "c",
         requirementIds: ["rq-a"],
+      contentHash: PLAN_HASH,
         publishedAt: T2,
       }),
     (e: ContractInvariantError) => e.invariant === "SUPERSEDE_PUBLISHED_ONLY",
@@ -226,6 +291,7 @@ test("a superseded contract cannot be superseded again — no forked lineage", (
     reason: "first change",
     correlationId: "c2",
     requirementIds: ["rq-pickup"],
+      contentHash: PLAN_HASH,
     publishedAt: T2,
   });
   assert.throws(
@@ -236,6 +302,7 @@ test("a superseded contract cannot be superseded again — no forked lineage", (
         reason: "second change",
         correlationId: "c3",
         requirementIds: ["rq-pickup"],
+      contentHash: PLAN_HASH,
         publishedAt: T2,
       }),
     (e: ContractInvariantError) => e.invariant === "SUPERSEDE_PUBLISHED_ONLY",
@@ -252,6 +319,7 @@ test("versions are monotonic across a chain of revisions", () => {
       reason: `revision ${i}`,
       correlationId: `corr-${i}`,
       requirementIds: ["rq-pickup"],
+      contentHash: PLAN_HASH,
       publishedAt: T2,
     });
     current = next;
@@ -268,6 +336,7 @@ test("an already-matched task block survives a re-plan", () => {
     reason: "customer added a task",
     correlationId: "corr-2",
     requirementIds: ["rq-pickup", "rq-carry", "rq-place", "rq-dispose"],
+      contentHash: PLAN_HASH,
     publishedAt: T2,
   });
   assert.equal(next.taskBlocks.find((b) => b.requirementId === "rq-carry")?.fulfillmentId, "flf-marc");
@@ -334,6 +403,7 @@ test("a superseded contract rejects task-block mutation", () => {
     reason: "revised",
     correlationId: "c",
     requirementIds: ["rq-pickup"],
+      contentHash: PLAN_HASH,
     publishedAt: T2,
   });
   assert.throws(
@@ -354,6 +424,7 @@ test("an offer made against v2 still resolves to v2 after v3 exists", () => {
     reason: "second",
     correlationId: "c2",
     requirementIds: ["rq-pickup"],
+      contentHash: PLAN_HASH,
     publishedAt: T2,
   });
   const offerReference = referenceTo(step2.next); // the customer accepted v2
@@ -363,6 +434,7 @@ test("an offer made against v2 still resolves to v2 after v3 exists", () => {
     reason: "third",
     correlationId: "c3",
     requirementIds: ["rq-pickup"],
+      contentHash: PLAN_HASH,
     publishedAt: T2,
   });
 
@@ -404,6 +476,7 @@ test("contract ids containing @ still resolve — the last @ wins", () => {
       content: plan(),
       correlationId: "c",
       requirementIds: ["rq-a"],
+      contentHash: PLAN_HASH,
     }),
     T1,
   );
@@ -421,6 +494,7 @@ test("exactly one version is current at a time", () => {
     reason: "revised",
     correlationId: "c2",
     requirementIds: ["rq-pickup"],
+      contentHash: PLAN_HASH,
     publishedAt: T2,
   });
   const history = [step.superseded, step.next];
@@ -439,6 +513,7 @@ test("a forked lineage is detected rather than silently picking one", () => {
       content: plan({ unresolved: ["fork"] }),
       correlationId: "c2",
       requirementIds: ["rq-pickup"],
+      contentHash: PLAN_HASH,
     }),
     T2,
   );
@@ -452,27 +527,31 @@ test("a forked lineage is detected rather than silently picking one", () => {
  * Change detection
  * ------------------------------------------------------------------ */
 
-test("a re-plan that produces an identical plan is not a change", () => {
+test("a re-plan that produces an identical plan is not a change", async () => {
   const v1 = published();
+  const identical = plan();
   const { next } = supersede({
     previous: v1,
-    content: plan(),
+    content: identical,
     reason: "re-ran the planner",
     correlationId: "c2",
     requirementIds: ["rq-pickup"],
+    contentHash: await digestContent(identical),
     publishedAt: T2,
   });
   assert.equal(contentChanged(v1, next), false);
 });
 
-test("a re-plan that changes crew size is a change", () => {
+test("a re-plan that changes crew size is a change", async () => {
   const v1 = published();
+  const heavier = plan({ manpower: { minimum: 3, recommended: 3, reason: "sectional", alternatives: [] } });
   const { next } = supersede({
     previous: v1,
-    content: plan({ manpower: { minimum: 3, recommended: 3, reason: "sectional", alternatives: [] } }),
+    content: heavier,
     reason: "customer corrected the couch size",
     correlationId: "c2",
     requirementIds: ["rq-pickup"],
+    contentHash: await digestContent(heavier),
     publishedAt: T2,
   });
   assert.equal(contentChanged(v1, next), true);
@@ -484,11 +563,11 @@ test("a re-plan that changes crew size is a change", () => {
 
 test("identity and correlation are mandatory", () => {
   assert.throws(
-    () => draftContract({ contractId: "", content: plan(), correlationId: "c", requirementIds: ["a"] }),
+    () => draftContract({ contractId: "", content: plan(), correlationId: "c", requirementIds: ["a"], contentHash: PLAN_HASH }),
     (e: ContractInvariantError) => e.invariant === "IDENTITY",
   );
   assert.throws(
-    () => draftContract({ contractId: "WC-1", content: plan(), correlationId: "", requirementIds: ["a"] }),
+    () => draftContract({ contractId: "WC-1", content: plan(), correlationId: "", requirementIds: ["a"], contentHash: PLAN_HASH }),
     (e: ContractInvariantError) => e.invariant === "CORRELATION",
   );
 });
@@ -499,6 +578,61 @@ test("publishing without a timestamp is refused", () => {
     content: plan(),
     correlationId: "c",
     requirementIds: ["a"],
+      contentHash: PLAN_HASH,
   });
   assert.throws(() => publish(draft, ""), (e: ContractInvariantError) => e.invariant === "PUBLISH_TIME");
+});
+
+/* ------------------------------------------------------------------ *
+ * Deep immutability — P0-D
+ *
+ * Object.freeze is shallow. Before this, a published contract's top-level
+ * properties were protected while `content` and the task-block objects
+ * underneath stayed mutable through nested references.
+ * ------------------------------------------------------------------ */
+
+test("published content cannot be mutated through a nested reference", () => {
+  const contract = published();
+  assert.throws(() => {
+    (contract.content.manpower as { minimum: number }).minimum = 99;
+  }, TypeError);
+  assert.equal(contract.content.manpower.minimum, 2);
+});
+
+test("deeply nested arrays and objects in published content are frozen", () => {
+  const contract = published();
+  assert.ok(Object.isFrozen(contract.content));
+  assert.ok(Object.isFrozen(contract.content.estimate));
+  assert.ok(Object.isFrozen(contract.content.estimate.assumptions));
+  assert.throws(() => {
+    (contract.content.estimate.assumptions as string[]).push("smuggled in");
+  }, TypeError);
+  assert.equal(contract.content.estimate.assumptions.length, 1);
+});
+
+test("publishing snapshots the content — the caller keeps a mutable original", () => {
+  const original = plan();
+  const contract = publish(
+    draftContract({
+      contractId: "WC-snapshot",
+      content: original,
+      correlationId: "c",
+      requirementIds: ["rq-a"],
+      contentHash: PLAN_HASH,
+    }),
+    T1,
+  );
+  // The caller's object is untouched, so publishing has no surprising side effect...
+  assert.ok(!Object.isFrozen(original));
+  original.manpower.minimum = 42;
+  // ...and mutating it afterwards cannot reach what was published.
+  assert.equal(contract.content.manpower.minimum, 2);
+});
+
+test("task block identities are frozen on a published contract", () => {
+  const contract = published();
+  assert.ok(Object.isFrozen(contract.taskBlocks));
+  assert.throws(() => {
+    (contract.taskBlocks[0] as { requirementId: string }).requirementId = "tampered";
+  }, TypeError);
 });

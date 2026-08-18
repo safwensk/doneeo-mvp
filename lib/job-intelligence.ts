@@ -169,7 +169,9 @@ export function buildJobIntelligence(analysis: PlannerAnalysis): PlannerAnalysis
   const taskDomain = (title: string, index: number) => {
     const explicit = explicitTaskDomain(title);
     if (explicit) return explicit;
-    const priorExplicitDomains = new Set(analysis.tasks.slice(0, index).map(explicitTaskDomain).filter(Boolean));
+    const priorExplicitDomains = new Set<string>(
+      analysis.tasks.slice(0, index).map(explicitTaskDomain).filter(d => d !== null),
+    );
     return householdModel.domainDetails[index]?.id || householdModel.domainDetails.find(domain => !priorExplicitDomains.has(domain.id))?.id || "general_maintenance";
   };
   const usedPhaseIds = new Set<string>();

@@ -91,7 +91,11 @@ export class ContractInvariantError extends Error {
 }
 
 /* ------------------------------------------------------------------ *
- * Content hashing
+ * Canonical serialization
+ *
+ * Hashing itself lives in lib/content-digest.ts, at the application boundary.
+ * This module produces the canonical form and compares digests it is given; it
+ * never computes one. See content-digest.ts for why.
  * ------------------------------------------------------------------ */
 
 /**
@@ -110,31 +114,6 @@ export function stableStringify(value: unknown): string {
   return "{" + entries.map(([k, v]) => JSON.stringify(k) + ":" + stableStringify(v)).join(",") + "}";
 }
 
-/**
- * FNV-1a, 64-bit, as 16 hex characters.
- *
- * Deliberately NOT cryptographic. This answers "did the plan change?", not "did
- * someone tamper with the plan?". It is synchronous, dependency-free and runs
- * identically on Workers and Node — Web Crypto's digest is async, which would
- * force every caller into a promise for no benefit at this boundary.
- *
- * If tamper-evidence is ever required, sign the contract row; do not change this.
- */
-export function contentHash(content: unknown): string {
-  const input = stableStringify(content);
-  let hi = 0xcbf2_9ce4 >>> 0;
-  let lo = 0x8422_2325 >>> 0;
-  for (let i = 0; i < input.length; i++) {
-    lo = (lo ^ input.charCodeAt(i)) >>> 0;
-    // multiply by the 64-bit FNV prime (0x100000001b3) in two 32-bit halves
-    const lo96 = (lo * 435) >>> 0;
-    const hi96 = (hi * 435 + Math.floor((lo * 435) / 0x1_0000_0000)) >>> 0;
-    hi = (hi96 ^ (lo << 8)) >>> 0;
-    lo = (lo96 + ((lo << 24) >>> 0)) >>> 0;
-  }
-  return (hi >>> 0).toString(16).padStart(8, "0") + (lo >>> 0).toString(16).padStart(8, "0");
-}
-
 /* ------------------------------------------------------------------ *
  * Lifecycle
  * ------------------------------------------------------------------ */
@@ -145,6 +124,8 @@ export type DraftInput = {
   correlationId: string;
   /** Requirement ids, one per task block. Caller supplies them so ids are traceable. */
   requirementIds: string[];
+  /** SHA-256 of the canonical form, from digestContent(). The domain does not hash. */
+  contentHash: string;
 };
 
 /** Create version 1 in DRAFT. Nothing downstream may consume a DRAFT. */
@@ -152,12 +133,13 @@ export function draftContract(input: DraftInput): RequirementContract {
   if (!input.contractId) throw new ContractInvariantError("IDENTITY", "contractId is required");
   if (!input.correlationId) throw new ContractInvariantError("CORRELATION", "correlationId is required");
   assertUniqueIds(input.requirementIds);
+  assertDigest(input.contentHash);
   return {
     contractId: input.contractId,
     version: 1,
     status: "DRAFT",
     content: input.content,
-    contentHash: contentHash(input.content),
+    contentHash: input.contentHash,
     publishedAt: null,
     supersededBy: null,
     supersedeReason: null,
@@ -183,7 +165,17 @@ export function publish(contract: RequirementContract, publishedAt: string): Req
     );
   }
   if (!publishedAt) throw new ContractInvariantError("PUBLISH_TIME", "publishedAt is required");
-  return Object.freeze({ ...contract, status: "PUBLISHED" as const, publishedAt });
+  // A shallow freeze leaves `content` and the task-block objects mutable through
+  // nested references, so an immutability guarantee that only covers top-level
+  // property assignment is not one. Clone first so the caller cannot retain a
+  // mutable handle on what was published, then freeze the whole graph.
+  return Object.freeze({
+    ...contract,
+    status: "PUBLISHED" as const,
+    publishedAt,
+    content: deepFreeze(structuredClone(contract.content)),
+    taskBlocks: deepFreeze(structuredClone(contract.taskBlocks)),
+  });
 }
 
 export type SupersedeInput = {
@@ -193,6 +185,8 @@ export type SupersedeInput = {
   correlationId: string;
   requirementIds: string[];
   publishedAt: string;
+  /** SHA-256 of the canonical form of `content`, from digestContent(). */
+  contentHash: string;
 };
 
 /**
@@ -221,6 +215,7 @@ export function supersede(input: SupersedeInput): {
   }
   if (!input.publishedAt) throw new ContractInvariantError("PUBLISH_TIME", "publishedAt is required");
   assertUniqueIds(input.requirementIds);
+  assertDigest(input.contentHash);
 
   const nextVersion = previous.version + 1;
   const next: RequirementContract = Object.freeze({
@@ -228,7 +223,7 @@ export function supersede(input: SupersedeInput): {
     version: nextVersion,
     status: "PUBLISHED" as const,
     content: input.content,
-    contentHash: contentHash(input.content),
+    contentHash: input.contentHash,
     publishedAt: input.publishedAt,
     supersededBy: null,
     supersedeReason: null,
@@ -372,6 +367,27 @@ export function contentChanged(a: RequirementContract, b: RequirementContract): 
 /* ------------------------------------------------------------------ *
  * Internals
  * ------------------------------------------------------------------ */
+
+/** SHA-256 hex, as produced by digestContent(). */
+function assertDigest(hash: string): void {
+  if (!/^[0-9a-f]{64}$/.test(hash)) {
+    throw new ContractInvariantError(
+      "CONTENT_DIGEST",
+      "contentHash must be a 64-character lowercase hex SHA-256 digest from digestContent()",
+    );
+  }
+}
+
+/** Freeze an object graph in place. Call on a clone, never on a caller's object. */
+function deepFreeze<T>(value: T): T {
+  if (value !== null && typeof value === "object" && !Object.isFrozen(value)) {
+    Object.freeze(value);
+    for (const key of Object.getOwnPropertyNames(value)) {
+      deepFreeze((value as Record<string, unknown>)[key]);
+    }
+  }
+  return value;
+}
 
 function assertUniqueIds(ids: readonly string[]): void {
   if (ids.length === 0) {

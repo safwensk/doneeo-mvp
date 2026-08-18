@@ -238,7 +238,10 @@ export default function Home() {
     { title: "Equipment ready", detail: chosen.rentalTotal ? `Tools and materials are itemized in the order. Doneeo reserves rentals and purchases only after customer approval; every item is re-confirmed before the responsible team departs.` : "Every reusable tool is confirmed in customer or provider inventory. The responsible team re-confirms loading before departure.", actor: "Doneeo + responsible team", eta: "Before departure" },
     { title: "Provider en route", detail: `Arrival updates are active for the first stop. Contact options become available for operational coordination.`, actor: chosen.provider, eta: "Live ETA" },
   ] : [];
-  const jobCheckpoints = analysis && chosen ? [
+  // Pre-execution checkpoints have no timeline step behind them; execution steps do.
+  // The optional member is what makes `?? -1` and `=== undefined` below meaningful.
+  type JobCheckpoint = { title: string; detail: string; actor: string; eta: string; timelineIndex?: number };
+  const jobCheckpoints: JobCheckpoint[] = analysis && chosen ? [
     ...preExecutionCheckpoints,
     ...executionTimeline.map((step, timelineIndex) => ({ title: step.taskSequence ? `Task ${step.taskSequence} · ${step.title}` : step.title, detail: step.description, actor: step.isGate ? "Responsible team + customer" : step.taskSequence ? serviceForTask(chosen.serviceAssignments, step.taskSequence)?.executors || chosen.provider : chosen.serviceAssignments[0]?.executors || chosen.provider, eta: step.minutes ? `${step.minutes} min likely` : "At arrival", timelineIndex })),
   ] : [];

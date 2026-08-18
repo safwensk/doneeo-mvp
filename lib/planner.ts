@@ -365,8 +365,16 @@ export function deriveRouteNodes(sourceText: string): RouteNode[] {
   return nodes;
 }
 
+/**
+ * Contextual-typing helper. `[...].filter(...)` types the array literal BEFORE the
+ * function's return annotation applies, which widens `supplyType` from its union to
+ * `string`. Passing the literal through a typed parameter restores narrowing without
+ * an `as` cast.
+ */
+const equipmentList = (items: EquipmentRequirement[]): EquipmentRequirement[] => items;
+
 function equipmentFor(category: JobCategory, text: string): EquipmentRequirement[] {
-  if (category === "cleaning") return [
+  if (category === "cleaning") return equipmentList([
     { id: "vacuum", name: "Vacuum cleaner", purpose: "Vacuum bedrooms and common areas before floor cleaning", required: true, rentalEstimate: 20, supplyType: "reusable" },
     { id: "mop", name: "Mop and bucket", purpose: "Wash suitable hard floors", required: true, rentalEstimate: 12, supplyType: "reusable" },
     { id: "microfiber", name: "Microfiber cloth set", purpose: "Dust and wipe surfaces without cross-contamination", required: true, rentalEstimate: 8, supplyType: "consumable" },
@@ -374,26 +382,26 @@ function equipmentFor(category: JobCategory, text: string): EquipmentRequirement
     { id: "kitchen_degreaser", name: "Kitchen degreaser", purpose: "Clean kitchen work surfaces and cooking residue", required: /kitchen/i.test(text), rentalEstimate: 7, supplyType: "consumable" },
     { id: "floor_cleaner", name: "Floor cleaner", purpose: "Clean floors using a surface-compatible product", required: /floor/i.test(text), rentalEstimate: 6, supplyType: "consumable" },
     { id: "gloves_bags", name: "Gloves and waste bags", purpose: "Safe handling and removal of routine household waste", required: true, rentalEstimate: 6, supplyType: "consumable" },
-  ].filter(item => item.required);
-  if (category === "moving") return [
+  ]).filter(item => item.required);
+  if (category === "moving") return equipmentList([
     { id: "vehicle", name: /small|chair|box/i.test(text) ? "Pickup truck or cargo van" : "Cargo van or moving truck", purpose: "Transport every listed item between stops", required: true, rentalEstimate: 75 },
     { id: "straps", name: "Moving straps", purpose: "Secure furniture during transport", required: true, rentalEstimate: 10 },
     { id: "blankets", name: "Protective blankets", purpose: "Prevent surface and furniture damage", required: true, rentalEstimate: 12 },
     { id: "dolly", name: "Furniture dolly", purpose: "Move heavy items safely", required: true, rentalEstimate: 18 },
-  ];
-  if (category === "installation") return [
+  ]);
+  if (category === "installation") return equipmentList([
     { id: "drill", name: "Drill and bit set", purpose: "Assembly and secure installation", required: true, rentalEstimate: 18 },
     { id: "level", name: "Level and measuring kit", purpose: "Accurate placement and alignment", required: true, rentalEstimate: 8 },
     { id: "anchors", name: "Task-appropriate anchors", purpose: "Secure mounting for the identified surface", required: true, rentalEstimate: 12 },
     { id: "stud_finder", name: "Stud finder", purpose: "Locate safe wall fixing points", required: /wall|mount|secure|shelf|tv/i.test(text), rentalEstimate: 10 },
-  ].filter(item => item.required);
-  if (category === "elder_support") return [
+  ]).filter(item => item.required);
+  if (category === "elder_support") return equipmentList([
     { id: "transport", name: "Suitable transportation", purpose: "Complete errands and deliveries in the work order", required: /grocer|errand|pickup|deliver/i.test(text), rentalEstimate: 35 },
-  ].filter(item => item.required);
-  return [
+  ]).filter(item => item.required);
+  return equipmentList([
     { id: "toolkit", name: "General task toolkit", purpose: "Complete the requested practical work", required: true, rentalEstimate: 15 },
     { id: "ppe", name: "Task-appropriate safety equipment", purpose: "Protect the provider and work area", required: true, rentalEstimate: 10 },
-  ];
+  ]);
 }
 
 const commonTiming: PlannerQuestion = {
@@ -622,13 +630,13 @@ function enrichCompositeRequest(analysis: PlannerAnalysis): PlannerAnalysis {
   const alreadyStructuredByOntology = analysis.tasks.some(task => /^Pick up the dishwasher at\b/i.test(task));
   const source = analysis.sourceText.toLowerCase();
   const routeNodes = compositeDishwasherRoute(analysis.sourceText, analysis.routeNodes || []);
-  const equipment: EquipmentRequirement[] = [
+  const equipment: EquipmentRequirement[] = equipmentList([
     ...equipmentFor("moving", analysis.sourceText),
     { id: "appliance_dolly", name: "Appliance dolly", purpose: "Move the dishwasher safely between the vehicle and apartment", required: true, rentalEstimate: 22 },
     { id: "installation_toolkit", name: "Dishwasher installation toolkit", purpose: "Level, secure and connect the appliance to existing approved services", required: true, rentalEstimate: 18 },
     { id: "connection_parts", name: "Model-compatible connection parts", purpose: "Supply line, drain connection, power component and fittings required by the model", required: true, rentalEstimate: 45, supplyType: "consumable" },
     { id: "leak_protection", name: "Leak protection and test supplies", purpose: "Protect the work area and verify the completed water connection", required: true, rentalEstimate: 8, supplyType: "consumable" },
-  ].filter((item, index, all) => all.findIndex(candidate => candidate.id === item.id) === index);
+  ]).filter((item, index, all) => all.findIndex(candidate => candidate.id === item.id) === index);
   const irrelevantTemplateQuestion = (question: PlannerQuestion) =>
     ["service_address", "item", "mounting", "utilities", "materials", "instructions", "mounting_materials", "site_access"].includes(question.id)
     || question.id.startsWith("stop_")
