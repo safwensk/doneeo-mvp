@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { integer, primaryKey, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 export const executors = sqliteTable("executors", {
@@ -160,7 +161,15 @@ export const requirementContracts = sqliteTable("requirement_contracts", {
   supersedeReason: text("supersede_reason"),
   correlationId: text("correlation_id").notNull(),
   createdAt: text("created_at").notNull(),
-}, table => [primaryKey({ columns: [table.contractId, table.version] })]);
+}, table => [
+  primaryKey({ columns: [table.contractId, table.version] }),
+  /** At most one PUBLISHED version per contract. Enforces in the database the
+   *  invariant currentVersion() enforces in the domain, so a forked lineage
+   *  cannot be created by two concurrent writers. */
+  uniqueIndex("requirement_contract_single_current_idx")
+    .on(table.contractId)
+    .where(sql`${table.status} = 'PUBLISHED'`),
+]);
 
 /**
  * The three-lifecycle TaskBlock split.
@@ -173,6 +182,9 @@ export const taskBlockIdentities = sqliteTable("task_block_identities", {
   contractId: text("contract_id").notNull(),
   contractVersion: integer("contract_version").notNull(),
   requirementId: text("requirement_id").notNull(),
+  /** SHA-256 over the provider-accepted projection of this task. Carry-forward
+   *  on supersession is decided by comparing this, not by reusing the id. */
+  acceptanceFingerprint: text("acceptance_fingerprint").notNull(),
   fulfillmentId: text("fulfillment_id"),
   executionId: text("execution_id"),
   updatedAt: text("updated_at").notNull(),
@@ -214,3 +226,64 @@ export const commandLog = sqliteTable("command_log", {
   createdAt: text("created_at").notNull(),
   completedAt: text("completed_at"),
 });
+
+/* ==================================================================== *
+ * WorkCase control plane — server-owned workflow identity
+ *
+ * Added 2026-08-18 from the Atlas backend recovery. The frontend must not own
+ * progression (§28 anti-pattern #8); these tables are where authoritative
+ * workflow state lives. Domain logic is in lib/work-case.ts and
+ * lib/intelligence-task-identity.ts.
+ * ==================================================================== */
+
+/** One per customer job. Holds the current state and the version pointers. */
+export const workCases = sqliteTable("work_cases", {
+  workCaseId: text("work_case_id").primaryKey(),
+  jobOrderId: text("job_order_id").notNull(),
+  state: text("state").notNull(),
+  /** Incremented on every transition; commands carry an expected value so a
+   *  stale client cannot apply a transition computed against an older state. */
+  stateVersion: integer("state_version").notNull(),
+  currentRequirementRef: text("current_requirement_ref"),
+  currentFulfillmentRef: text("current_fulfillment_ref"),
+  currentExecutionRef: text("current_execution_ref"),
+  currentOutcomeRef: text("current_outcome_ref"),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+}, table => [uniqueIndex("work_cases_job_order_unique").on(table.jobOrderId)]);
+
+/**
+ * The customer's original request, held server-side.
+ *
+ * Client-submitted text is not transactional truth — re-analysis reads from
+ * here so a modified client payload cannot silently redefine the job.
+ */
+export const intelligenceRequests = sqliteTable("intelligence_requests", {
+  workCaseId: text("work_case_id").primaryKey().references(() => workCases.workCaseId),
+  rawRequest: text("raw_request").notNull(),
+  createdAt: text("created_at").notNull(),
+});
+
+/**
+ * Stable TaskBlock identity, owned by Intelligence and independent of provider state.
+ *
+ * The same requested outcome keeps its id when it moves position between analysis
+ * rounds; a removed outcome is retired explicitly rather than disappearing.
+ */
+export const intelligenceTaskIdentities = sqliteTable("intelligence_task_identities", {
+  workCaseId: text("work_case_id").notNull().references(() => workCases.workCaseId),
+  taskId: text("task_id").notNull(),
+  semanticKey: text("semantic_key").notNull(),
+  ordinal: integer("ordinal").notNull(),
+  title: text("title").notNull(),
+  domain: text("domain").notNull(),
+  status: text("status").notNull(),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+}, table => [
+  primaryKey({ columns: [table.workCaseId, table.taskId] }),
+  /** One ACTIVE task per semantic key — retired tasks may share it historically. */
+  uniqueIndex("intelligence_task_active_semantic_key_idx")
+    .on(table.workCaseId, table.semanticKey)
+    .where(sql`${table.status} = 'ACTIVE'`),
+]);

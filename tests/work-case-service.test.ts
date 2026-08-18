@@ -1,0 +1,24 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import type { TaskIdentity } from "../lib/intelligence-task-identity";
+import type { WorkCaseControlState } from "../lib/work-case";
+import { WorkCaseService } from "../lib/application/work-case-service";
+import type { StoredCommand } from "../lib/application/requirement-contract-store";
+import type { WorkCaseEvent, WorkCaseStore } from "../lib/application/work-case-store";
+
+class MemoryStore implements WorkCaseStore {
+  cases = new Map<string, WorkCaseControlState>(); requests = new Map<string,string>(); tasks = new Map<string,TaskIdentity[]>(); commands = new Map<string,StoredCommand>(); events: WorkCaseEvent[]=[];
+  async get(id:string){return this.cases.get(id)??null;} async getRawRequest(id:string){return this.requests.get(id)??null;} async getTasks(id:string){return (this.tasks.get(id)||[]).map(t=>({...t}));} async getCommand(k:string){return this.commands.get(k)??null;}
+  async receiveAtomic(i:{workCase:WorkCaseControlState;rawRequest:string;command:StoredCommand;event:WorkCaseEvent}){this.cases.set(i.workCase.workCaseId,i.workCase);this.requests.set(i.workCase.workCaseId,i.rawRequest);this.commands.set(i.command.commandKey,i.command);this.events.push(i.event);}
+  async saveArchitectureAtomic(i:{previous:WorkCaseControlState;next:WorkCaseControlState;tasks:readonly TaskIdentity[];command:StoredCommand;event:WorkCaseEvent}){const cur=this.cases.get(i.next.workCaseId);if(cur?.stateVersion!==i.previous.stateVersion)throw new Error('stale');this.cases.set(i.next.workCaseId,i.next);this.tasks.set(i.next.workCaseId,i.tasks.map(t=>({...t})));this.commands.set(i.command.commandKey,i.command);this.events.push(i.event);}
+  async markRequirementReadyAtomic(i:{previous:WorkCaseControlState;next:WorkCaseControlState;command:StoredCommand;event:WorkCaseEvent}){const cur=this.cases.get(i.next.workCaseId);if(cur?.stateVersion!==i.previous.stateVersion)throw new Error('stale');this.cases.set(i.next.workCaseId,i.next);this.commands.set(i.command.commandKey,i.command);this.events.push(i.event);}
+}
+
+function ids(){let w=0,j=0,t=0;return{newWorkCaseId:()=>`WC-${++w}`,newJobOrderId:()=>`JO-${++j}`,newTaskId:()=>`T-${++t}`};}
+const T1='2026-08-18T10:00:00.000Z',T2='2026-08-18T10:01:00.000Z',T3='2026-08-18T10:02:00.000Z';
+
+test('receive request persists one stable WorkCase identity and is idempotent',async()=>{const s=new MemoryStore(),svc=new WorkCaseService(s,ids());const cmd={commandKey:'c1',rawRequest:'Move my couch to the third floor',correlationId:'corr',now:T1};const a=await svc.receiveRequest(cmd);const b=await svc.receiveRequest(cmd);assert.equal(a.workCase.workCaseId,'WC-1');assert.equal(b.workCase.workCaseId,'WC-1');assert.equal(b.replayed,true);assert.equal(await s.getRawRequest('WC-1'),cmd.rawRequest);});
+
+test('architecture recording owns stable task ids and increments authoritative state version',async()=>{const s=new MemoryStore(),svc=new WorkCaseService(s,ids());const rec=await svc.receiveRequest({commandKey:'c1',rawRequest:'Pick up and install my dishwasher',correlationId:'corr',now:T1});const a=await svc.recordArchitecture({commandKey:'c2',workCaseId:rec.workCase.workCaseId,expectedVersion:1,taskCandidates:[{title:'Pick up dishwasher',domain:'transport_handling',ordinal:1},{title:'Install dishwasher',domain:'appliance_installation',ordinal:2}],correlationId:'corr',now:T2});assert.equal(a.workCase.state,'ARCHITECTING');assert.equal(a.workCase.stateVersion,2);assert.deepEqual(a.tasks.filter(t=>t.status==='ACTIVE').map(t=>t.taskId),['T-1','T-2']);});
+
+test('Requirement Contract pointer is version-bound and advances control state',async()=>{const s=new MemoryStore(),svc=new WorkCaseService(s,ids());const rec=await svc.receiveRequest({commandKey:'c1',rawRequest:'Move my couch to the third floor',correlationId:'corr',now:T1});await svc.recordArchitecture({commandKey:'c2',workCaseId:rec.workCase.workCaseId,expectedVersion:1,taskCandidates:[{title:'Move couch',domain:'transport_handling',ordinal:1}],correlationId:'corr',now:T2});const r=await svc.requirementReady({commandKey:'c3',workCaseId:'WC-1',expectedVersion:2,requirementContractRef:'WC-1@1',correlationId:'corr',now:T3});assert.equal(r.workCase.state,'REQUIREMENT_READY');assert.equal(r.workCase.current.requirementContractRef,'WC-1@1');assert.equal(r.workCase.stateVersion,3);});
