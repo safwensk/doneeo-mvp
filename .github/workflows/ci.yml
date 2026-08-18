@@ -16,6 +16,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Verification only. This workflow never writes to the repository.
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -79,16 +83,20 @@ jobs:
       # fresh database would not have had them.
       #
       # If the generator produces anything new, schema and migrations disagree.
+      # Fail-closed. The first version of this step hashed the LIST OF FILENAMES
+      # before and after generation and wrapped the generator in `|| true`, so a
+      # crashed generator or a modified-but-not-renamed snapshot both passed green.
+      # It was a check that looked like verification and was not — caught by Atlas
+      # in INBOX-ATLAS-19, and the false green was reproduced before fixing it.
+      # Now the generator must succeed, and any working-tree change fails the build.
       - name: Schema and migrations are in sync
         run: |
-          before=$(ls drizzle/*.sql drizzle/meta/*.json 2>/dev/null | sort | md5sum)
-          npx drizzle-kit generate >/dev/null 2>&1 || true
-          after=$(ls drizzle/*.sql drizzle/meta/*.json 2>/dev/null | sort | md5sum)
-          if [ "$before" != "$after" ]; then
-            echo "::error::db/schema.ts has changes with no generated migration."
-            echo "Run 'npx drizzle-kit generate' and commit the result."
-            echo "Files the generator produced:"
+          npx drizzle-kit generate
+          if [ -n "$(git status --porcelain -- drizzle/)" ]; then
+            echo "::error::db/schema.ts has changes with no committed migration."
+            echo "Run 'npx drizzle-kit generate' locally and commit drizzle/."
             git status --short drizzle/
+            git --no-pager diff --stat -- drizzle/
             exit 1
           fi
           echo "schema and migrations agree"

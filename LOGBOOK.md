@@ -17,6 +17,15 @@ authored, timestamped, diffable, and impossible to quietly rewrite.
    INBOX. Never edit an existing LOG line — a correction is a new line.
 4. **Move the item you finished out of your INBOX** and into `LOG` with the outcome.
 
+### Verification is now automatic
+
+CI runs on every push and PR — typecheck, full suite, the migration chain applied to a
+real SQLite database, and a check that `db/schema.ts` and `drizzle/` agree. The last one
+would have caught the four tables that shipped with no migration behind them.
+
+A `LOG` line claiming code is finished must be backed by a green run. "It passed locally"
+is no longer sufficient evidence.
+
 ### Who can write here
 
 | | Reads this file | Writes this file |
@@ -35,12 +44,17 @@ that AI reads this file and already knows what to do.
 Overwrite these six lines only. Everything else in this file is append-only.
 
 ```
-repo_head:    6642e22 + uncommitted merge      verify: git ls-remote https://github.com/safwensk/doneeo-mvp refs/heads/main
+repo_source:  origin/main — QUERY LIVE before every code start. Never cached here.
+              git ls-remote https://github.com/safwensk/doneeo-mvp refs/heads/main
+              A cached SHA is a second copy of the truth and it drifts; LOG lines
+              record the exact base SHA per piece of work, which is where history belongs.
+ci:           CI #1 green at e5444fa. A drift-check defect was then found by Atlas and
+              fixed — re-validate on the next run before trusting the gate.
 drive_docs:   18                               highest numbered doc in DONEEO_SHARED_BRAIN
 lane_claude:  lib/ · tests/ · db/ · drizzle/
 lane_atlas:   docs/ · Drive canon · acceptance criteria
 next:         S1-2 — wire the Requirement Contract into /api/plan through the WorkCase services
-blocked_on:   Safwen to commit and push the merge
+blocked_on:   Safwen to place the corrected ci.yml and push; then confirm the run is green
 ```
 
 **Before any code work, run the `verify` command above.** If it disagrees with
@@ -53,7 +67,7 @@ entire backend from a commit that was three ahead of it, costing a full day.
 
 *Written by Atlas. Claude clears these before starting anything else.*
 
-- *(empty)*
+- *(empty — INBOX-ATLAS-19 cleared 2026-08-18, see LOG)*
 
 ---
 
@@ -129,6 +143,21 @@ Newest first. One line per piece of work. `KIND` is one of
 `BUILD MERGE AUDIT DECIDE FIX BLOCKED ASK`.
 
 ```
+2026-08-18  claude  FIX     Applied INBOX-ATLAS-19. Drift check was hollow: it hashed the FILENAME
+                            LIST and wrapped the generator in `|| true`, so a crashed generator or a
+                            modified-not-renamed snapshot passed green. Reproduced that false green
+                            empirically, then replaced with fail-closed generate + git-porcelain.
+                            Proved the new check on 3 cases: clean=pass, schema-without-migration=fail,
+                            generator-failure=fail. Added permissions contents:read. HEAD block now
+                            points at origin/main instead of caching a SHA.  base=e5444fa
+2026-08-18  atlas   AUDIT   CI/LOGBOOK audit of e5444fa: ACCEPT WITH FIXES. Required fail-closed
+                            Drizzle drift check, explicit contents:read permission, live GitHub as
+                            current-HEAD authority, and verified Atlas write path remains blocked by
+                            403 on PR + branch creation.                        doc=INBOX-ATLAS-19
+2026-08-18  safwen  FIX     CI #1 GREEN. Merge gate live: typecheck + tests + migration chain +
+                            schema drift, on every push and PR. No credentials required.
+                            base=668632b5 -> e5444fa
+2026-08-18  safwen  MERGE   Atlas backend recovery pushed. 107 tests. base=6642e22 -> 668632b5
 2026-08-18  claude  ASK     Replied to the coordinator proposal: ACCEPT WITH 3 CHANGES (queue in
                             repo not Drive; claim binds every start not just scheduled; add a
                             watchdog). Named the shared blocker: neither agent can write to GitHub.
@@ -176,6 +205,14 @@ Each line is something that actually happened here, with its cause.
   shipped suites that silently never ran. The script now globs `tests/*.test.ts`.
 - **Never number a Drive doc without re-reading `drive_docs` above.** Two documents
   were numbered 13, four minutes apart.
+- **Never trust a Drive `modifiedTime` filter to find new files.** It has returned
+  empty twice while the file existed — doc 16 and INBOX-ATLAS-19, the latter modified
+  eight minutes before the query that missed it. Use a full folder listing. This
+  correction supersedes the modifiedTime advice in `18_PROTOCOL_V3` rule 7.
+- **Never write a check without proving it fails.** The schema-drift check was added
+  specifically to catch a missing migration and could not have caught one. A green
+  check that has never been shown to go red is not evidence. Same failure class as
+  the hash: passes for the wrong reason.
 - **Never audit your own implementation and call it independent.** Claude
   mutation-tested its own hash tests and still missed that the hash was mislabelled.
 
