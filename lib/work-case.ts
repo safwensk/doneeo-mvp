@@ -58,10 +58,31 @@ export function createWorkCase(input: { workCaseId: string; jobOrderId: string; 
 
 export function beginArchitecting(workCase: WorkCaseControlState, input: { expectedVersion: number; now: string }): WorkCaseControlState {
   assertExpectedVersion(workCase, input.expectedVersion);
-  if (workCase.state !== "REQUEST_RECEIVED" && workCase.state !== "ARCHITECTING") {
+  if (
+    workCase.state !== "REQUEST_RECEIVED" &&
+    workCase.state !== "ARCHITECTING" &&
+    workCase.state !== "REQUIREMENT_READY"
+  ) {
     throw new WorkCaseInvariantError("INVALID_TRANSITION", `cannot enter ARCHITECTING from ${workCase.state}`);
   }
-  return advance(workCase, "ARCHITECTING", input.now);
+
+  const next = advance(workCase, "ARCHITECTING", input.now);
+
+  // Reanalysis invalidates the pointer used to authorize fulfillment. The
+  // published Requirement Contract remains immutable in its own store and can
+  // be superseded by a later ready analysis, but no stale contract remains
+  // current on the WorkCase while requirements are being reconsidered.
+  if (workCase.state === "REQUIREMENT_READY") {
+    return Object.freeze({
+      ...next,
+      current: Object.freeze({
+        ...next.current,
+        requirementContractRef: null,
+      }),
+    });
+  }
+
+  return next;
 }
 
 export function markRequirementReady(workCase: WorkCaseControlState, input: { expectedVersion: number; requirementContractRef: string; now: string }): WorkCaseControlState {

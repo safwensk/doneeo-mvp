@@ -1,0 +1,1 @@
+ALTER TABLE `intelligence_requests` ADD `latest_analysis_json` text;

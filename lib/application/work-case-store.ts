@@ -15,9 +15,11 @@ export type WorkCaseEvent = {
 export interface WorkCaseStore {
   get(workCaseId: string): Promise<WorkCaseControlState | null>;
   getRawRequest(workCaseId: string): Promise<string | null>;
+  getConfirmedAnswers?(workCaseId: string): Promise<Record<string, string | boolean>>;
+  getLatestAnalysis?(workCaseId: string): Promise<unknown | null>;
   getTasks(workCaseId: string): Promise<TaskIdentity[]>;
   getCommand(commandKey: string): Promise<StoredCommand | null>;
   receiveAtomic(input: { workCase: WorkCaseControlState; rawRequest: string; command: StoredCommand; event: WorkCaseEvent }): Promise<void>;
-  saveArchitectureAtomic(input: { previous: WorkCaseControlState; next: WorkCaseControlState; tasks: readonly TaskIdentity[]; command: StoredCommand; event: WorkCaseEvent }): Promise<void>;
+  saveArchitectureAtomic(input: { previous: WorkCaseControlState; next: WorkCaseControlState; tasks: readonly TaskIdentity[]; confirmedAnswers?: Readonly<Record<string, string | boolean>>; latestAnalysis?: unknown; command: StoredCommand; event: WorkCaseEvent }): Promise<void>;
   markRequirementReadyAtomic(input: { previous: WorkCaseControlState; next: WorkCaseControlState; command: StoredCommand; event: WorkCaseEvent }): Promise<void>;
 }

@@ -2,6 +2,17 @@ import { derivePreparationStart, enforceSafety, fallbackAnalysis, type JobCatego
 import { applyDoneeoRulesGate } from "../../../lib/rules-gate";
 import { applyCustomerAnswers, buildJobIntelligence } from "../../../lib/job-intelligence";
 import { augmentWithHouseholdKnowledge } from "../../../lib/work-ontology";
+import {
+  D1RequirementContractStore,
+  type D1DatabaseLike,
+} from "../../../lib/application/d1-requirement-contract-store";
+import { D1WorkCaseStore } from "../../../lib/application/d1-work-case-store";
+import { D1IntelligenceControlService } from "../../../lib/application/d1-intelligence-control-service";
+import { WorkCaseService } from "../../../lib/application/work-case-service";
+import {
+  WorkCaseInvariantError,
+  type WorkCaseControlState,
+} from "../../../lib/work-case";
 
 export const runtime = "edge";
 
@@ -317,55 +328,345 @@ async function analyzeWithGemini(userRequest: string, fallback: ReturnType<typeo
   return normalizeAnalysis(text, fallback);
 }
 
+type DoneeoGlobal = typeof globalThis & {
+  __DONEEO_DB__?: D1DatabaseLike;
+};
+
+function getControlDatabase(): D1DatabaseLike {
+  const db = (globalThis as DoneeoGlobal).__DONEEO_DB__;
+  if (!db) throw new Error("Doneeo database binding is unavailable");
+  return db;
+}
+
+function cleanIdentifier(value: unknown, maxLength = 160): string {
+  return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
+}
+
+function newIdentifier(prefix: string): string {
+  return `${prefix}-${crypto.randomUUID()}`;
+}
+
+function integerVersion(value: unknown): number | null {
+  return typeof value === "number" && Number.isInteger(value) && value >= 1
+    ? value
+    : null;
+}
+
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
-  const userRequest = typeof body.request === "string" ? body.request.trim().slice(0, 2000) : "";
-  if (userRequest.length < 10) return Response.json({ error: "Please describe the job in a little more detail." }, { status: 400 });
 
-  const customerAnswers = body.answers && typeof body.answers === "object"
-    ? Object.fromEntries(Object.entries(body.answers).filter(([key, value]) => /^[a-z0-9_]{1,64}$/i.test(key) && (typeof value === "boolean" || (typeof value === "string" && value.trim().length <= 300)))) as Record<string, string | boolean>
+  const requestedWorkCaseId = cleanIdentifier(body.workCaseId);
+  const clientRequest =
+    typeof body.request === "string"
+      ? body.request.trim().slice(0, 2000)
+      : "";
+
+  if (!requestedWorkCaseId && clientRequest.length < 10) {
+    return Response.json(
+      { error: "Please describe the job in a little more detail." },
+      { status: 400 },
+    );
+  }
+
+  const operationId =
+    cleanIdentifier(body.operationId) || crypto.randomUUID();
+  const correlationId =
+    cleanIdentifier(body.correlationId) || crypto.randomUUID();
+
+  const db = getControlDatabase();
+  const workCaseStore = new D1WorkCaseStore(db);
+  const requirementStore = new D1RequirementContractStore(db);
+
+  if (requestedWorkCaseId && body.resume === true) {
+    const current = await workCaseStore.get(requestedWorkCaseId);
+    if (!current) {
+      return Response.json(
+        { error: "This Doneeo WorkCase could not be found." },
+        { status: 404 },
+      );
+    }
+
+    const analysis = await workCaseStore.getLatestAnalysis(requestedWorkCaseId);
+    if (!analysis) {
+      return Response.json(
+        {
+          error:
+            "This WorkCase exists but does not yet have a resumable analysis snapshot.",
+          code: "WORK_CASE_NOT_RESUMABLE",
+          workCaseId: current.workCaseId,
+          state: current.state,
+          stateVersion: current.stateVersion,
+        },
+        { status: 409 },
+      );
+    }
+
+    const answers = await workCaseStore.getConfirmedAnswers(requestedWorkCaseId);
+    const requirementContractRef =
+      current.current.requirementContractRef ?? null;
+    const at = requirementContractRef?.lastIndexOf("@") ?? -1;
+    const requirementContractVersion =
+      at > 0
+        ? Number(requirementContractRef!.slice(at + 1))
+        : null;
+
+    return Response.json({
+      analysis,
+      answers,
+      mode: "read-only-resume",
+      architectNotes: [],
+      workCaseId: current.workCaseId,
+      jobOrderId: current.jobOrderId,
+      state: current.state,
+      stateVersion: current.stateVersion,
+      correlationId,
+      requirementReady:
+        current.state === "REQUIREMENT_READY" &&
+        requirementContractRef !== null,
+      requirementContractRef,
+      requirementContractVersion:
+        Number.isInteger(requirementContractVersion)
+          ? requirementContractVersion
+          : null,
+    });
+  }
+
+  const workCases = new WorkCaseService(workCaseStore, {
+    newWorkCaseId: () => newIdentifier("WC"),
+    newJobOrderId: () => newIdentifier("JO"),
+    newTaskId: () => newIdentifier("TASK"),
+  });
+
+  const intelligenceControl = new D1IntelligenceControlService(
+    db,
+    workCases,
+    workCaseStore,
+    requirementStore,
+  );
+
+  let workCase: WorkCaseControlState;
+  let authoritativeRequest: string;
+  let expectedAnalysisVersion: number;
+
+  if (requestedWorkCaseId) {
+    const current = await workCaseStore.get(requestedWorkCaseId);
+
+    if (!current) {
+      return Response.json(
+        { error: "This Doneeo WorkCase could not be found." },
+        { status: 404 },
+      );
+    }
+
+    const submittedExpectedVersion = integerVersion(body.expectedStateVersion);
+
+    if (submittedExpectedVersion === null) {
+      return Response.json(
+        {
+          error:
+            "expectedStateVersion is required when continuing an existing WorkCase.",
+        },
+        { status: 400 },
+      );
+    }
+
+    expectedAnalysisVersion = submittedExpectedVersion;
+
+    if (current.stateVersion !== expectedAnalysisVersion) {
+      const priorArchitecture = await workCaseStore.getCommand(
+        `${operationId}:plan:architecture`,
+      );
+
+      // A stale version may only continue when this is an exact retry of an
+      // operation whose architecture command already committed. The
+      // WorkCaseService revalidates the command hash (including confirmed
+      // answers) and fails closed on key reuse with different intent.
+      if (!priorArchitecture) {
+        return Response.json(
+          {
+            error: "This WorkCase changed since the customer last viewed it.",
+            code: "STALE_WORK_CASE",
+            workCaseId: current.workCaseId,
+            state: current.state,
+            stateVersion: current.stateVersion,
+          },
+          { status: 409 },
+        );
+      }
+    }
+
+    const storedRequest = await workCaseStore.getRawRequest(requestedWorkCaseId);
+    if (!storedRequest) {
+      return Response.json(
+        { error: "The authoritative request for this WorkCase is unavailable." },
+        { status: 409 },
+      );
+    }
+
+    workCase = current;
+    authoritativeRequest = storedRequest;
+  } else {
+    const received = await workCases.receiveRequest({
+      commandKey: `${operationId}:receive`,
+      rawRequest: clientRequest,
+      correlationId,
+      now: new Date().toISOString(),
+    });
+
+    workCase = received.workCase;
+    expectedAnalysisVersion = 1;
+    authoritativeRequest =
+      (received.replayed
+        ? await workCaseStore.getRawRequest(received.workCase.workCaseId)
+        : clientRequest) || clientRequest;
+  }
+
+  const storedAnswers = requestedWorkCaseId
+    ? await workCaseStore.getConfirmedAnswers(requestedWorkCaseId)
     : {};
-  const answerLines = Object.entries(customerAnswers).map(([key, value]) => `${key}: ${typeof value === "boolean" ? (value ? "Yes" : "No") : value}`);
-  const planningRequest = answerLines.length
-    ? `${userRequest}\n\nCUSTOMER ANSWERS COLLECTED AFTER THE ORIGINAL REQUEST:\n${answerLines.join("\n")}\nTreat these as confirmed facts. Do not ask them again. Recalculate the job and ask only the next missing operational details.`
-    : userRequest;
 
-  const fallback = fallbackAnalysis(userRequest);
+  const submittedAnswers =
+    body.answers && typeof body.answers === "object"
+      ? Object.fromEntries(
+          Object.entries(body.answers).filter(
+            ([key, value]) =>
+              /^[a-z0-9_]{1,64}$/i.test(key) &&
+              (typeof value === "boolean" ||
+                (typeof value === "string" && value.trim().length <= 300)),
+          ),
+        ) as Record<string, string | boolean>
+      : {};
 
-  // Why-not diagnostics. Graceful degradation is correct behaviour, but a
-  // fallback that never says why is indistinguishable from a fallback caused
-  // by a missing key, a dead model name, or a network failure.
-  const architectNotes: string[] = [];
-  const noteFailure = (name: string, error: unknown) => {
-    architectNotes.push(`${name} unavailable: ${error instanceof Error ? error.message : "unknown error"}`);
+  const customerAnswers = {
+    ...storedAnswers,
+    ...submittedAnswers,
   };
 
-  // Architect stage: Gemini is the sole drafter. Drafting is deliberately NOT
-  // split across model families — a second family drafting the same job would
-  // produce a differently-shaped plan for reasons the customer never sees, and
-  // the plan's quality would silently depend on which vendor happened to be
-  // reachable. When Gemini is unavailable or fails, the deterministic
-  // rule-based planner takes over: a narrower plan, but a predictable one.
-  // Grok, OpenAI and Claude review the finished plan downstream; they never
-  // draft it.
+  const answerLines = Object.entries(customerAnswers).map(
+    ([key, value]) =>
+      `${key}: ${
+        typeof value === "boolean" ? (value ? "Yes" : "No") : value
+      }`,
+  );
+
+  const planningRequest = answerLines.length
+    ? `${authoritativeRequest}\n\nCUSTOMER ANSWERS COLLECTED AFTER THE ORIGINAL REQUEST:\n${answerLines.join("\n")}\nTreat these as confirmed facts. Do not ask them again. Recalculate the job and ask only the next missing operational details.`
+    : authoritativeRequest;
+
+  const fallback = fallbackAnalysis(authoritativeRequest);
+
+  const architectNotes: string[] = [];
+  const noteFailure = (name: string, error: unknown) => {
+    architectNotes.push(
+      `${name} unavailable: ${
+        error instanceof Error ? error.message : "unknown error"
+      }`,
+    );
+  };
+
   let analysis: ReturnType<typeof fallbackAnalysis> = fallback;
   let pipeline = "RULE-BASED PLANNER";
   let mode = "safe-fallback";
 
-  if (!process.env.GEMINI_API_KEY) architectNotes.push("Gemini skipped: GEMINI_API_KEY not set");
+  if (!process.env.GEMINI_API_KEY) {
+    architectNotes.push("Gemini skipped: GEMINI_API_KEY not set");
+  }
+
   try {
     const geminiAnalysis = await analyzeWithGemini(planningRequest, fallback);
-    if (geminiAnalysis) { analysis = geminiAnalysis; pipeline = "GEMINI ARCHITECT"; mode = "gemini-architect"; }
-  } catch (error) { noteFailure("Gemini", error); }
+    if (geminiAnalysis) {
+      analysis = geminiAnalysis;
+      pipeline = "GEMINI ARCHITECT";
+      mode = "gemini-architect";
+    }
+  } catch (error) {
+    noteFailure("Gemini", error);
+  }
 
-  // Deterministic rules gate + job intelligence always runs, regardless of
-  // which architect drafted the plan. Independent validation (Grok, OpenAI,
-  // Claude — whichever have keys configured) always runs once, in parallel,
-  // as the last step before the plan is returned.
-  const intelligence = deterministicAudit(analysis, `${pipeline} → RULES GATE → JOB INTELLIGENCE`, customerAnswers);
-  const finalChecked = await runIndependentValidation(planningRequest, intelligence);
-  const withDiagnostics = mode === "safe-fallback" && architectNotes.length
-    ? { ...finalChecked, audit: { ...finalChecked.audit, issues: [...(finalChecked.audit?.issues || []), ...architectNotes] } }
-    : finalChecked;
-  return Response.json({ analysis: withDiagnostics, mode: `${mode}+rules-gate+job-intelligence+independent-validation`, architectNotes });
+  const intelligence = deterministicAudit(
+    analysis,
+    `${pipeline} → RULES GATE → JOB INTELLIGENCE`,
+    customerAnswers,
+  );
+
+  const finalChecked = await runIndependentValidation(
+    planningRequest,
+    intelligence,
+  );
+
+  const withDiagnostics =
+    mode === "safe-fallback" && architectNotes.length
+      ? {
+          ...finalChecked,
+          audit: {
+            ...finalChecked.audit,
+            issues: [
+              ...(finalChecked.audit?.issues || []),
+              ...architectNotes,
+            ],
+          },
+        }
+      : finalChecked;
+
+  try {
+    const control = await intelligenceControl.acceptAnalysis({
+      workCaseId: workCase.workCaseId,
+      expectedWorkCaseVersion: expectedAnalysisVersion,
+      analysis: withDiagnostics,
+      confirmedAnswers: customerAnswers,
+      correlationId,
+      commandKey: `${operationId}:plan`,
+      now: new Date().toISOString(),
+    });
+
+    return Response.json({
+      analysis: withDiagnostics,
+      mode: `${mode}+rules-gate+job-intelligence+independent-validation`,
+      architectNotes,
+      workCaseId: control.workCaseId,
+      jobOrderId: control.jobOrderId,
+      state: control.state,
+      stateVersion: control.stateVersion,
+      correlationId,
+      requirementReady: control.requirementReady,
+      requirementContractRef:
+        control.requirementContract?.reference ?? null,
+      requirementContractVersion:
+        control.requirementContract?.contract.version ?? null,
+    });
+  } catch (error) {
+    if (
+      error instanceof WorkCaseInvariantError &&
+      error.invariant === "STALE_COMMAND"
+    ) {
+      return Response.json(
+        {
+          error:
+            "This WorkCase changed while Doneeo was analyzing it. Refresh the current WorkCase state before retrying.",
+          code: "STALE_WORK_CASE",
+          workCaseId: workCase.workCaseId,
+        },
+        { status: 409 },
+      );
+    }
+
+    if (
+      error instanceof Error &&
+      /idempotency key .*reused|already used for different command input/i.test(
+        error.message,
+      )
+    ) {
+      return Response.json(
+        {
+          error:
+            "This operation identifier was already used for different WorkCase input.",
+          code: "IDEMPOTENCY_CONFLICT",
+          workCaseId: workCase.workCaseId,
+        },
+        { status: 409 },
+      );
+    }
+
+    throw error;
+  }
 }

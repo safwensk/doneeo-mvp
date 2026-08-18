@@ -1,12 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { createWorkOrderReference, saveWorkOrder } from "../lib/work-orders";
-import { enforceSafety, extractScheduleWindow, extractStreetAddresses, fallbackAnalysis, type PlannerAnalysis, type PlannerQuestion } from "../lib/planner";
-import { applyDoneeoRulesGate } from "../lib/rules-gate";
-import { buildJobIntelligence } from "../lib/job-intelligence";
-import { augmentWithHouseholdKnowledge } from "../lib/work-ontology";
+import { extractScheduleWindow, extractStreetAddresses, type PlannerAnalysis, type PlannerQuestion } from "../lib/planner";
 import { householdCatalogStats } from "../lib/household-catalog";
 import { Question } from "./_components/question";
 import { EXECUTOR_PORTRAITS } from "./_domain/executor-pool";
@@ -15,6 +12,63 @@ import type { Answers, GoogleRoute, PlanKey, ServiceAssignment } from "./_domain
 import { addMinutesToSchedule, clockToMinutes } from "./_domain/schedule-format";
 
 const householdCatalog = householdCatalogStats();
+
+type IntakeAttempt = {
+  request: string;
+  correlationId: string;
+  operationId: string;
+};
+
+type PlanControlState = {
+  workCaseId: string;
+  jobOrderId: string;
+  state: string;
+  stateVersion: number;
+  correlationId: string;
+  requirementReady: boolean;
+  requirementContractRef: string | null;
+  requirementContractVersion: number | null;
+};
+
+function controlFromPlanResponse(
+  data: Record<string, unknown>,
+): PlanControlState {
+  if (
+    typeof data.workCaseId !== "string" ||
+    typeof data.jobOrderId !== "string" ||
+    typeof data.state !== "string" ||
+    typeof data.stateVersion !== "number" ||
+    typeof data.correlationId !== "string"
+  ) {
+    throw new Error("Doneeo returned an invalid WorkCase control response.");
+  }
+
+  return {
+    workCaseId: data.workCaseId,
+    jobOrderId: data.jobOrderId,
+    state: data.state,
+    stateVersion: data.stateVersion,
+    correlationId: data.correlationId,
+    requirementReady: data.requirementReady === true,
+    requirementContractRef:
+      typeof data.requirementContractRef === "string"
+        ? data.requirementContractRef
+        : null,
+    requirementContractVersion:
+      typeof data.requirementContractVersion === "number"
+        ? data.requirementContractVersion
+        : null,
+  };
+}
+
+function stableOperationId(prefix: string, value: string): string {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return `${prefix}-${(hash >>> 0).toString(16)}`;
+}
 
 export default function Home() {
   const [stage, setStage] = useState(0);
@@ -43,6 +97,80 @@ export default function Home() {
   const [googleRoute, setGoogleRoute] = useState<GoogleRoute | null>(null);
   const [routeState, setRouteState] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [answerState, setAnswerState] = useState<"idle" | "validating">("idle");
+  const [planControl, setPlanControl] = useState<PlanControlState | null>(null);
+  const intakeAttemptRef = useRef<IntakeAttempt | null>(null);
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem("doneeo.activeWorkCase");
+    if (!stored) return;
+
+    let cancelled = false;
+
+    const resume = async () => {
+      try {
+        const saved = JSON.parse(stored) as Partial<PlanControlState>;
+        if (
+          typeof saved.workCaseId !== "string" ||
+          typeof saved.correlationId !== "string"
+        ) {
+          window.localStorage.removeItem("doneeo.activeWorkCase");
+          return;
+        }
+
+        setPlannerState("thinking");
+
+        const response = await fetch("/api/plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            workCaseId: saved.workCaseId,
+            correlationId: saved.correlationId,
+            operationId: `resume-${crypto.randomUUID()}`,
+            resume: true,
+          }),
+        });
+
+        const data = (await response.json()) as Record<string, unknown> & {
+          error?: string;
+          analysis?: PlannerAnalysis;
+          answers?: Record<string, string | boolean>;
+        };
+
+        if (!response.ok || !data.analysis) {
+          throw new Error(data.error || "Could not resume this WorkCase");
+        }
+
+        const control = controlFromPlanResponse(data);
+        if (cancelled) return;
+
+        setPlanControl(control);
+        setAnalysis(data.analysis);
+        setAnswers({
+          ...(data.analysis.extractedAnswers || {}),
+          ...(data.answers || {}),
+        });
+        setPlannerState("ready");
+        setStage(1);
+        window.localStorage.setItem(
+          "doneeo.activeWorkCase",
+          JSON.stringify(control),
+        );
+      } catch (caught) {
+        if (cancelled) return;
+        setPlannerState("idle");
+        setError(
+          caught instanceof Error
+            ? caught.message
+            : "Doneeo could not resume this WorkCase.",
+        );
+      }
+    };
+
+    void resume();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const plans = useMemo(() => analysis ? optionsFor(analysis, answers) : [], [analysis, answers]);
   const operational = useMemo(() => analysis ? recalculateJob(analysis, answers) : null, [analysis, answers]);
@@ -311,40 +439,143 @@ export default function Home() {
   };
 
   const analyzeRequest = async () => {
-    if (request.trim().length < 10) return;
+    const requestText = request.trim();
+    if (requestText.length < 10) return;
+
     setPlannerState("thinking");
     setError("");
     setTextDrafts({});
+    setPlanControl(null);
+    window.localStorage.removeItem("doneeo.activeWorkCase");
+
+    let attempt = intakeAttemptRef.current;
+    if (!attempt || attempt.request !== requestText) {
+      attempt = {
+        request: requestText,
+        correlationId: crypto.randomUUID(),
+        operationId: crypto.randomUUID(),
+      };
+      intakeAttemptRef.current = attempt;
+    }
+
     try {
-      const response = await fetch("/api/plan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ request }) });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Could not analyze request");
+      const response = await fetch("/api/plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          request: requestText,
+          correlationId: attempt.correlationId,
+          operationId: attempt.operationId,
+        }),
+      });
+
+      const data = (await response.json()) as Record<string, unknown> & {
+        error?: string;
+        analysis?: PlannerAnalysis;
+      };
+
+      if (!response.ok || !data.analysis) {
+        throw new Error(data.error || "Could not analyze request");
+      }
+
+      const control = controlFromPlanResponse(data);
+
+      intakeAttemptRef.current = null;
+      setPlanControl(control);
       setAnalysis(data.analysis);
       setAnswers(data.analysis.extractedAnswers || {});
-    } catch {
-      const fallback = buildJobIntelligence(applyDoneeoRulesGate(enforceSafety(augmentWithHouseholdKnowledge(fallbackAnalysis(request))))); setAnalysis(fallback); setAnswers(fallback.extractedAnswers);
+      setPlannerState("ready");
+      setStage(1);
+      window.localStorage.setItem(
+        "doneeo.activeWorkCase",
+        JSON.stringify(control),
+      );
+    } catch (caught) {
+      setAnalysis(null);
+      setPlanControl(null);
+      setPlannerState("idle");
+      setError(
+        caught instanceof Error
+          ? caught.message
+          : "Doneeo could not start this WorkCase. Please try again.",
+      );
     }
-    setPlannerState("ready");
-    setStage(1);
   };
 
-  const validateAnswer = async (question: PlannerQuestion, value: string | boolean) => {
+  const validateAnswer = async (
+    question: PlannerQuestion,
+    value: string | boolean,
+  ) => {
+    if (!planControl) {
+      setError(
+        "The WorkCase control state is missing. Restart the request before continuing.",
+      );
+      return;
+    }
+
     const nextAnswers = { ...answers, [question.id]: value };
-    // Choice and yes/no answers keep their fast one-click progression. Text
-    // stays visible during validation and becomes a confirmed answer only
-    // after the customer explicitly submits it and the planner accepts it.
-    if (question.type !== "text") setAnswers(nextAnswers);
+
+    if (question.type !== "text") {
+      setAnswers(nextAnswers);
+    }
+
     setAnswerState("validating");
     setError("");
+
+    const operationId = stableOperationId(
+      `answer-${planControl.workCaseId}-v${planControl.stateVersion}-${question.id}`,
+      String(value),
+    );
+
     try {
-      const response = await fetch("/api/plan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ request, answers: nextAnswers }) });
-      const data = await response.json();
-      if (!response.ok || !data.analysis) throw new Error(data.error || "Could not validate this answer");
+      const response = await fetch("/api/plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          workCaseId: planControl.workCaseId,
+          expectedStateVersion: planControl.stateVersion,
+          correlationId: planControl.correlationId,
+          operationId,
+          answers: nextAnswers,
+        }),
+      });
+
+      const data = (await response.json()) as Record<string, unknown> & {
+        error?: string;
+        analysis?: PlannerAnalysis;
+      };
+
+      if (!response.ok || !data.analysis) {
+        throw new Error(data.error || "Could not validate this answer");
+      }
+
+      const control = controlFromPlanResponse(data);
+
+      setPlanControl(control);
+      window.localStorage.setItem(
+        "doneeo.activeWorkCase",
+        JSON.stringify(control),
+      );
       setAnalysis(data.analysis);
-      setAnswers(current => ({ ...current, [question.id]: value, ...(data.analysis.extractedAnswers || {}) }));
-      if (question.type === "text") setTextDrafts(current => { const next = { ...current }; delete next[question.id]; return next; });
+      setAnswers(current => ({
+        ...current,
+        [question.id]: value,
+        ...(data.analysis?.extractedAnswers || {}),
+      }));
+
+      if (question.type === "text") {
+        setTextDrafts(current => {
+          const next = { ...current };
+          delete next[question.id];
+          return next;
+        });
+      }
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Doneeo could not validate this answer. Please try again.");
+      setError(
+        caught instanceof Error
+          ? caught.message
+          : "Doneeo could not validate this answer. Please try again.",
+      );
     } finally {
       setAnswerState("idle");
     }
@@ -353,6 +584,14 @@ export default function Home() {
   const buildMatchedOptions = async () => {
     if (!analysis) return;
     setError("");
+
+    if (!planControl?.requirementReady) {
+      setError(
+        "Doneeo is still resolving the work requirements. Matching cannot start until the Requirement Contract is ready.",
+      );
+      return;
+    }
+
     const remaining = visibleQuestions.filter(question => question.required !== false && !questionAnswered(question));
     if (remaining.length) {
       setError("Please complete the visible operational detail before matching.");
@@ -572,7 +811,7 @@ export default function Home() {
       {visibleQuestions.length > 0 ? <div className="missing-panel"><small>3 · ADAPTIVE INFORMATION FLOW</small><h3>Doneeo asks only the next verified missing question</h3><p>{visibleQuestions.filter(question => !questionAnswered(question)).length} relevant detail{visibleQuestions.filter(question => !questionAnswered(question)).length === 1 ? "" : "s"} {visibleQuestions.filter(question => !questionAnswered(question)).length === 1 ? "remains" : "remain"}. Irrelevant and already answered questions are removed before they reach this screen.</p></div> : <div className="all-understood">✓ Enough information was provided.</div>}
       <div className="dynamic-form adaptive-flow">{displayedQuestions.map(question => { const task = workstreams.find(stream => question.id.startsWith("handling_") || question.id.startsWith("refrigerator_") ? stream.domain === "transport_handling" : ["mounted_item", "wall_type", "mount_hardware_status"].includes(question.id) ? stream.domain === "mounting" : false); const value = question.type === "text" ? textDrafts[question.id] ?? (typeof answers[question.id] === "string" ? answers[question.id] : "") : answers[question.id]; return <div className="question-task-context" key={question.id}>{task ? <small>TASK {task.sequence} · {task.title}</small> : <small>COMPLETE ORDER · SHARED DETAIL</small>}<Question question={question} value={value} busy={answerState === "validating"} onChange={nextValue => question.type === "text" ? setTextDrafts(current => ({ ...current, [question.id]: String(nextValue) })) : validateAnswer(question, nextValue)} onTextCommit={() => validateAnswer(question, String(textDrafts[question.id] ?? answers[question.id] ?? "").trim())} /></div>; })}</div>
       {answerState === "validating" && <div className="answer-validation-note">Doneeo is locking the fact, recalculating the job and checking which question is relevant next.</div>}
-      <button className="primary" disabled={answerState === "validating" || gateBlocked || !requiredComplete || !equipmentComplete} onClick={buildMatchedOptions}>{gateBlocked ? "Request blocked by Doneeo Rules Gate" : answerState === "validating" ? "Validating the work order…" : "Build matched work options"}<span>→</span></button>
+      <button className="primary" disabled={answerState === "validating" || gateBlocked || !requiredComplete || !equipmentComplete || !planControl?.requirementReady} onClick={buildMatchedOptions}>{gateBlocked ? "Request blocked by Doneeo Rules Gate" : answerState === "validating" ? "Validating the work order…" : !planControl?.requirementReady ? "Finalizing Requirement Contract…" : "Build matched work options"}<span>→</span></button>
       {error && <p className="booking-error" role="alert">{error}</p>}
     </section>}
 

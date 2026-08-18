@@ -261,6 +261,8 @@ export const workCases = sqliteTable("work_cases", {
 export const intelligenceRequests = sqliteTable("intelligence_requests", {
   workCaseId: text("work_case_id").primaryKey().references(() => workCases.workCaseId),
   rawRequest: text("raw_request").notNull(),
+  confirmedAnswersJson: text("confirmed_answers_json").notNull().default("{}"),
+  latestAnalysisJson: text("latest_analysis_json"),
   createdAt: text("created_at").notNull(),
 });
 

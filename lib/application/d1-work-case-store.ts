@@ -51,6 +51,42 @@ export class D1WorkCaseStore implements WorkCaseStore {
     return row?.raw_request ?? null;
   }
 
+  async getConfirmedAnswers(workCaseId: string): Promise<Record<string, string | boolean>> {
+    const row = await this.db.prepare(
+      `SELECT confirmed_answers_json FROM intelligence_requests WHERE work_case_id = ?`,
+    ).bind(workCaseId).first<{ confirmed_answers_json: string }>();
+
+    if (!row?.confirmed_answers_json) return {};
+
+    try {
+      const parsed = JSON.parse(row.confirmed_answers_json) as Record<string, unknown>;
+      return Object.fromEntries(
+        Object.entries(parsed).filter(
+          ([key, value]) =>
+            /^[a-z0-9_]{1,64}$/i.test(key) &&
+            (typeof value === "boolean" ||
+              (typeof value === "string" && value.length <= 300)),
+        ),
+      ) as Record<string, string | boolean>;
+    } catch {
+      throw new Error(`Stored clarification facts are invalid for WorkCase ${workCaseId}`);
+    }
+  }
+
+  async getLatestAnalysis(workCaseId: string): Promise<unknown | null> {
+    const row = await this.db.prepare(
+      `SELECT latest_analysis_json FROM intelligence_requests WHERE work_case_id = ?`,
+    ).bind(workCaseId).first<{ latest_analysis_json: string | null }>();
+
+    if (!row?.latest_analysis_json) return null;
+
+    try {
+      return JSON.parse(row.latest_analysis_json) as unknown;
+    } catch {
+      throw new Error(`Stored analysis snapshot is invalid for WorkCase ${workCaseId}`);
+    }
+  }
+
   async getTasks(workCaseId: string): Promise<TaskIdentity[]> {
     const { results } = await this.db.prepare(
       `SELECT work_case_id, task_id, semantic_key, ordinal, title, domain, status
@@ -75,16 +111,30 @@ export class D1WorkCaseStore implements WorkCaseStore {
           current_execution_ref, current_outcome_ref, created_at, updated_at)
          VALUES (?, ?, ?, ?, NULL, NULL, NULL, NULL, ?, ?)`,
       ).bind(input.workCase.workCaseId, input.workCase.jobOrderId, input.workCase.state, input.workCase.stateVersion, now, now),
-      this.db.prepare(`INSERT INTO intelligence_requests (work_case_id, raw_request, created_at) VALUES (?, ?, ?)`).bind(input.workCase.workCaseId, input.rawRequest, now),
+      this.db.prepare(`INSERT INTO intelligence_requests (work_case_id, raw_request, confirmed_answers_json, latest_analysis_json, created_at) VALUES (?, ?, '{}', NULL, ?)`).bind(input.workCase.workCaseId, input.rawRequest, now),
       this.insertEvent(input.event),
       this.finishCommand(input.command, now),
     ]);
   }
 
-  async saveArchitectureAtomic(input: { previous: WorkCaseControlState; next: WorkCaseControlState; tasks: readonly TaskIdentity[]; command: StoredCommand; event: WorkCaseEvent }): Promise<void> {
+  async saveArchitectureAtomic(input: { previous: WorkCaseControlState; next: WorkCaseControlState; tasks: readonly TaskIdentity[]; confirmedAnswers?: Readonly<Record<string, string | boolean>>; latestAnalysis?: unknown; command: StoredCommand; event: WorkCaseEvent }): Promise<void> {
     const statements: D1PreparedStatementLike[] = [
       this.insertCommand(input.command, input.next.updatedAt),
       this.updateControl(input.previous, input.next),
+      ...(input.confirmedAnswers || input.latestAnalysis !== undefined
+        ? [
+            this.db.prepare(
+              `UPDATE intelligence_requests
+               SET confirmed_answers_json = COALESCE(?, confirmed_answers_json),
+                   latest_analysis_json = COALESCE(?, latest_analysis_json)
+               WHERE work_case_id = ?`,
+            ).bind(
+              input.confirmedAnswers ? JSON.stringify(input.confirmedAnswers) : null,
+              input.latestAnalysis !== undefined ? JSON.stringify(input.latestAnalysis) : null,
+              input.next.workCaseId,
+            ),
+          ]
+        : []),
       this.db.prepare(`DELETE FROM intelligence_task_identities WHERE work_case_id = ?`).bind(input.next.workCaseId),
       ...input.tasks.map(task => this.db.prepare(
         `INSERT INTO intelligence_task_identities
