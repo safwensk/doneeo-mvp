@@ -30,6 +30,9 @@ type PhaseInput = {
   qualification?: Qualification;
   dependencies?: string[];
   locationIndex?: number;
+  workAction?: "pickup" | "delivery" | "installation";
+  itemId?: string;
+  occurrence?: number;
 };
 
 type DomainDefinition = {
@@ -40,7 +43,7 @@ type DomainDefinition = {
 };
 
 const DOMAIN_DEFINITIONS: DomainDefinition[] = [
-  { id: "elder_support", label: "Practical home support", qualification: "general_helper", pattern: /elder|senior|father|mother|parent|companionship|wellness visit|grocer/i },
+  { id: "elder_support", label: "Practical home support", qualification: "general_helper", pattern: /elder|senior|companionship|wellness visit|grocer|meal preparation|practical support visit/i },
   { id: "cleaning", label: "Home cleaning", qualification: "general_helper", pattern: /clean|vacuum|mop|sanitize|housekeeping/i },
   { id: "plumbing", label: "Plumbing", qualification: "licensed_professional", pattern: /plumb|pipe|faucet|tap\b|toilet|sink|drain|water line|water heater|leak/i },
   { id: "electrical", label: "Electrical and lighting", qualification: "licensed_professional", pattern: /electric|wiring|outlet|socket|switch|breaker|circuit|hardwire|ceiling light|light fixture|light bulb|\bbulb\b|plug.in lamp|\blamp\b/i },
@@ -48,7 +51,7 @@ const DOMAIN_DEFINITIONS: DomainDefinition[] = [
   { id: "painting", label: "Interior or exterior painting", qualification: "skilled_executor", pattern: /\bpaint(?:ing|ed)?\b|repaint|primer|wall colour|ceiling colour/i },
   { id: "yard_garden", label: "Yard and garden work", qualification: "general_helper", pattern: /lawn|grass|mow|garden|plant(?:ing)?|hedge|yard|leaves|weeding|mulch/i },
   { id: "mounting", label: "Wall mounting", qualification: "skilled_executor", pattern: /mount|hang (?:a |the )?(?:tv|television|mirror|shelf|curtain)|wall shelf|tv bracket/i },
-  { id: "furniture_assembly", label: "Furniture assembly", qualification: "skilled_executor", pattern: /assemble|assembly|ikea|wardrobe|flat.pack|desk|bed frame|bookcase|cabinet/i },
+  { id: "furniture_assembly", label: "Furniture assembly", qualification: "skilled_executor", pattern: /assemble|assembly|wardrobe|flat.pack|desk|bed frame|bookcase|cabinet/i },
   { id: "organization", label: "Organization and decluttering", qualification: "general_helper", pattern: /organiz|organis|arrang|declutter|sort (?:the |my )?(?:garage|basement|storage)|garage cleanup/i },
   { id: "transport_handling", label: "Moving and physical handling", qualification: "general_helper", pattern: /pick\s*up|deliver|transport|\bmove\b|moving|carry|lift|unload|\bload\b|\b(?:take|bring|put)\b.{0,80}\b(?:box(?:es)?|furniture|items?|appliance|belongings)\b|\b\d+\s+box(?:es)?\b.{0,100}\b(?:basement|garage|attic|room|floor|house|home)\b/i },
   { id: "general_maintenance", label: "General home maintenance", qualification: "skilled_executor", pattern: /repair|replace|change (?:a |the )?(?:lamp|bulb|door|handle)|caulk|seal|maintenance|fix/i },
@@ -106,6 +109,9 @@ function phase(input: PhaseInput): TaskPrimitive {
     recommendedCrew,
     qualification: input.qualification || "general_helper",
     locationIndex: input.locationIndex,
+    workAction: input.workAction,
+    itemId: input.itemId,
+    occurrence: input.occurrence,
   };
 }
 
@@ -270,6 +276,18 @@ function phasesFor(analysis: PlannerAnalysis, domains: WorkDomain[]): TaskPrimit
   // turn the door itself into a second bulky item.
   const recognizedItems = recognizeHouseholdItems(analysis.sourceText);
   const refrigerator = recognizedItems.some(item => item.id === "refrigerator");
+  const routeActionOccurrences = new Map<string, number>();
+  const routeHandlingTargets = analysis.routeNodes.flatMap((node, locationIndex) => node.actions.flatMap(action => {
+    const workAction = /^pick\s*up\b/i.test(action) ? "pickup" as const : /^(?:deliver|transport)\b/i.test(action) ? "delivery" as const : null;
+    if (!workAction) return [];
+    const item = recognizeHouseholdItems(action)[0];
+    if (!item) return [];
+    const occurrenceKey = `${workAction}:${item.id}`;
+    const occurrence = (routeActionOccurrences.get(occurrenceKey) || 0) + 1;
+    routeActionOccurrences.set(occurrenceKey, occurrence);
+    return [{ workAction, item, occurrence, locationIndex }];
+  }));
+  const repeatedRouteHandling = routeHandlingTargets.filter(target => target.workAction === "pickup").length > 1;
   const add = (item: PhaseInput) => { if (!phases.some(existing => existing.id === item.id)) phases.push(phase(item)); };
 
   if (domains.includes("transport_handling")) {
@@ -278,9 +296,25 @@ function phasesFor(analysis: PlannerAnalysis, domains: WorkDomain[]): TaskPrimit
     const bulky = /dish\s*washer|washer|dryer|refrigerator|fridge|freezer|couch|sofa|\blarge\b|\bheavy\b|wardrobe|appliance/.test(text)
       || recognizedItems.some(item => item.traits.some(trait => ["bulky", "heavy", "two_person"].includes(trait)));
     if (isRouteTransport(analysis)) {
-      add({ id: "pickup_release", domain: "transport_handling", label: refrigerator ? "Confirm refrigerator order release, packaging and condition" : "Confirm pickup and release item", low: 10, likely: 20, high: 35, minimumCrew: 1, dependencies: refrigerator ? ["Costco release readiness", "order holder or authorized pickup contact", "condition evidence"] : ["pickup readiness", "release details"], locationIndex: 0 });
-      add({ id: "load_protect_secure", domain: "transport_handling", label: refrigerator ? "Protect and load refrigerator upright" : "Load, protect and secure item", low: bulky ? 20 : 12, likely: bulky ? 30 : 18, high: bulky ? 50 : 30, minimumCrew: bulky ? 2 : 1, recommendedCrew: bulky ? 2 : 1, dependencies: refrigerator ? ["upright-capable cargo vehicle", "appliance dolly", "straps", "blankets", "manufacturer handling instructions"] : ["correct vehicle", "dolly", "straps", "blankets"], locationIndex: 0 });
-      add({ id: "unload_place", domain: "transport_handling", label: refrigerator ? "Unload, carry and place refrigerator" : "Unload, carry and place item", low: bulky ? 20 : 12, likely: bulky ? 35 : 20, high: bulky ? 65 : 35, minimumCrew: bulky ? 2 : 1, recommendedCrew: bulky ? 2 : 1, dependencies: refrigerator ? ["doorway and elevator fit", "floor", "parking distance", "final placement", "manufacturer settling time"] : ["floor", "elevator", "parking distance"], locationIndex: lastStop });
+      if (repeatedRouteHandling) {
+        routeHandlingTargets.forEach(target => {
+          const itemName = target.item.name.toLowerCase();
+          const targetRefrigerator = target.item.id === "refrigerator";
+          const targetBulky = target.item.traits.some(trait => ["bulky", "heavy", "two_person"].includes(trait));
+          const suffix = `${target.item.id}_${target.occurrence}`;
+          if (target.workAction === "pickup") {
+            add({ id: `pickup_release_${suffix}`, domain: "transport_handling", label: `Confirm ${itemName} pickup and release readiness`, low: 10, likely: 20, high: 35, minimumCrew: 1, dependencies: ["pickup readiness", "release details"], locationIndex: target.locationIndex, workAction: "pickup", itemId: target.item.id, occurrence: target.occurrence });
+            add({ id: `load_protect_secure_${suffix}`, domain: "transport_handling", label: targetRefrigerator ? "Protect and load refrigerator upright" : `Load, protect and secure ${itemName}`, low: targetBulky ? 20 : 12, likely: targetBulky ? 30 : 18, high: targetBulky ? 50 : 30, minimumCrew: targetBulky ? 2 : 1, recommendedCrew: targetBulky ? 2 : 1, dependencies: targetRefrigerator ? ["upright-capable cargo vehicle", "appliance dolly", "straps", "blankets", "manufacturer handling instructions"] : ["correct vehicle", "dolly", "straps", "blankets"], locationIndex: target.locationIndex, workAction: "pickup", itemId: target.item.id, occurrence: target.occurrence });
+          } else {
+            add({ id: `unload_place_${suffix}`, domain: "transport_handling", label: targetRefrigerator ? "Unload, carry and place refrigerator" : `Unload, carry and place ${itemName}`, low: targetBulky ? 20 : 12, likely: targetBulky ? 35 : 20, high: targetBulky ? 65 : 35, minimumCrew: targetBulky ? 2 : 1, recommendedCrew: targetBulky ? 2 : 1, dependencies: targetRefrigerator ? ["doorway and elevator fit", "floor", "parking distance", "final placement", "manufacturer settling time"] : ["floor", "elevator", "parking distance"], locationIndex: target.locationIndex, workAction: "delivery", itemId: target.item.id, occurrence: target.occurrence });
+          }
+        });
+      } else {
+        const routeItem = routeHandlingTargets[0]?.item;
+        add({ id: "pickup_release", domain: "transport_handling", label: refrigerator ? "Confirm refrigerator order release, packaging and condition" : "Confirm pickup and release item", low: 10, likely: 20, high: 35, minimumCrew: 1, dependencies: refrigerator ? ["retailer release readiness", "order holder or authorized pickup contact", "condition evidence"] : ["pickup readiness", "release details"], locationIndex: 0, workAction: "pickup", itemId: routeItem?.id, occurrence: 1 });
+        add({ id: "load_protect_secure", domain: "transport_handling", label: refrigerator ? "Protect and load refrigerator upright" : "Load, protect and secure item", low: bulky ? 20 : 12, likely: bulky ? 30 : 18, high: bulky ? 50 : 30, minimumCrew: bulky ? 2 : 1, recommendedCrew: bulky ? 2 : 1, dependencies: refrigerator ? ["upright-capable cargo vehicle", "appliance dolly", "straps", "blankets", "manufacturer handling instructions"] : ["correct vehicle", "dolly", "straps", "blankets"], locationIndex: 0, workAction: "pickup", itemId: routeItem?.id, occurrence: 1 });
+        add({ id: "unload_place", domain: "transport_handling", label: refrigerator ? "Unload, carry and place refrigerator" : "Unload, carry and place item", low: bulky ? 20 : 12, likely: bulky ? 35 : 20, high: bulky ? 65 : 35, minimumCrew: bulky ? 2 : 1, recommendedCrew: bulky ? 2 : 1, dependencies: refrigerator ? ["doorway and elevator fit", "floor", "parking distance", "final placement", "manufacturer settling time"] : ["floor", "elevator", "parking distance"], locationIndex: lastStop, workAction: "delivery", itemId: routeItem?.id, occurrence: 1 });
+      }
       // A mixed outside/inside order retains the later on-property move as its
       // own execution segment instead of folding the boxes into delivery.
       if (boxes && hasInternalBoxMove(analysis.sourceText)) {
@@ -315,20 +349,48 @@ function phasesFor(analysis: PlannerAnalysis, domains: WorkDomain[]): TaskPrimit
   }
 
   if (domains.includes("appliance_installation")) {
-    const dishwasher = /dish\s*washer/.test(text);
-    const range = recognizeHouseholdItems(analysis.sourceText).some(item => item.id === "range");
-    const oldInstalled = analysis.extractedAnswers.old_dishwasher === true;
-    const connectionScope = String(analysis.extractedAnswers.dishwasher_connection_scope || analysis.extractedAnswers.range_connection_scope || analysis.extractedAnswers.plumbing_modification || "");
-    const rangeEnergy = String(analysis.extractedAnswers.range_energy_source || "");
-    const modifiedConnections = /new|modified/i.test(connectionScope);
-    const licensedConnection = modifiedConnections || /gas|dual fuel/i.test(rangeEnergy) || analysis.rulesGate?.providerClass === "licensed_professional";
-    const partsMissing = /no|needed|purchase/i.test(String(analysis.extractedAnswers.dishwasher_parts || analysis.extractedAnswers.plumbing_parts_status || ""));
-    if (oldInstalled) add({ id: "disconnect_old_appliance", domain: "appliance_installation", label: "Disconnect and remove existing dishwasher", low: 30, likely: 50, high: 90, qualification: "skilled_executor", dependencies: ["safe isolation", "removal plan"], locationIndex: lastStop });
-    add({ id: "inspect_appliance_fit", domain: "appliance_installation", label: dishwasher ? "Inspect opening, model, services and required parts" : range ? "Verify stove model, clearances, energy supply and anti-tip requirements" : "Inspect appliance location and required connections", low: 15, likely: 25, high: 45, qualification: "skilled_executor", dependencies: ["model", "dimensions", "connection scope"], locationIndex: lastStop });
-    if (partsMissing) add({ id: "source_appliance_parts", domain: "appliance_installation", label: "Source and verify model-compatible installation parts", low: 20, likely: 40, high: 90, qualification: "skilled_executor", dependencies: ["model", "approved purchase"], locationIndex: lastStop });
-    add({ id: "position_level_appliance", domain: "appliance_installation", label: "Position and level appliance", low: 15, likely: 25, high: 45, minimumCrew: 2, recommendedCrew: 2, qualification: "skilled_executor", dependencies: ["clear opening", "floor protection"], locationIndex: lastStop });
-    add({ id: "connect_appliance", domain: "appliance_installation", label: licensedConnection ? "Complete eligible water, drain and electrical connection work" : dishwasher ? "Connect water, drain and approved electrical supply" : range ? "Complete the approved stove power or gas connection" : "Complete approved appliance connections", low: modifiedConnections ? 90 : 50, likely: modifiedConnections ? 150 : 80, high: modifiedConnections ? 300 : 135, qualification: licensedConnection ? "licensed_professional" : "skilled_executor", dependencies: [licensedConnection ? "licensed scope approval" : "existing approved connections", "model-compatible parts"], locationIndex: lastStop });
-    add({ id: "secure_test_appliance", domain: "appliance_installation", label: range ? "Install anti-tip device, test burners, oven and controls, then clean the work area" : "Secure, commission, leak-test and clean work area", low: 25, likely: 40, high: 65, qualification: "skilled_executor", dependencies: range ? ["manufacturer anti-tip device", "approved energy connection", "commissioning procedure"] : ["water and power available", "test cycle"], locationIndex: lastStop });
+    const installationOccurrences = new Map<string, number>();
+    const routeInstallationTargets = analysis.routeNodes.flatMap((node, locationIndex) => node.actions.flatMap(action => {
+      if (!/^install\b/i.test(action)) return [];
+      const item = recognizeHouseholdItems(action).find(candidate => candidate.family === "major_appliance");
+      if (!item) return [];
+      const occurrence = (installationOccurrences.get(item.id) || 0) + 1;
+      installationOccurrences.set(item.id, occurrence);
+      return [{ item, occurrence, locationIndex }];
+    }));
+    const fallbackInstallationTargets = recognizedItems
+      .filter(item => item.family === "major_appliance")
+      .map((item, index) => ({ item, occurrence: 1, locationIndex: lastStop + index }));
+    const installationTargets = routeInstallationTargets.length ? routeInstallationTargets : fallbackInstallationTargets;
+    const repeatedInstallations = installationTargets.length > 1;
+
+    installationTargets.forEach(target => {
+      const dishwasher = target.item.id === "dishwasher";
+      const range = target.item.id === "range";
+      const refrigeratorTarget = target.item.id === "refrigerator";
+      const itemName = target.item.name.toLowerCase();
+      const oldInstalled = dishwasher && analysis.extractedAnswers.old_dishwasher === true;
+      const connectionScope = String(dishwasher
+        ? analysis.extractedAnswers.dishwasher_connection_scope || analysis.extractedAnswers.plumbing_modification || ""
+        : range ? analysis.extractedAnswers.range_connection_scope || "" : "");
+      const rangeEnergy = String(analysis.extractedAnswers.range_energy_source || "");
+      const modifiedConnections = /new|modified/i.test(connectionScope);
+      const licensedConnection = modifiedConnections
+        || (range && /gas|dual fuel/i.test(`${rangeEnergy} ${connectionScope}`))
+        || ((range || dishwasher) && analysis.rulesGate?.providerClass === "licensed_professional");
+      const partsMissing = /no|needed|purchase/i.test(String(dishwasher
+        ? analysis.extractedAnswers.dishwasher_parts || analysis.extractedAnswers.plumbing_parts_status || ""
+        : range ? analysis.extractedAnswers.range_parts || "" : ""));
+      const suffix = repeatedInstallations ? `_${target.item.id}_${target.occurrence}` : "";
+      const metadata = { workAction: "installation" as const, itemId: target.item.id, occurrence: target.occurrence };
+
+      if (oldInstalled) add({ id: `disconnect_old_appliance${suffix}`, domain: "appliance_installation", label: "Disconnect and remove existing dishwasher", low: 30, likely: 50, high: 90, qualification: "skilled_executor", dependencies: ["safe isolation", "removal plan"], locationIndex: target.locationIndex, ...metadata });
+      add({ id: `inspect_appliance_fit${suffix}`, domain: "appliance_installation", label: dishwasher ? "Inspect opening, model, services and required parts" : range ? "Verify stove model, clearances, energy supply and anti-tip requirements" : refrigeratorTarget ? "Verify refrigerator model, fit, power and requested water connection" : `Inspect ${itemName} location and required connections`, low: 15, likely: 25, high: 45, qualification: "skilled_executor", dependencies: ["model", "dimensions", "connection scope"], locationIndex: target.locationIndex, ...metadata });
+      if (partsMissing) add({ id: `source_appliance_parts${suffix}`, domain: "appliance_installation", label: `Source and verify model-compatible ${itemName} installation parts`, low: 20, likely: 40, high: 90, qualification: "skilled_executor", dependencies: ["model", "approved purchase"], locationIndex: target.locationIndex, ...metadata });
+      add({ id: `position_level_appliance${suffix}`, domain: "appliance_installation", label: `Position and level ${itemName}`, low: 15, likely: 25, high: 45, minimumCrew: 2, recommendedCrew: 2, qualification: "skilled_executor", dependencies: ["clear opening", "floor protection"], locationIndex: target.locationIndex, ...metadata });
+      add({ id: `connect_appliance${suffix}`, domain: "appliance_installation", label: licensedConnection ? `Complete eligible ${itemName} connection work` : dishwasher ? "Connect water, drain and approved electrical supply" : range ? "Complete the approved stove power or gas connection" : refrigeratorTarget ? "Connect approved refrigerator power and requested existing water line" : `Complete approved ${itemName} connections`, low: modifiedConnections ? 90 : 50, likely: modifiedConnections ? 150 : 80, high: modifiedConnections ? 300 : 135, qualification: licensedConnection ? "licensed_professional" : "skilled_executor", dependencies: [licensedConnection ? "licensed scope approval" : "existing approved connections", "model-compatible parts"], locationIndex: target.locationIndex, ...metadata });
+      add({ id: `secure_test_appliance${suffix}`, domain: "appliance_installation", label: range ? "Install anti-tip device, test burners, oven and controls, then clean the work area" : refrigeratorTarget ? "Secure, commission and verify refrigerator operation" : `Secure, commission, test and clean the ${itemName} work area`, low: 25, likely: 40, high: 65, qualification: "skilled_executor", dependencies: range ? ["manufacturer anti-tip device", "approved energy connection", "commissioning procedure"] : ["water and power available", "test procedure"], locationIndex: target.locationIndex, ...metadata });
+    });
   }
 
   if (domains.includes("plumbing") && !domains.includes("appliance_installation")) {
@@ -516,6 +578,8 @@ export function augmentWithHouseholdKnowledge(analysis: PlannerAnalysis): Planne
     const concept = `${question.id} ${question.label}`.toLowerCase();
     const hasSpecificDomain = model.domains.some(domain => domain !== "general_maintenance");
     if (question.required === false) return false;
+    if (!model.domains.includes("furniture_assembly") && (["furniture_models", "parts_complete", "furniture_anchoring", "packaging_removal"].includes(question.id)
+      || /furniture|assemble|assembly instructions|wall anchoring|packaging after assembly/.test(concept))) return false;
     if (hasSpecificDomain && ["task_details", "tools", "regulated", "item", "materials", "utilities", "mounting"].includes(question.id)) return false;
     if (hasSpecificDomain && question.id === "instructions" && !model.domains.some(domain => ["furniture_assembly", "appliance_installation"].includes(domain))) return false;
     if (question.id === "packaging_destination" && !model.domains.includes("furniture_assembly") && !/remove|dispose|discard|packaging|cleanup/i.test(analysis.sourceText)) return false;
@@ -542,7 +606,8 @@ export function augmentWithHouseholdKnowledge(analysis: PlannerAnalysis): Planne
   const domainTitle = model.domainDetails.length === 1 ? model.domainDetails[0].label : model.domainDetails.map(domain => domain.label).join(" + ");
   const onsiteBoxCount = numberFor(source, /\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|twenty[- ]five)\s+box(?:es)?\b/, 0);
   const primaryItemName = recognizedItems.find(item => item.id !== "boxes")?.name.toLowerCase();
-  const routeApplianceName = recognizedItems.find(item => item.family === "major_appliance")?.name.toLowerCase();
+  const recognizedAppliances = recognizedItems.filter(item => item.family === "major_appliance");
+  const routeApplianceName = recognizedAppliances.length === 1 ? recognizedAppliances[0].name.toLowerCase() : undefined;
   const oneRecognizedRouteItem = recognizedItems.filter(item => item.id !== "boxes").length === 1 ? primaryItemName : undefined;
   const routeNodes = routeTransport ? analysis.routeNodes.map((node, index, nodes) => oneRecognizedRouteItem
     ? { ...node, actions: index === 0 ? [`Pick up ${oneRecognizedRouteItem}`] : index === nodes.length - 1 ? [`Deliver ${oneRecognizedRouteItem}`] : node.actions }
@@ -585,10 +650,34 @@ export function augmentWithHouseholdKnowledge(analysis: PlannerAnalysis): Planne
   const routeTasks = routeTransport && routeNodes.length
     ? routeNodes.flatMap(node => node.actions)
     : [];
-  const tasks = coordinatedCompositeTasks.length ? coordinatedCompositeTasks : recognizedRouteTasks.length ? recognizedRouteTasks : routeTasks.length ? routeTasks : detectedTasks.length ? detectedTasks : analysis.tasks;
-  const compatibleBaseSkills = transportDetected && !routeTransport
-    ? analysis.skillRequirements.filter(skill => !/route|handoff|driver|vehicle|load securement|product assembly/i.test(skill))
-    : analysis.skillRequirements;
+  const canonicalRouteTasks = routeTransport && routeNodes.length ? routeNodes.flatMap(node => node.actions.map(action => {
+    const item = recognizeHouseholdItems(action)[0];
+    if (!item) return action;
+    const old = /\b(?:old|used|existing)\b/i.test(action) ? "old " : "";
+    const itemName = `${old}${item.name.toLowerCase()}`;
+    if (/^pick\s*up\b/i.test(action)) return `Pick up the ${itemName} at ${node.location}`;
+    if (/^(?:deliver|transport)\b/i.test(action)) return `Transport and deliver the ${itemName} to ${node.location}`;
+    if (/^install\b/i.test(action)) return `Install, connect and test the ${itemName} at ${node.location}`;
+    return action;
+  })) : [];
+  const routePickupCount = routeNodes.reduce((count, node) => count + node.actions.filter(action => /^pick\s*up\b/i.test(action)).length, 0);
+  const multiWorkflowRoute = routePickupCount > 1 || new Set(routeNodes.flatMap(node => node.actions.flatMap(action => recognizeHouseholdItems(action).map(item => item.id)))).size > 1;
+  const representedRouteDomains = new Set<string>([
+    ...(canonicalRouteTasks.some(task => /pick\s*up|transport|deliver/i.test(task)) ? ["transport_handling"] : []),
+    ...(canonicalRouteTasks.some(task => /install|connect|commission/i.test(task)) ? ["appliance_installation"] : []),
+  ]);
+  const supplementalMultiTasks = model.domains
+    .filter(domain => !representedRouteDomains.has(domain))
+    .map(taskForDomain)
+    .filter(task => !(onsiteBoxCount && /pick up, transport and place/i.test(task)));
+  if (onsiteBoxCount && hasInternalBoxMove(source)) supplementalMultiTasks.push(`Carry ${onsiteBoxCount} boxes from the ${boxLocations.origin} to the ${boxLocations.destination}`);
+  const genericMultiTasks = multiWorkflowRoute ? [...canonicalRouteTasks, ...supplementalMultiTasks] : [];
+  const tasks = genericMultiTasks.length ? genericMultiTasks : coordinatedCompositeTasks.length ? coordinatedCompositeTasks : recognizedRouteTasks.length ? recognizedRouteTasks : routeTasks.length ? routeTasks : detectedTasks.length ? detectedTasks : analysis.tasks;
+  const compatibleBaseSkills = analysis.skillRequirements.filter(skill => {
+    if (transportDetected && !routeTransport && /route|handoff|driver|vehicle|load securement|product assembly/i.test(skill)) return false;
+    if (!model.domains.includes("furniture_assembly") && /furniture|product assembly/i.test(skill)) return false;
+    return true;
+  });
   const explicitCrew = numberFor(source, /\b([1-4]|one|two|three|four)\s+(?:people|helpers|workers|executors)\b/, 0);
   const catalogCrew = Math.max(1, ...recognizedItems.map(item => item.defaultCrew));
   const recommendedTeamSize = Math.max(model.minimumCrew, catalogCrew, explicitCrew || model.recommendedCrew);

@@ -156,43 +156,90 @@ function hasModel(text: string) {
   return /\b(?:model|sku|item number|product number)\b.{0,45}\b[a-z0-9-]{3,}\b/i.test(text);
 }
 
+function scopedItemSegments(text: string, item: HouseholdItemDefinition) {
+  const aliases = item.aliases.map(alias => alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+")).join("|");
+  const itemPattern = new RegExp(`\\b(?:${aliases})s?\\b`, "i");
+  const clauses = text.split(/\b(?:after\s+(?:this|that)|then|next)\b/i).map(clause => clause.trim()).filter(Boolean);
+  const scopes: string[] = [];
+  clauses.forEach(clause => {
+    if (itemPattern.test(clause)) {
+      scopes.push(clause);
+      return;
+    }
+    if (scopes.length && /\b(?:deliver|place|install|instal|connect|hook\s*up|set\s*up|commission|test)\s+(?:it|them|this|that)\b/i.test(clause)) {
+      scopes[scopes.length - 1] = `${scopes[scopes.length - 1]}. ${clause}`;
+    }
+  });
+  return scopes.length ? scopes : [text];
+}
+
+function scopedItemText(text: string, item: HouseholdItemDefinition) {
+  return scopedItemSegments(text, item).join(". ");
+}
+
+function retailerPickupForItem(text: string, item: HouseholdItemDefinition) {
+  const scope = scopedItemText(text, item);
+  return /\b(?:pick\s*up|collect)\b/i.test(scope)
+    && /\b(?:from|at)\s+(?:costco|ikea|walmart|home depot|rona|store|shop|retailer|warehouse)\b/i.test(scope);
+}
+
 export function questionsForRecognizedItems(text: string): PlannerQuestion[] {
   const items = recognizeHouseholdItems(text);
   const questions: PlannerQuestion[] = [];
   const add = (question: PlannerQuestion, covered = false) => {
     if (!covered && !questions.some(existing => existing.id === question.id)) questions.push(question);
   };
-  const transportIntent = /\b(?:pick\s*up|collect|deliver|bring|transport|move|carry|take)\b/i.test(text);
-
   for (const item of items) {
     const itemText = item.name.toLowerCase();
-    if (transportIntent && item.traits.some(trait => ["bulky", "heavy", "doorway_fit", "fragile"].includes(trait))) {
-      add({ id: `${item.id}_details`, label: `What are the ${itemText} model, dimensions and approximate weight?`, help: "A product link, model number, or width × depth × height is enough. This determines the vehicle, crew and doorway fit.", type: "text", required: true }, hasDimensions(text) && (hasWeight(text) || hasModel(text)));
+    const itemScope = scopedItemText(text, item);
+    const retailerPickup = retailerPickupForItem(text, item);
+    const itemTransportIntent = /\b(?:pick\s*up|collect|deliver|bring|transport|move|carry|take|taking)\b/i.test(itemScope);
+    if (itemTransportIntent && item.traits.some(trait => ["bulky", "heavy", "doorway_fit", "fragile"].includes(trait))) {
+      add({ id: `${item.id}_details`, label: `What are the ${itemText} model, dimensions and approximate weight?`, help: "A product link, model number, or width × depth × height is enough. This determines the vehicle, crew and doorway fit.", type: "text", required: true }, hasDimensions(itemScope) && (hasWeight(itemScope) || hasModel(itemScope)));
     }
-    if (transportIntent && item.traits.includes("doorway_fit")) {
-      add({ id: `${item.id}_access_fit`, label: `Will the ${itemText} fit through the narrowest doorway, hallway and elevator on the route?`, help: "If unsure, provide the narrowest opening width or a photo before booking.", type: "choice", options: ["Yes — measurements checked", "May require door/handle removal", "Not sure — needs pre-check"], required: true }, /measurements? checked|doorway.{0,30}\d+|opening.{0,30}\d+|fits? through/i.test(text));
+    if (itemTransportIntent && item.traits.includes("doorway_fit")) {
+      add({ id: `${item.id}_access_fit`, label: `Will the ${itemText} fit through the narrowest doorway, hallway and elevator on the route?`, help: "If unsure, provide the narrowest opening width or a photo before booking.", type: "choice", options: ["Yes — measurements checked", "May require door/handle removal", "Not sure — needs pre-check"], required: true }, /measurements? checked|doorway.{0,30}\d+|opening.{0,30}\d+|fits? through/i.test(itemScope));
     }
     if (item.id === "refrigerator") {
-      add({ id: "refrigerator_condition", label: "Is the refrigerator new and boxed, new but unboxed, or used?", help: "Packaging and condition change protection, inspection and handling evidence.", type: "choice", options: ["New and factory boxed", "New but unboxed", "Used and disconnected", "Used — disconnection still needed"], required: true }, /new(?:\s+and)?\s+(?:factory[- ]?)?boxed|new but unboxed|used and disconnected|disconnection still needed/i.test(text));
-      add({ id: "refrigerator_pickup_ready", label: "Is the Costco refrigerator paid for, released and ready for pickup?", help: "Include the order holder or authorized pickup contact if someone else must release it.", type: "choice", options: ["Paid and ready", "Ready — pickup contact required", "Status not confirmed"], required: true }, /paid.{0,45}ready|ready.{0,45}paid|released.{0,35}pickup/i.test(text));
-      add({ id: "refrigerator_destination_scope", label: "At the destination, what should the team do with the refrigerator?", type: "choice", options: ["Carry in and place only", "Place, level and connect power", "Connect an existing water line too", "Not sure — recommend the safe scope"], required: true }, /place only|level and connect|connect.{0,25}(?:power|water line)|delivery only|no installation/i.test(text));
-      add({ id: "refrigerator_old_unit", label: "Should the existing refrigerator be moved or removed?", type: "choice", options: ["No existing unit to move", "Move it elsewhere in the home", "Remove it from the property", "Not sure"], required: true }, /no (?:old|existing) (?:refrigerator|fridge)|remove.{0,35}(?:old|existing) (?:refrigerator|fridge)|move.{0,35}(?:old|existing) (?:refrigerator|fridge)/i.test(text));
+      const explicitlyNoOld = /\bno\s+(?:old|existing)\s+(?:refrigerator|fridge)\b/i.test(itemScope);
+      const explicitlyOld = !explicitlyNoOld && /\b(?:old|used|existing)\s+(?:refrigerator|fridge)\b/i.test(itemScope);
+      add({ id: "refrigerator_condition", label: "Is the refrigerator new and boxed, new but unboxed, or used?", help: "Packaging and condition change protection, inspection and handling evidence.", type: "choice", options: ["New and factory boxed", "New but unboxed", "Used and disconnected", "Used — disconnection still needed"], required: true }, explicitlyOld || /new(?:\s+and)?\s+(?:factory[- ]?)?boxed|new but unboxed|used and disconnected|disconnection still needed/i.test(itemScope));
+      if (retailerPickup) add({ id: "refrigerator_pickup_ready", label: "Is the retailer order paid for, released and ready for refrigerator pickup?", help: "Include the order holder or authorized pickup contact if someone else must release it.", type: "choice", options: ["Paid and ready", "Ready — pickup contact required", "Status not confirmed"], required: true }, /paid.{0,45}ready|ready.{0,45}paid|released.{0,35}pickup/i.test(itemScope));
+      add({ id: "refrigerator_destination_scope", label: "At the destination, what should the team do with the refrigerator?", type: "choice", options: ["Carry in and place only", "Place, level and connect power", "Connect an existing water line too", "Not sure — recommend the safe scope"], required: true }, /place only|level and connect|connect.{0,25}(?:power|water line)|delivery only|no installation|\b(?:install|instal|connect|hook\s*up|set\s*up)\s+(?:it|the\s+(?:refrigerator|fridge))\b/i.test(itemScope));
+      add({ id: "refrigerator_old_unit", label: "Should the existing refrigerator be moved or removed?", type: "choice", options: ["No existing unit to move", "Move it elsewhere in the home", "Remove it from the property", "Not sure"], required: true }, /no (?:old|existing) (?:refrigerator|fridge)|(?:remove|move|take|taking|bring).{0,45}(?:old|existing) (?:refrigerator|fridge)|(?:old|existing) (?:refrigerator|fridge).{0,45}(?:move|remove|take|taking|bring)/i.test(itemScope));
+      if (explicitlyOld && itemTransportIntent) add({ id: "refrigerator_disconnect_status", label: "Is the old refrigerator empty, unplugged and ready to move?", help: "This is the only condition detail needed to plan safe pickup and carrying time.", type: "choice", options: ["Yes — empty and unplugged", "Empty but still connected", "Still contains items or needs preparation", "Not sure"], required: true }, /empty.{0,40}(?:unplugged|disconnected)|(?:unplugged|disconnected).{0,40}empty/i.test(itemScope));
     }
-    if (item.id === "range" && /\b(?:install|instal|connect|hook\s*up|set\s*up|replace)\b/i.test(text)) {
-      add({ id: "range_condition", label: "Is the stove new and boxed, new but unboxed, or used?", help: "Condition and packaging affect pickup inspection and protection evidence.", type: "choice", options: ["New and factory boxed", "New but unboxed", "Used and disconnected", "Used — disconnection still needed"], required: true }, /new(?:\s+and)?\s+(?:factory[- ]?)?boxed|new but unboxed|used and disconnected|disconnection still needed/i.test(text));
-      add({ id: "range_pickup_ready", label: "Is the Costco stove paid for, released and ready for pickup?", help: "Include the order holder or authorized pickup contact if someone else must release it.", type: "choice", options: ["Paid and ready", "Ready — pickup contact required", "Status not confirmed"], required: true }, /paid.{0,45}ready|ready.{0,45}paid|released.{0,35}pickup/i.test(text));
-      add({ id: "range_connection_scope", label: "What connection is already available in the kitchen for this stove?", help: "New wiring, receptacle, gas-line or ventilation work changes provider eligibility and price.", type: "choice", options: ["Existing compatible electric receptacle", "Existing gas shutoff and connector location", "New or modified connection required", "Not sure"], required: true }, /existing compatible electric|existing gas shutoff|new or modified connection/i.test(text));
-      add({ id: "range_parts", label: "Are the model-required power cord or gas connector and anti-tip bracket included?", type: "choice", options: ["All required parts included", "Some parts must be purchased", "Not sure"], required: true }, /all required parts included|parts must be purchased|power cord.{0,30}included|anti-tip.{0,30}included/i.test(text));
-      add({ id: "range_old_unit", label: "Is an existing stove currently installed?", help: "If yes, Doneeo adds eligible disconnection, removal and relocation or disposal.", type: "choice", options: ["No existing stove", "Yes — move elsewhere in the home", "Yes — remove from the property", "Yes — disposal required"], required: true }, /no (?:old|existing) (?:stove|range)|(?:old|existing) (?:stove|range).{0,35}(?:move|remove|dispos)/i.test(text));
+    if (item.id === "range" && /\b(?:install|instal|connect|hook\s*up|set\s*up|replace)\b/i.test(itemScope)) {
+      if (!retailerPickup) add({ id: "range_condition", label: "Is the stove new and boxed, new but unboxed, or used?", help: "Condition and packaging affect pickup inspection and protection evidence.", type: "choice", options: ["New and factory boxed", "New but unboxed", "Used and disconnected", "Used — disconnection still needed"], required: true }, /new(?:\s+and)?\s+(?:factory[- ]?)?boxed|new but unboxed|used and disconnected|disconnection still needed/i.test(itemScope));
+      if (retailerPickup) add({ id: "range_pickup_ready", label: "Is the stove order paid, released and ready, and is it boxed or unboxed?", help: "One answer can include the pickup contact and packaging condition needed for safe collection.", type: "text", required: true }, /paid.{0,45}ready|ready.{0,45}paid|released.{0,35}pickup/i.test(itemScope) && /boxed|unboxed|open box/i.test(itemScope));
+      add({ id: "range_connection_scope", label: "Which stove connection is required at the destination?", help: "This single answer determines energy type, provider eligibility and whether connection changes affect the price.", type: "choice", options: ["Existing compatible electric receptacle", "Existing gas shutoff and connector location", "New or modified electric connection", "New or modified gas connection", "Not sure"], required: true }, /existing compatible electric|existing gas shutoff|new or modified (?:electric|gas) connection/i.test(itemScope));
+      add({ id: "range_parts", label: "Are the model-required power cord or gas connector and anti-tip bracket included?", type: "choice", options: ["All required parts included", "Some parts must be purchased", "Not sure"], required: true }, /all required parts included|parts must be purchased|power cord.{0,30}included|anti-tip.{0,30}included/i.test(itemScope));
+      add({ id: "range_old_unit", label: "Is an existing stove currently installed?", help: "If yes, Doneeo adds eligible disconnection, removal and relocation or disposal.", type: "choice", options: ["No existing stove", "Yes — move elsewhere in the home", "Yes — remove from the property", "Yes — disposal required"], required: true }, /no (?:old|existing) (?:stove|range)|(?:old|existing) (?:stove|range).{0,35}(?:move|remove|dispos)/i.test(itemScope));
     }
-    if (item.traits.includes("gas_connection") && /\b(?:install|instal|connect|disconnect|replace)\b/i.test(text)) {
-      add({ id: `${item.id}_energy_source`, label: `Is the ${itemText} electric or gas-connected?`, type: "choice", options: ["Electric", "Gas", "Dual fuel", "Not sure"], required: true }, /\b(?:electric|gas|dual fuel)\b/i.test(text));
+    if (item.id !== "range" && item.traits.includes("gas_connection") && /\b(?:install|instal|connect|disconnect|replace)\b/i.test(itemScope)) {
+      add({ id: `${item.id}_energy_source`, label: `Is the ${itemText} electric or gas-connected?`, type: "choice", options: ["Electric", "Gas", "Dual fuel", "Not sure"], required: true }, /\b(?:electric|gas|dual fuel)\b/i.test(itemScope));
     }
     if (item.traits.includes("specialist_move")) {
       add({ id: `${item.id}_specialist_survey`, label: `What is the exact weight and complete access path for the ${itemText}?`, help: "Include stairs, landings, door widths, floor protection and final placement.", type: "text", required: true }, hasWeight(text) && /stairs?|door.{0,20}(?:width|wide)|ground floor|elevator/i.test(text));
     }
   }
-  return questions;
+  const repeatedItems = items.map(item => ({ item, scopes: scopedItemSegments(text, item) })).filter(entry => entry.scopes.length > 1);
+  if (!repeatedItems.length) return questions;
+
+  const repeatedPrefixes = repeatedItems.flatMap(({ item }) => [
+    `${item.id}_details`,
+    `${item.id}_access_fit`,
+    `${item.id}_specialist_survey`,
+    `${item.id}_energy_source`,
+    ...(item.id === "refrigerator" ? ["refrigerator_"] : []),
+    ...(item.id === "range" ? ["range_"] : []),
+  ]);
+  const retained = questions.filter(question => !repeatedPrefixes.some(prefix => question.id.startsWith(prefix)));
+  const repeated = repeatedItems.flatMap(({ item, scopes }) => scopes.flatMap((scope, index) => questionsForRecognizedItems(scope)
+    .filter(question => question.id.startsWith(`${item.id}_`) || (item.id === "refrigerator" && question.id.startsWith("refrigerator_")) || (item.id === "range" && question.id.startsWith("range_")))
+    .map(question => ({ ...question, id: `${question.id}_${index + 1}`, label: `${question.label} · Item workflow ${index + 1}` }))));
+  return [...retained, ...repeated]
+    .filter((question, index, all) => all.findIndex(candidate => candidate.id === question.id) === index);
 }
 
 export function catalogKnowledgeFacts(text: string) {

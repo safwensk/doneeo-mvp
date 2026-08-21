@@ -1,4 +1,5 @@
 import type { JobFact, JobIntelligence, PlannerAnalysis, PlannerQuestion, ResourceGap, TaskPrimitive } from "./planner";
+import { recognizeHouseholdItems } from "./household-catalog";
 import { buildHouseholdWorkModel } from "./work-ontology";
 
 const NUMBER_WORDS: Record<string, number> = {
@@ -180,12 +181,24 @@ export function buildJobIntelligence(analysis: PlannerAnalysis): PlannerAnalysis
     const domain = householdModel.domainDetails.find(candidate => candidate.id === domainId)
       || { id: domainId, label: title, qualification: "skilled_executor", phaseCount: 1 };
     const value = title.toLowerCase();
+    const taskItemId = recognizeHouseholdItems(title)[0]?.id;
+    const taskWorkAction = /pick\s*up/.test(value) ? "pickup" : /transport|deliver/.test(value) ? "delivery" : /install|connect|commission/.test(value) ? "installation" : undefined;
+    const targetedOccurrence = Math.min(...primitives
+      .filter(phase => !usedPhaseIds.has(phase.id)
+        && phase.workAction === taskWorkAction
+        && (!taskItemId || phase.itemId === taskItemId))
+      .map(phase => phase.occurrence || 1));
     const domainPhases = primitives.filter(phase => {
       if (usedPhaseIds.has(phase.id) || (phase.domain || "general_maintenance") !== domainId) return false;
+      if (phase.workAction && taskWorkAction) {
+        return phase.workAction === taskWorkAction
+          && (!taskItemId || !phase.itemId || phase.itemId === taskItemId)
+          && (!Number.isFinite(targetedOccurrence) || (phase.occurrence || 1) === targetedOccurrence);
+      }
       if (domainId !== "transport_handling") return true;
       if (/boxes?|garage|within the property/.test(value)) return /^onsite_(?:box|handling)_/.test(phase.id);
-      if (/pick\s*up/.test(value) && /retailer|costco|coscto|ikea/.test(value)) return ["pickup_release", "load_protect_secure"].includes(phase.id);
-      if (/transport|deliver/.test(value)) return phase.id === "unload_place";
+      if (/pick\s*up/.test(value)) return /^pickup_release|^load_protect_secure/.test(phase.id);
+      if (/transport|deliver/.test(value)) return /^unload_place/.test(phase.id);
       return true;
     });
     // Generic plans still receive every phase for their domain. In a split

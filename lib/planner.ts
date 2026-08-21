@@ -81,6 +81,9 @@ export type TaskPrimitive = {
   recommendedCrew?: number;
   qualification?: "general_helper" | "skilled_executor" | "licensed_professional" | "regulated_care_provider" | "specialist_only";
   locationIndex?: number;
+  workAction?: "pickup" | "delivery" | "installation";
+  itemId?: string;
+  occurrence?: number;
 };
 
 export type ResourceGap = {
@@ -204,6 +207,9 @@ const clockPattern = String.raw`(\d{1,2})(?::(\d{2}))?\s*(a\.?m\.?|p\.?m\.?)`;
 export function normalizeIntakeForInference(sourceText: string) {
   return sourceText
     .replace(/\b(?:coscto|costico|costo)\b/gi, "costco")
+    .replace(/\bstive\b/gi, "stove")
+    .replace(/\b(?:kia|ika)\b(?=\s+bouchervil(?:le)?\b)/gi, "IKEA")
+    .replace(/\bbouchervile\b/gi, "Boucherville")
     .replace(/\bdishwacher\b/gi, "dishwasher")
     .replace(/\b(?:frige|refridgerator|refrigerater)\b/gi, "refrigerator")
     .replace(/\b(?:appartement|apartement|appartment|appratment)\b/gi, "apartment")
@@ -281,6 +287,7 @@ function cleanRouteText(value: string) {
     .split(/\s+(?:and\s+)?(?:then\s+)?(?:install|instal|connect|hook\s*up|set\s*up|commission)\b/i)[0]
     .replace(/\s+(?:on\s+)?(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)(?:\s+at\s+\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?)?)?(?:\s+and)?$/i, "")
     .replace(/(?:,?\s+(?:on|at)?\s*(?:the\s+)?(?:ground|street[ -]?level|\d+(?:st|nd|rd|th)?)\s+(?:floor|level)\b.*)$/i, "")
+    .replace(/[,.;]?\s+(?:and\s+)?(?:then|after\s+(?:this|that)|next)$/i, "")
     .replace(/,?\s+and$/i, "")
     .replace(/\bthen\s*$/i, "")
     .replace(/^[\s,:;-]+|[\s,:;.-]+$/g, "")
@@ -300,7 +307,9 @@ function cleanItem(value: string) {
 function addRouteNode(nodes: RouteNode[], location: string, action: string) {
   const normalizedLocation = cleanRouteText(location);
   if (!normalizedLocation || normalizedLocation.length < 2) return;
-  const existing = nodes.find(node => node.location.toLowerCase() === normalizedLocation.toLowerCase());
+  // Merge consecutive actions at the same stop, but preserve a later return
+  // to that address as a new route node. This keeps A → B → A continuity.
+  const existing = nodes.at(-1)?.location.toLowerCase() === normalizedLocation.toLowerCase() ? nodes.at(-1) : undefined;
   if (existing) {
     if (!existing.actions.some(value => value.toLowerCase() === action.toLowerCase())) existing.actions.push(action);
     return;
@@ -308,8 +317,12 @@ function addRouteNode(nodes: RouteNode[], location: string, action: string) {
   nodes.push({ location: normalizedLocation, actions: [action] });
 }
 
+function installsCarriedItem(clause: string) {
+  return /\b(?:install|instal|connect|hook\s*up|set\s*up|commission)(?:\s+and\s+test)?\s+(?:it|them|this|that|the\s+(?:item|unit|appliance))\b/i.test(clause);
+}
+
 export function deriveRouteNodes(sourceText: string): RouteNode[] {
-  const actionMatches = Array.from(sourceText.matchAll(/\b(?:pick\s*up|collect|deliver|drop\s*off|take|bring)\b/gi));
+  const actionMatches = Array.from(sourceText.matchAll(/\b(?:pick\s*up|collect|deliver|drop\s*off|take|taking|bring)\b/gi));
   if (!actionMatches.length) return [];
   const nodes: RouteNode[] = [];
   let carriedItem = "item";
@@ -345,11 +358,12 @@ export function deriveRouteNodes(sourceText: string): RouteNode[] {
       const item = /^(?:it|them|this|that|the item)$/i.test(rawItem) ? carriedItem : rawItem || carriedItem;
       carriedItem = item;
       addRouteNode(nodes, parts[2], `Deliver ${item}`);
+      if (installsCarriedItem(clause)) addRouteNode(nodes, parts[2], `Install ${item}`);
       return;
     }
 
-    if (verb === "take") {
-      const parts = clause.match(/^take\s+(.+?)\s+to\s+(.+)$/i);
+    if (/^(?:take|taking)$/.test(verb)) {
+      const parts = clause.match(/^(?:take|taking)(?:\s+out)?\s+(.+?)\s+to\s+(.+)$/i);
       if (!parts) return;
       const item = cleanItem(parts[1]) || "item";
       if (nodes.length) {
@@ -359,6 +373,7 @@ export function deriveRouteNodes(sourceText: string): RouteNode[] {
       }
       carriedItem = item;
       addRouteNode(nodes, parts[2], `Deliver ${item}`);
+      if (installsCarriedItem(clause)) addRouteNode(nodes, parts[2], `Install ${item}`);
     }
   });
 
@@ -458,11 +473,19 @@ export function questionsFor(category: JobCategory) {
 
 function stopAccessQuestions(stops: string[]): PlannerQuestion[] {
   const route = stops.length ? stops : ["Pickup location", "Delivery location"];
-  return route.flatMap((stop, index) => {
+  return route.flatMap<PlannerQuestion>((stop, index) => {
     const number = index + 1;
     const role = index === 0 ? "PICKUP" : index === route.length - 1 ? "FINAL DELIVERY" : `STOP ${number}`;
     const retailerPickup = index === 0 && /\b(?:costco|ikea|walmart|home depot|rona|store|shop|retailer|warehouse)\b/i.test(stop);
+    if (retailerPickup && route.length > 2) return [];
     if (retailerPickup) return [{ id: `stop_${number}_vehicle_access`, label: `${role} · Is there a designated loading or merchandise-pickup area?`, help: `${stop} — include the bay, parking instructions or retailer collection process if known.`, type: "choice" as const, options: ["Yes — designated loading area", "Regular parking only", "Not sure"], required: true }];
+    if (route.length > 2) return [{
+      id: `stop_${number}_access`,
+      label: `${role} · What access conditions affect carrying time?`,
+      help: `${stop} — give the floor, stairs or elevator, and whether the vehicle can stop near the entrance.`,
+      type: "text" as const,
+      required: true,
+    }];
     return [
       { id: `stop_${number}_floor`, label: `${role} · What floor is the item on?`, help: `${stop} — include basement or ground floor.`, type: "choice" as const, options: ["Ground floor", "2nd floor", "3rd floor", "4th+ floor"], required: true },
       { id: `stop_${number}_elevator`, label: `${role} · Is there a usable elevator?`, help: "This changes handling time and team size for this location only.", type: "boolean" as const, required: true },
@@ -727,7 +750,7 @@ export function requestAlreadyAnswersQuestion(question: PlannerQuestion, analysi
   const concept = `${question.id} ${question.label}`.toLowerCase();
   const suppliedSchedule = extractScheduleWindow(sourceText);
 
-  const stopQuestion = question.id.match(/^stop_(\d+)_(floor|elevator|vehicle_access)$/);
+  const stopQuestion = question.id.match(/^stop_(\d+)_(floor|elevator|vehicle_access|access)$/);
   if (stopQuestion) {
     const index = Math.max(0, Number(stopQuestion[1]) - 1);
     const routeStops = analysis.routeNodes.length ? analysis.routeNodes.map(node => node.location) : analysis.stops;
@@ -735,6 +758,7 @@ export function requestAlreadyAnswersQuestion(question: PlannerQuestion, analysi
     if (stopQuestion[2] === "floor" && contextHasFloor(context)) return true;
     if (stopQuestion[2] === "elevator" && (/\belevator\b/i.test(context) || contextMakesElevatorIrrelevant(context))) return true;
     if (stopQuestion[2] === "vehicle_access" && /\b(?:loading zone|parking|vehicle|truck|van|driveway|curb|entrance|remote parking)\b/i.test(context)) return true;
+    if (stopQuestion[2] === "access" && contextHasFloor(context) && /\b(?:elevator|stairs?|loading zone|parking|vehicle|truck|van|driveway|curb|entrance|close access|remote parking)\b/i.test(context)) return true;
   }
 
   if (requestProvidesAddressForQuestion(question, sourceText, analysis.category)) return true;
@@ -778,7 +802,11 @@ export function fallbackAnalysis(request: string): PlannerAnalysis {
   const customerCanHelp = /(cannot|can't|can not|unable|won't)\s+(help|assist|carry|lift)/i.test(normalizedRequest) ? false : null;
   const items = Array.from(new Set((normalizedRequest.match(/\b(sofa|couch|table|chair|bed|dresser|wardrobe|cabinet|desk|furniture|appliance|box|boxes)\b/gi) || []).map(item => item.toLowerCase())));
   const rawTasks = normalizedRequest.split(/,\s*(?=(?:then\s+)?(?:pick|deliver|take|move|carry|install|remove|assemble|clean))|\b(?:then|after that|after this|next)\b|[.;]\s*/i).map(task => task.replace(/^(?:and\s+)?/i, "").trim()).filter(task => task.length > 5 && !/^(?:today|tomorrow|this\s+(?:morning|afternoon|evening)|(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday))(?:\s+at\s+\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?)?)?$/i.test(task));
-  const routeNodes = category === "moving" ? deriveRouteNodes(normalizedRequest) : [];
+  // Route identity is independent of the primary category. A composite order
+  // can be primarily "installation" and still contain several ordered driving
+  // legs. Derive those legs from the customer's words before any model output
+  // can collapse them.
+  const routeNodes = deriveRouteNodes(normalizedRequest);
   const tasks = category === "moving" && routeNodes.length ? routeNodes.flatMap(node => node.actions) : rawTasks;
   const genericStops = Array.from(normalizedRequest.matchAll(/(?:\bat\b|\bfrom\b|\bto\b|\bdeliver(?:ed)?\s+to\b|\bdrop(?:ped)?\s+(?:it\s+)?at\b)\s+([^,.;]+?)(?=\s+(?:and|then)\s+(?:pick|drop|deliver|take)|[,.;]|$)/gi)).map(match => match[1].trim());
   const movingStops = category === "moving" ? [
@@ -885,14 +913,30 @@ export function enforceSafety(analysis: PlannerAnalysis): PlannerAnalysis {
     return !(typeof value === "boolean" || (typeof value === "string" && value.trim().length > 1));
   });
   const normalizedSource = normalizeIntakeForInference(analysis.sourceText);
+  const derivedRoute = deriveRouteNodes(normalizedSource);
   const deterministicRoute = compositeDishwasherRequest(normalizedSource)
-    ? compositeDishwasherRoute(normalizedSource, deriveRouteNodes(normalizedSource))
-    : analysis.category === "moving" ? deriveRouteNodes(normalizedSource) : [];
+    ? compositeDishwasherRoute(normalizedSource, derivedRoute)
+    : derivedRoute;
   const routeNodes = deterministicRoute.length >= 2 ? deterministicRoute : (analysis.routeNodes || []);
   const stops = routeNodes.length ? routeNodes.map(node => node.location) : analysis.stops;
   const scheduleWindow = extractScheduleWindow(analysis.sourceText) || analysis.scheduleWindow || null;
-  const requiredStopAccess = analysis.category === "moving" ? stopAccessQuestions(stops) : [];
-  const mergedQuestions = [...requiredStopAccess, ...questions]
+  const requiredStopAccess = routeNodes.length >= 2 ? stopAccessQuestions(stops) : [];
+  const requiredStopAddresses: PlannerQuestion[] = routeNodes.flatMap((node, index) => {
+    const location = node.location.trim();
+    const hasStreetNumber = /\b\d{1,6}\s+[A-Za-zÀ-ÖØ-öø-ÿ]/.test(location);
+    const isNamedRetailer = /\b(?:costco|ikea|walmart|home depot|rona|store|shop|retailer|warehouse)\b/i.test(location)
+      && !/^\s*(?:store|shop|retailer|warehouse)\s*$/i.test(location);
+    if (hasStreetNumber || isNamedRetailer) return [];
+    return [{
+      id: `stop_${index + 1}_address`,
+      label: `${location} · What is the exact address?`,
+      help: "Required to calculate the ordered route, travel time and nearby provider availability.",
+      type: "text" as const,
+      required: true,
+    }];
+  });
+  const mergedQuestions = [...requiredStopAddresses, ...requiredStopAccess, ...questions]
+    .filter(question => !(routeNodes.length >= 2 && ["pickup_address", "service_address", "delivery_address"].includes(question.id)))
     .filter(question => !requestAlreadyAnswersQuestion(question, analysis))
     .filter(question => {
       const value = answered[question.id];
