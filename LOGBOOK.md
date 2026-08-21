@@ -48,13 +48,13 @@ repo_source:  origin/main — QUERY LIVE before every code start. Never cached h
               git ls-remote https://github.com/safwensk/doneeo-mvp refs/heads/main
               A cached SHA is a second copy of the truth and it drifts; LOG lines
               record the exact base SHA per piece of work, which is where history belongs.
-ci:           CI #1 green at e5444fa. A drift-check defect was then found by Atlas and
-              fixed — re-validate on the next run before trusting the gate.
+ci:           main is green at 09d5d55. Architecture v3 control-spine branch is locally
+              verified; remote PR CI is the remaining release gate.
 drive_docs:   18                               highest numbered doc in DONEEO_SHARED_BRAIN
 lane_claude:  lib/ · tests/ · db/ · drizzle/
 lane_atlas:   docs/ · Drive canon · acceptance criteria
-next:         S1-2 — wire the Requirement Contract into /api/plan through the WorkCase services
-blocked_on:   Safwen to place the corrected ci.yml and push; then confirm the run is green
+next:         Review and merge the Architecture v3 control-spine PR after CI is green
+blocked_on:   remote branch publication and PR CI
 ```
 
 **Before any code work, run the `verify` command above.** If it disagrees with
@@ -143,6 +143,13 @@ Newest first. One line per piece of work. `KIND` is one of
 `BUILD MERGE AUDIT DECIDE FIX BLOCKED ASK`.
 
 ```
+2026-08-21  codex   BUILD   Integrated the corrected L01-L13/P01-P09 architecture as one master
+                            registry and guarded WorkCase control spine. Linked operational work
+                            orders to the stable WorkCase, JobOrder and Requirement Contract;
+                            added the architecture API/page and migration 0007. Local evidence:
+                            typecheck green, 120 tests green, all eight migrations applied to an
+                            in-memory SQLite database, production build and Worker artifact valid.
+                            Remote PR CI still required.                        base=09d5d55
 2026-08-18  claude  FIX     Applied INBOX-ATLAS-19. Drift check was hollow: it hashed the FILENAME
                             LIST and wrapped the generator in `|| true`, so a crashed generator or a
                             modified-not-renamed snapshot passed green. Reproduced that false green

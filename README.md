@@ -46,6 +46,14 @@ Every model key is optional. A validator with no key returns null and simply doe
 
 ## Architecture
 
+### Canonical L01–L13 control spine
+
+The MVP now uses one master lifecycle registry in `lib/canonical-architecture.ts`. It defines the 13 domain layers, nine shared platforms, the authoritative artifact and decision owner for each layer, and every permitted forward or recovery transition. `/architecture` renders that same registry and `/api/architecture` exposes it to other clients; neither keeps a duplicate list.
+
+Every customer request receives one stable `WorkCase` and one stable `JobOrder`. The WorkCase carries its current L01–L13 position and an optimistic state version. A layer can advance only when the expected version is current, the owning authority acts, and a version-bound artifact authorizes the transition. Each transition is appended to `domain_events`; the UI never owns progression.
+
+The planning engine actively implements L01 Intake & Context and L02 Intelligence & Planning. L03–L13 are integrated as guarded control contracts and can be filled in incrementally without changing identity or inventing parallel workflows. Creating an operational work order now links it to the existing WorkCase, JobOrder and Requirement Contract, then records the L03 governance and L04 fulfillment handoff.
+
 Three stages run on every planning request, in this order:
 
 **1. Architect — Gemini drafts.** Drafting is deliberately not split across model families. If Gemini is unavailable or fails, the deterministic rule-based planner takes over: a narrower plan, but a predictable one. No other vendor drafts.
@@ -69,6 +77,8 @@ app/
   api/plan/             planning endpoint (architect → rules gate → validation)
   api/operations/       work orders, assignments, equipment, rentals
   api/route/            Google Routes proxy
+  api/architecture/     canonical architecture registry
+  architecture/         visible L01–L13 / P01–P09 operating map
 lib/                    the intelligence engine — no framework dependencies
 db/                     Drizzle schema and the D1 binding
 drizzle/                generated migrations
@@ -89,6 +99,7 @@ scripts/                Sites lifecycle helpers
 | `job-intelligence.ts` | Assembles the full job intelligence object |
 | `rules-gate.ts` | The rules gate |
 | `work-orders.ts` | Work-order payload and persistence |
+| `canonical-architecture.ts` | Master L01–L13/P01–P09 registry, ownership and transition graph |
 
 ### The rules gate
 
@@ -111,12 +122,15 @@ Do not overfit to the scenario that exposed a bug. Test across varied realistic 
 
 ## Data model
 
-Eleven tables in D1/SQLite. The parts worth knowing:
+Twenty tables in D1/SQLite. The parts worth knowing:
 
 - `work_orders.status` walks `draft → matching → team_pending → equipment_check → ready → in_progress → awaiting_customer → completed`, plus `rematching`.
 - `work_order_stops` makes each stop a stateful object with its own `access_json` — access is per stop, never global to the order.
 - `equipment_responses` records `profile_listed` alongside the answer, so a provider is never asked to reconfirm equipment their profile already lists.
 - `work_order_events` is the audit log for arrival, milestones, delays and scope changes.
+- `work_cases.current_layer_id` is the canonical L01–L13 position; `state_version` protects it from stale commands.
+- `work_orders.work_case_id`, `job_order_id` and `requirement_contract_ref` link operations to the master control record instead of duplicating identity.
+- `domain_events` is the append-only control ledger for layer progression and versioned gate artifacts.
 
 ## Provenance
 

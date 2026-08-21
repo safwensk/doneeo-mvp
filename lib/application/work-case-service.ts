@@ -1,5 +1,6 @@
 import { reconcileTaskIdentities, type TaskIdentityCandidate } from "../intelligence-task-identity";
-import { beginArchitecting, createWorkCase, markRequirementReady, type WorkCaseControlState } from "../work-case";
+import type { DomainLayerId, LayerAuthority } from "../canonical-architecture";
+import { advanceWorkCaseLayer, beginArchitecting, createWorkCase, markRequirementReady, type WorkCaseControlState } from "../work-case";
 import { sha256Stable } from "./requirement-contract-hashing";
 import type { StoredCommand } from "./requirement-contract-store";
 import type { WorkCaseStore } from "./work-case-store";
@@ -69,6 +70,57 @@ export class WorkCaseService {
       next,
       command,
       event: { streamId: stream(next.workCaseId), sequence: next.stateVersion, eventType: "WorkCaseRequirementReady", payload: JSON.stringify({ requirementContractRef: input.requirementContractRef }), correlationId: input.correlationId, causationId: input.commandKey, occurredAt: input.now },
+    });
+    return { workCase: next, replayed: false };
+  }
+
+  async advanceLayer(input: { commandKey: string; workCaseId: string; expectedVersion: number; targetLayerId: DomainLayerId; gateArtifactRef: string; actorRole: LayerAuthority; correlationId: string; now: string }): Promise<{ workCase: WorkCaseControlState; replayed: boolean }> {
+    const current = await requiredWorkCase(this.store, input.workCaseId);
+    const requestHash = await sha256Stable({
+      type: "AdvanceWorkCaseLayer",
+      workCaseId: input.workCaseId,
+      expectedVersion: input.expectedVersion,
+      targetLayerId: input.targetLayerId,
+      gateArtifactRef: input.gateArtifactRef,
+      actorRole: input.actorRole,
+      correlationId: input.correlationId,
+    });
+    const replay = await this.replay(input.commandKey, requestHash);
+    if (replay) return { workCase: replay, replayed: true };
+    if (!this.store.advanceLayerAtomic) throw new Error("WorkCase store does not support canonical layer progression");
+
+    const next = advanceWorkCaseLayer(current, {
+      expectedVersion: input.expectedVersion,
+      targetLayerId: input.targetLayerId,
+      gateArtifactRef: input.gateArtifactRef,
+      actorRole: input.actorRole,
+      now: input.now,
+    });
+    const command = succeeded(
+      input.commandKey,
+      "AdvanceWorkCaseLayer",
+      requestHash,
+      input.correlationId,
+      JSON.stringify({ workCaseId: next.workCaseId, stateVersion: next.stateVersion, currentLayerId: next.currentLayerId }),
+    );
+    await this.store.advanceLayerAtomic({
+      previous: current,
+      next,
+      command,
+      event: {
+        streamId: stream(next.workCaseId),
+        sequence: next.stateVersion,
+        eventType: "WorkCaseLayerAdvanced",
+        payload: JSON.stringify({
+          fromLayerId: current.currentLayerId,
+          targetLayerId: next.currentLayerId,
+          gateArtifactRef: input.gateArtifactRef,
+          actorRole: input.actorRole,
+        }),
+        correlationId: input.correlationId,
+        causationId: input.commandKey,
+        occurredAt: input.now,
+      },
     });
     return { workCase: next, replayed: false };
   }

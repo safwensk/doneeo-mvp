@@ -64,6 +64,11 @@ export const rentalInventory = sqliteTable("rental_inventory", {
 export const workOrders = sqliteTable("work_orders", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   publicReference: text("public_reference").notNull().unique(),
+  /** Links the operational projection to the one canonical WorkCase. Demo
+   *  fixtures may remain null, but customer-created orders must provide it. */
+  workCaseId: text("work_case_id").references(() => workCases.workCaseId),
+  jobOrderId: text("job_order_id"),
+  requirementContractRef: text("requirement_contract_ref"),
   requestText: text("request_text").notNull(),
   category: text("category").notNull(),
   city: text("city").notNull().default("Montréal"),
@@ -77,7 +82,10 @@ export const workOrders = sqliteTable("work_orders", {
   price: integer("price").notNull().default(0),
   status: text("status", { enum: ["draft", "matching", "team_pending", "equipment_check", "ready", "in_progress", "awaiting_customer", "completed", "rematching"] }).notNull().default("matching"),
   createdAt: text("created_at").notNull(),
-});
+}, table => [
+  uniqueIndex("work_orders_work_case_unique").on(table.workCaseId),
+  uniqueIndex("work_orders_job_order_unique").on(table.jobOrderId),
+]);
 
 export const workOrderStops = sqliteTable("work_order_stops", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -241,6 +249,9 @@ export const workCases = sqliteTable("work_cases", {
   workCaseId: text("work_case_id").primaryKey(),
   jobOrderId: text("job_order_id").notNull(),
   state: text("state").notNull(),
+  /** Canonical L01-L13 position. Detailed workflow state can change without
+   *  inventing a second lifecycle or losing the layer during an exception. */
+  currentLayerId: text("current_layer_id").notNull().default("L01"),
   /** Incremented on every transition; commands carry an expected value so a
    *  stale client cannot apply a transition computed against an older state. */
   stateVersion: integer("state_version").notNull(),

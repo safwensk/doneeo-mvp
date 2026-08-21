@@ -1,3 +1,9 @@
+import { architecturePosition } from "../../../lib/canonical-architecture";
+import { D1WorkCaseStore } from "../../../lib/application/d1-work-case-store";
+import { WorkCaseService } from "../../../lib/application/work-case-service";
+import type { D1DatabaseLike } from "../../../lib/application/d1-requirement-contract-store";
+import { WorkCaseInvariantError, type WorkCaseControlState } from "../../../lib/work-case";
+
 type D1Statement = {
   bind(...values: unknown[]): D1Statement;
   run(): Promise<unknown>;
@@ -14,6 +20,11 @@ function getDatabase() {
 
 type WorkOrderInput = {
   public_reference: string;
+  work_case_id: string;
+  job_order_id: string;
+  requirement_contract_ref: string;
+  expected_work_case_version: number;
+  correlation_id: string;
   request_text: string;
   job_category: string;
   city: string;
@@ -47,7 +58,9 @@ async function ensureSchema(db: D1Binding) {
     db.prepare("CREATE TABLE IF NOT EXISTS skills (id text PRIMARY KEY NOT NULL,name text NOT NULL,category text NOT NULL,regulated integer DEFAULT false NOT NULL)"),
     db.prepare("CREATE TABLE IF NOT EXISTS equipment_catalog (id text PRIMARY KEY NOT NULL,name text NOT NULL,category text NOT NULL,description text NOT NULL)"),
     db.prepare("CREATE TABLE IF NOT EXISTS rental_partners (id text PRIMARY KEY NOT NULL,name text NOT NULL,address text NOT NULL,latitude real NOT NULL,longitude real NOT NULL,pickup_lead_minutes integer DEFAULT 20 NOT NULL,delivery_available integer DEFAULT false NOT NULL)"),
-    db.prepare("CREATE TABLE IF NOT EXISTS work_orders (id integer PRIMARY KEY AUTOINCREMENT NOT NULL,public_reference text NOT NULL UNIQUE,request_text text NOT NULL,category text NOT NULL,city text DEFAULT 'Montréal' NOT NULL,pickup_address text,delivery_address text,schedule_text text,selected_plan text,required_team_size integer DEFAULT 1 NOT NULL,required_skills_json text DEFAULT '[]' NOT NULL,required_equipment_json text DEFAULT '[]' NOT NULL,price integer DEFAULT 0 NOT NULL,status text DEFAULT 'matching' NOT NULL,created_at text NOT NULL)"),
+    db.prepare("CREATE TABLE IF NOT EXISTS work_orders (id integer PRIMARY KEY AUTOINCREMENT NOT NULL,public_reference text NOT NULL UNIQUE,work_case_id text,job_order_id text,requirement_contract_ref text,request_text text NOT NULL,category text NOT NULL,city text DEFAULT 'Montréal' NOT NULL,pickup_address text,delivery_address text,schedule_text text,selected_plan text,required_team_size integer DEFAULT 1 NOT NULL,required_skills_json text DEFAULT '[]' NOT NULL,required_equipment_json text DEFAULT '[]' NOT NULL,price integer DEFAULT 0 NOT NULL,status text DEFAULT 'matching' NOT NULL,created_at text NOT NULL,FOREIGN KEY(work_case_id) REFERENCES work_cases(work_case_id))"),
+    db.prepare("CREATE UNIQUE INDEX IF NOT EXISTS work_orders_work_case_unique ON work_orders(work_case_id)"),
+    db.prepare("CREATE UNIQUE INDEX IF NOT EXISTS work_orders_job_order_unique ON work_orders(job_order_id)"),
     db.prepare("CREATE TABLE IF NOT EXISTS executor_skills (executor_id text NOT NULL,skill_id text NOT NULL,level text NOT NULL,PRIMARY KEY(executor_id,skill_id),FOREIGN KEY(executor_id) REFERENCES executors(id),FOREIGN KEY(skill_id) REFERENCES skills(id))"),
     db.prepare("CREATE TABLE IF NOT EXISTS executor_equipment (executor_id text NOT NULL,equipment_id text NOT NULL,quantity integer DEFAULT 1 NOT NULL,verified integer DEFAULT true NOT NULL,PRIMARY KEY(executor_id,equipment_id),FOREIGN KEY(executor_id) REFERENCES executors(id),FOREIGN KEY(equipment_id) REFERENCES equipment_catalog(id))"),
     db.prepare("CREATE TABLE IF NOT EXISTS rental_inventory (partner_id text NOT NULL,equipment_id text NOT NULL,quantity_available integer DEFAULT 0 NOT NULL,daily_price integer NOT NULL,deposit integer DEFAULT 0 NOT NULL,PRIMARY KEY(partner_id,equipment_id),FOREIGN KEY(partner_id) REFERENCES rental_partners(id),FOREIGN KEY(equipment_id) REFERENCES equipment_catalog(id))"),
@@ -59,6 +72,64 @@ async function ensureSchema(db: D1Binding) {
     db.prepare("CREATE TABLE IF NOT EXISTS equipment_responses (work_order_id integer NOT NULL,executor_id text NOT NULL,equipment_id text NOT NULL,profile_listed integer DEFAULT false NOT NULL,response text DEFAULT 'pending' NOT NULL,responded_at text,PRIMARY KEY(work_order_id,executor_id,equipment_id),FOREIGN KEY(work_order_id) REFERENCES work_orders(id),FOREIGN KEY(executor_id) REFERENCES executors(id),FOREIGN KEY(equipment_id) REFERENCES equipment_catalog(id))"),
     db.prepare("CREATE TABLE IF NOT EXISTS rental_reservations (id integer PRIMARY KEY AUTOINCREMENT NOT NULL,work_order_id integer NOT NULL,partner_id text NOT NULL,equipment_id text NOT NULL,quantity integer DEFAULT 1 NOT NULL,unit_price integer NOT NULL,status text DEFAULT 'reserved' NOT NULL,pickup_by_executor_id text,created_at text NOT NULL,FOREIGN KEY(work_order_id) REFERENCES work_orders(id),FOREIGN KEY(partner_id) REFERENCES rental_partners(id),FOREIGN KEY(equipment_id) REFERENCES equipment_catalog(id),FOREIGN KEY(pickup_by_executor_id) REFERENCES executors(id))"),
   ]);
+}
+
+function requirementVersion(reference: string): number {
+  const at = reference.lastIndexOf("@");
+  const version = at > 0 ? Number(reference.slice(at + 1)) : Number.NaN;
+  if (!Number.isInteger(version) || version < 1) throw new Error("A version-bound Requirement Contract is required");
+  return version;
+}
+
+async function advanceToFulfillment(db: D1Binding, input: WorkOrderInput, now: string): Promise<WorkCaseControlState> {
+  const store = new D1WorkCaseStore(db as unknown as D1DatabaseLike);
+  let current = await store.get(input.work_case_id);
+  if (!current) throw new Error("The canonical WorkCase could not be found");
+  if (current.jobOrderId !== input.job_order_id) throw new Error("This JobOrder does not belong to the supplied WorkCase");
+  if (current.current.requirementContractRef !== input.requirement_contract_ref) {
+    throw new Error("The work order is based on a stale Requirement Contract");
+  }
+  if (current.stateVersion !== input.expected_work_case_version && current.currentLayerId === "L02") {
+    throw new WorkCaseInvariantError("STALE_COMMAND", "The WorkCase changed before fulfillment started");
+  }
+
+  const service = new WorkCaseService(store, {
+    newWorkCaseId: () => { throw new Error("not used by layer progression"); },
+    newJobOrderId: () => { throw new Error("not used by layer progression"); },
+    newTaskId: () => { throw new Error("not used by layer progression"); },
+  });
+
+  if (current.currentLayerId === "L02") {
+    current = (await service.advanceLayer({
+      commandKey: `work-order:${input.public_reference}:governance`,
+      workCaseId: current.workCaseId,
+      expectedVersion: current.stateVersion,
+      targetLayerId: "L03",
+      gateArtifactRef: input.requirement_contract_ref,
+      actorRole: "TRUST_SAFETY_RULES",
+      correlationId: input.correlation_id,
+      now,
+    })).workCase;
+  }
+
+  if (current.currentLayerId === "L03") {
+    const ruleDecisionRef = `RULE-${current.jobOrderId}@${requirementVersion(input.requirement_contract_ref)}`;
+    current = (await service.advanceLayer({
+      commandKey: `work-order:${input.public_reference}:fulfillment`,
+      workCaseId: current.workCaseId,
+      expectedVersion: current.stateVersion,
+      targetLayerId: "L04",
+      gateArtifactRef: ruleDecisionRef,
+      actorRole: "FULFILLMENT_TEAM",
+      correlationId: input.correlation_id,
+      now,
+    })).workCase;
+  }
+
+  if (current.currentLayerId !== "L04") {
+    throw new Error(`A work order cannot be created while the WorkCase is in ${current.currentLayerId}`);
+  }
+  return current;
 }
 
 async function seedDatabase() {
@@ -120,8 +191,32 @@ export async function POST(request: Request) {
     const now = new Date().toISOString();
     if (body.action === "create_work_order" && body.payload) {
       const p = body.payload;
-      await db.prepare("INSERT INTO work_orders (public_reference,request_text,category,city,pickup_address,delivery_address,schedule_text,selected_plan,required_team_size,required_skills_json,required_equipment_json,price,status,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
-        .bind(p.public_reference,p.request_text,p.job_category,p.city,p.pickup_address || null,p.delivery_address || null,p.schedule_text || null,p.selected_plan || null,p.team_size || 1,JSON.stringify(p.work_plan || { tasks: [], timeline: p.work_steps || [], skills: [], domains: [] }),JSON.stringify(p.equipment_plan || {}),Number(p.pricing?.total || 0),"team_pending",now).run();
+      if (!p.work_case_id || !p.job_order_id || !p.requirement_contract_ref || !p.correlation_id || !Number.isInteger(p.expected_work_case_version)) {
+        return Response.json({ error: "Canonical WorkCase, JobOrder and Requirement Contract control fields are required" }, { status: 400 });
+      }
+
+      const duplicate = await db.prepare("SELECT public_reference,work_case_id FROM work_orders WHERE public_reference=? OR work_case_id=? LIMIT 1")
+        .bind(p.public_reference, p.work_case_id).first<{ public_reference: string; work_case_id: string | null }>();
+      if (duplicate) {
+        if (duplicate.public_reference !== p.public_reference || duplicate.work_case_id !== p.work_case_id) {
+          return Response.json({ error: "This WorkCase is already linked to another operational work order" }, { status: 409 });
+        }
+        const current = await new D1WorkCaseStore(db as unknown as D1DatabaseLike).get(p.work_case_id);
+        return Response.json({ ok: true, reference: p.public_reference, replayed: true, control: current ? { state: current.state, stateVersion: current.stateVersion, ...architecturePosition(current.currentLayerId) } : null });
+      }
+
+      let control: WorkCaseControlState;
+      try {
+        control = await advanceToFulfillment(db, p, now);
+      } catch (error) {
+        if (error instanceof WorkCaseInvariantError || error instanceof Error) {
+          return Response.json({ error: error.message, code: error instanceof WorkCaseInvariantError ? error.invariant : "WORK_CASE_CONFLICT" }, { status: 409 });
+        }
+        throw error;
+      }
+
+      await db.prepare("INSERT INTO work_orders (public_reference,work_case_id,job_order_id,requirement_contract_ref,request_text,category,city,pickup_address,delivery_address,schedule_text,selected_plan,required_team_size,required_skills_json,required_equipment_json,price,status,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
+        .bind(p.public_reference,p.work_case_id,p.job_order_id,p.requirement_contract_ref,p.request_text,p.job_category,p.city,p.pickup_address || null,p.delivery_address || null,p.schedule_text || null,p.selected_plan || null,p.team_size || 1,JSON.stringify(p.work_plan || { tasks: [], timeline: p.work_steps || [], skills: [], domains: [] }),JSON.stringify(p.equipment_plan || {}),Number(p.pricing?.total || 0),"team_pending",now).run();
       const created = await db.prepare("SELECT id FROM work_orders WHERE public_reference=?").bind(p.public_reference).first<{ id: number }>();
       if (created?.id) {
         const domains = p.work_plan?.domains || [];
@@ -152,7 +247,17 @@ export async function POST(request: Request) {
         if (coordinatedSpecialists) await addEvent(db,created.id,"service_groups_coordinated","One customer order assigned across two internal services","Service A owns retailer pickup and delivery. Service B owns in-home installation, mounting and final box placement. Doneeo manages the handoff after Task 2.","Doneeo",now);
         await addEvent(db,created.id,"team_offered","Doneeo sent individual offers",`${matches.length} matched executor(s) received the same structured work order.`,"Doneeo",now);
       }
-      return Response.json({ ok: true, reference: p.public_reference }, { status: 201 });
+      return Response.json({
+        ok: true,
+        reference: p.public_reference,
+        workCaseId: control.workCaseId,
+        jobOrderId: control.jobOrderId,
+        control: {
+          state: control.state,
+          stateVersion: control.stateVersion,
+          ...architecturePosition(control.currentLayerId),
+        },
+      }, { status: 201 });
     }
     if (body.action === "assignment_status" && body.assignmentId && body.status) {
       const assignment = await db.prepare("SELECT a.work_order_id,a.executor_id,e.name FROM assignments a JOIN executors e ON e.id=a.executor_id WHERE a.id=?").bind(body.assignmentId).first<{ work_order_id: number; executor_id: string; name: string }>();

@@ -8,6 +8,7 @@ type WorkCaseRow = {
   work_case_id: string;
   job_order_id: string;
   state: WorkCaseControlState["state"];
+  current_layer_id: WorkCaseControlState["currentLayerId"];
   state_version: number;
   current_requirement_ref: string | null;
   current_fulfillment_ref: string | null;
@@ -39,7 +40,7 @@ export class D1WorkCaseStore implements WorkCaseStore {
 
   async get(workCaseId: string): Promise<WorkCaseControlState | null> {
     const row = await this.db.prepare(
-      `SELECT work_case_id, job_order_id, state, state_version, current_requirement_ref, current_fulfillment_ref,
+      `SELECT work_case_id, job_order_id, state, state_version, current_layer_id, current_requirement_ref, current_fulfillment_ref,
               current_execution_ref, current_outcome_ref, created_at, updated_at
        FROM work_cases WHERE work_case_id = ?`,
     ).bind(workCaseId).first<WorkCaseRow>();
@@ -107,10 +108,10 @@ export class D1WorkCaseStore implements WorkCaseStore {
       this.insertCommand(input.command, now),
       this.db.prepare(
         `INSERT INTO work_cases
-         (work_case_id, job_order_id, state, state_version, current_requirement_ref, current_fulfillment_ref,
+         (work_case_id, job_order_id, state, state_version, current_layer_id, current_requirement_ref, current_fulfillment_ref,
           current_execution_ref, current_outcome_ref, created_at, updated_at)
-         VALUES (?, ?, ?, ?, NULL, NULL, NULL, NULL, ?, ?)`,
-      ).bind(input.workCase.workCaseId, input.workCase.jobOrderId, input.workCase.state, input.workCase.stateVersion, now, now),
+         VALUES (?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, ?, ?)`,
+      ).bind(input.workCase.workCaseId, input.workCase.jobOrderId, input.workCase.state, input.workCase.stateVersion, input.workCase.currentLayerId, now, now),
       this.db.prepare(`INSERT INTO intelligence_requests (work_case_id, raw_request, confirmed_answers_json, latest_analysis_json, created_at) VALUES (?, ?, '{}', NULL, ?)`).bind(input.workCase.workCaseId, input.rawRequest, now),
       this.insertEvent(input.event),
       this.finishCommand(input.command, now),
@@ -156,12 +157,21 @@ export class D1WorkCaseStore implements WorkCaseStore {
     ]);
   }
 
+  async advanceLayerAtomic(input: { previous: WorkCaseControlState; next: WorkCaseControlState; command: StoredCommand; event: WorkCaseEvent }): Promise<void> {
+    await this.db.batch([
+      this.insertCommand(input.command, input.next.updatedAt),
+      this.updateControl(input.previous, input.next),
+      this.insertEvent(input.event),
+      this.finishCommand(input.command, input.next.updatedAt),
+    ]);
+  }
+
   private updateControl(previous: WorkCaseControlState, next: WorkCaseControlState): D1PreparedStatementLike {
     return this.db.prepare(
-      `UPDATE work_cases SET state = ?, state_version = ?, current_requirement_ref = ?, current_fulfillment_ref = ?,
+      `UPDATE work_cases SET state = ?, state_version = ?, current_layer_id = ?, current_requirement_ref = ?, current_fulfillment_ref = ?,
        current_execution_ref = ?, current_outcome_ref = ?, updated_at = ?
        WHERE work_case_id = ? AND state_version = ?`,
-    ).bind(next.state, next.stateVersion, next.current.requirementContractRef, next.current.fulfillmentPlanRef, next.current.executionSnapshotRef, next.current.outcomeRef, next.updatedAt, next.workCaseId, previous.stateVersion);
+    ).bind(next.state, next.stateVersion, next.currentLayerId, next.current.requirementContractRef, next.current.fulfillmentPlanRef, next.current.executionSnapshotRef, next.current.outcomeRef, next.updatedAt, next.workCaseId, previous.stateVersion);
   }
 
   private insertCommand(command: StoredCommand, now: string) {
@@ -186,6 +196,7 @@ function hydrate(row: WorkCaseRow): WorkCaseControlState {
     jobOrderId: row.job_order_id,
     stateVersion: row.state_version,
     state: row.state,
+    currentLayerId: row.current_layer_id,
     current: Object.freeze({
       requirementContractRef: row.current_requirement_ref,
       fulfillmentPlanRef: row.current_fulfillment_ref,
