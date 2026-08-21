@@ -185,8 +185,8 @@ test("misspelled Costco stove request preserves pickup, delivery and kitchen ins
   assert.equal(result.scheduleWindow?.arrivalTime, "10:00 AM");
   assert.ok(result.understoodFacts.some(fact => /^Address supplied: 12385 av roland pardis app 5$/i.test(fact)));
   assert.ok(!result.understoodFacts.some(fact => /Address supplied:.*install/i.test(fact)));
-  assert.match(concepts, /range_energy_source/);
   assert.match(concepts, /range_connection_scope/);
+  assert.doesNotMatch(concepts, /range_energy_source/);
   assert.match(concepts, /range_parts/);
   assert.doesNotMatch(concepts, /schedule|when should|service_address|handling_destination|handling_size_weight|customer_help/);
   assert.ok(result.intelligence?.resources.some(resource => resource.id === "vehicle"));
@@ -194,6 +194,59 @@ test("misspelled Costco stove request preserves pickup, delivery and kitchen ins
   assert.match(result.intelligence?.resources.find(resource => resource.id === "anti_tip")?.name || "", /stove anti-tip/i);
   assert.doesNotMatch(result.intelligence?.fulfillment.groups.find(group => group.id === "in_home_unit")?.executorRole || "", /wall-mount/i);
   assert.equal(result.rulesGate?.providerClass, "skilled_executor");
+});
+
+test("ordered stove and old-refrigerator workflows remain one continuous six-task order", () => {
+  const result = plan("Pick up stove from Ikea Bouchervile and bring it to my apartement and instal it, after this i need some help in taking out old fridge to my sister house and instal it");
+  const concepts = questionConcepts(result);
+  const streams = result.intelligence?.workstreams || [];
+
+  assert.deepEqual(result.routeNodes.map(node => node.location), ["Ikea Boucherville", "my apartment", "my sister house"]);
+  assert.deepEqual(result.tasks, [
+    "Pick up the kitchen range at Ikea Boucherville",
+    "Transport and deliver the kitchen range to my apartment",
+    "Install, connect and test the kitchen range at my apartment",
+    "Pick up the old refrigerator at my apartment",
+    "Transport and deliver the old refrigerator to my sister house",
+    "Install, connect and test the old refrigerator at my sister house",
+  ]);
+  assert.equal(streams.length, 6);
+  assert.deepEqual(streams.map(stream => stream.sequence), [1, 2, 3, 4, 5, 6]);
+  assert.ok(streams.every(stream => stream.likelyMinutes > 0));
+  assert.ok(streams[2].phaseIds.every(id => /_range_1$/.test(id)));
+  assert.ok(streams[5].phaseIds.every(id => /_refrigerator_1$/.test(id)));
+  assert.ok(!result.intelligence?.domains?.some(domain => domain.id === "furniture_assembly"));
+  assert.doesNotMatch(concepts, /furniture_models|parts_complete|furniture_anchoring|packaging_removal|refrigerator_condition|refrigerator_pickup_ready|refrigerator_destination_scope|refrigerator_old_unit/);
+  assert.match(concepts, /refrigerator_disconnect_status/);
+  assert.doesNotMatch(result.skillRequirements.join(" | "), /furniture|product assembly/i);
+});
+
+test("three sequential item workflows preserve all six pickup and delivery tasks", () => {
+  const result = plan("Pick up a refrigerator from Costco Laval and bring it to my house. After this take the old refrigerator to my mother house. After this pick up a sofa from the seller home and bring it to my brother apartment.");
+  const streams = result.intelligence?.workstreams || [];
+  const concepts = questionConcepts(result);
+
+  assert.deepEqual(result.tasks, [
+    "Pick up the refrigerator at Costco Laval",
+    "Transport and deliver the refrigerator to my house",
+    "Pick up the old refrigerator at my house",
+    "Transport and deliver the old refrigerator to my mother house",
+    "Pick up the sofa or sectional at the seller home",
+    "Transport and deliver the sofa or sectional to my brother apartment",
+  ]);
+  assert.equal(result.routeNodes.length, 5);
+  assert.equal(streams.length, 6);
+  assert.ok(streams.every(stream => stream.likelyMinutes > 0));
+  assert.deepEqual(streams.map(stream => stream.phaseIds.length), [2, 1, 2, 1, 2, 1]);
+  assert.ok(streams[0].phaseIds.every(id => /refrigerator_1$/.test(id)));
+  assert.ok(streams[2].phaseIds.every(id => /refrigerator_2$/.test(id)));
+  assert.ok(streams[4].phaseIds.every(id => /sofa_1$/.test(id)));
+  assert.ok(!result.intelligence?.domains?.some(domain => domain.id === "elder_support"));
+  assert.match(concepts, /refrigerator_details_1/);
+  assert.match(concepts, /refrigerator_details_2/);
+  assert.match(concepts, /refrigerator_pickup_ready_1/);
+  assert.doesNotMatch(concepts, /refrigerator_pickup_ready_2/);
+  assert.match(concepts, /refrigerator_disconnect_status_2/);
 });
 
 test("gas stove answer upgrades installation eligibility to a licensed professional", () => {
