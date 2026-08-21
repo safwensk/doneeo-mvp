@@ -24,6 +24,7 @@ type PlanControlState = {
   jobOrderId: string;
   state: string;
   stateVersion: number;
+  currentLayerId: string;
   correlationId: string;
   requirementReady: boolean;
   requirementContractRef: string | null;
@@ -38,6 +39,7 @@ function controlFromPlanResponse(
     typeof data.jobOrderId !== "string" ||
     typeof data.state !== "string" ||
     typeof data.stateVersion !== "number" ||
+    typeof data.currentLayerId !== "string" ||
     typeof data.correlationId !== "string"
   ) {
     throw new Error("Doneeo returned an invalid WorkCase control response.");
@@ -48,6 +50,7 @@ function controlFromPlanResponse(
     jobOrderId: data.jobOrderId,
     state: data.state,
     stateVersion: data.stateVersion,
+    currentLayerId: data.currentLayerId,
     correlationId: data.correlationId,
     requirementReady: data.requirementReady === true,
     requirementContractRef:
@@ -607,6 +610,10 @@ export default function Home() {
 
   const persistConfirmedWorkOrder = async () => {
     if (!analysis || !chosen) return;
+    if (!planControl?.requirementReady || !planControl.requirementContractRef) {
+      setError("The canonical Requirement Contract must be ready before this work order can be created.");
+      return;
+    }
     const reference = createWorkOrderReference();
     const serviceAddress = String(answers.service_address || serviceLocation || "Montréal");
     const pickupAddress = String(answers.pickup_address || serviceAddress);
@@ -629,8 +636,13 @@ export default function Home() {
     setBookingState("saving");
     setError("");
     try {
-      await saveWorkOrder({
+      const saved = await saveWorkOrder({
         public_reference: reference,
+        work_case_id: planControl.workCaseId,
+        job_order_id: planControl.jobOrderId,
+        requirement_contract_ref: planControl.requirementContractRef,
+        expected_work_case_version: planControl.stateVersion,
+        correlation_id: planControl.correlationId,
         source: "mvp",
         status: "draft",
         request_text: request,
@@ -658,6 +670,20 @@ export default function Home() {
           fulfillment: selectedFulfillment,
         },
       });
+      const savedControl = saved.control;
+      if (savedControl) {
+        setPlanControl(current => {
+          if (!current) return current;
+          const next = {
+            ...current,
+            state: savedControl.state,
+            stateVersion: savedControl.stateVersion,
+            currentLayerId: savedControl.currentLayerId,
+          };
+          window.localStorage.setItem("doneeo.activeWorkCase", JSON.stringify(next));
+          return next;
+        });
+      }
       setSavedReference(reference);
       setBookingState("created");
       return reference;
@@ -768,7 +794,7 @@ export default function Home() {
   const restart = () => { setStage(0); setAnalysis(null); setAnswers({}); setTextDrafts({}); setSelected("recommended"); setBookingState("idle"); setSavedReference(""); setError(""); setProtection("none"); setProviderStatus("not_sent"); setPaymentState("unpaid"); setDispatchAttempt(1); setIncidentNote(""); setNotification(""); setAlternateTimesVisible(false); setMilestoneDurations({}); setDelayMinutes(0); setMaterialsReady(false); setProviderArrived(false); setActiveCheckpoint(0); setTaskGateConfirmations({}); setGoogleRoute(null); setRouteState("idle"); };
 
   return <main className="app-shell">
-    <header className="topbar"><div className="brand"><img className="brand-logo" src="/brand/doneeo-logo.png" alt="Doneeo" /></div><nav className="demo-nav" aria-label="Demo views"><span className="planner-chip">Customer planner</span><a href="/track">Live tracking</a><a href="/provider">Team workspace</a><a href="/provider/alex">Alex view</a><a href="/data">Test controls →</a></nav></header>
+    <header className="topbar"><div className="brand"><img className="brand-logo" src="/brand/doneeo-logo.png" alt="Doneeo" /></div><nav className="demo-nav" aria-label="Demo views"><span className="planner-chip">Customer planner</span><a href="/architecture">Architecture</a><a href="/track">Live tracking</a><a href="/provider">Team workspace</a><a href="/provider/alex">Alex view</a><a href="/data">Test controls →</a></nav></header>
     <div className="progress-track" aria-label={`Step ${stage + 1} of 4`}><span style={{ width: `${progress}%` }} /></div>
 
     {stage === 0 && <section className="screen hero-screen">

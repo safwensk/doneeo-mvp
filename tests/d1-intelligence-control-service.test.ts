@@ -66,6 +66,7 @@ const architecting: WorkCaseControlState = {
   jobOrderId: "JO-1",
   stateVersion: 2,
   state: "ARCHITECTING",
+  currentLayerId: "L02",
   current: {
     requirementContractRef: null,
     fulfillmentPlanRef: null,

@@ -52,6 +52,7 @@ export type D1IntelligenceControlResult = {
   jobOrderId: string;
   state: string;
   stateVersion: number;
+  currentLayerId: WorkCaseControlState["currentLayerId"];
   requirementReady: boolean;
   requirementContract: RequirementContractApplicationResult | null;
 };
@@ -226,6 +227,7 @@ export class D1IntelligenceControlService {
       jobOrderId: workCase.jobOrderId,
       state: workCase.state,
       stateVersion: workCase.stateVersion,
+      currentLayerId: workCase.currentLayerId,
       requirementReady,
       requirementContract,
     };
@@ -544,12 +546,13 @@ export class D1IntelligenceControlService {
     return [
       this.insertGuardedReadyCommand(command, previous, next.updatedAt),
       this.db.prepare(
-        `UPDATE work_cases SET state = ?, state_version = ?, current_requirement_ref = ?, current_fulfillment_ref = ?,
+        `UPDATE work_cases SET state = ?, state_version = ?, current_layer_id = ?, current_requirement_ref = ?, current_fulfillment_ref = ?,
          current_execution_ref = ?, current_outcome_ref = ?, updated_at = ?
          WHERE work_case_id = ? AND state_version = ?`,
       ).bind(
         next.state,
         next.stateVersion,
+        next.currentLayerId,
         next.current.requirementContractRef,
         next.current.fulfillmentPlanRef,
         next.current.executionSnapshotRef,

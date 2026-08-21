@@ -1,5 +1,10 @@
 export type WorkOrderPayload = {
   public_reference: string;
+  work_case_id: string;
+  job_order_id: string;
+  requirement_contract_ref: string;
+  expected_work_case_version: number;
+  correlation_id: string;
   source: "mvp";
   status: "draft";
   request_text: string;
@@ -38,7 +43,19 @@ export function createWorkOrderReference() {
   return `DN-${suffix.padStart(8, "0")}`;
 }
 
-export async function saveWorkOrder(payload: WorkOrderPayload) {
+export type SavedWorkOrder = {
+  ok: true;
+  reference: string;
+  workCaseId?: string;
+  jobOrderId?: string;
+  control?: {
+    state: string;
+    stateVersion: number;
+    currentLayerId: string;
+  } | null;
+};
+
+export async function saveWorkOrder(payload: WorkOrderPayload): Promise<SavedWorkOrder> {
   const response = await fetch("/api/operations", {
     method: "POST",
     headers: {
@@ -51,4 +68,5 @@ export async function saveWorkOrder(payload: WorkOrderPayload) {
     const problem = await response.json().catch(() => ({})) as { error?: string };
     throw new Error(problem.error || "We couldn't save this work order. Please try again.");
   }
+  return response.json() as Promise<SavedWorkOrder>;
 }

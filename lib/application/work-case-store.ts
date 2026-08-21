@@ -5,7 +5,7 @@ import type { StoredCommand } from "./requirement-contract-store";
 export type WorkCaseEvent = {
   streamId: string;
   sequence: number;
-  eventType: "WorkCaseReceived" | "WorkCaseArchitecting" | "WorkCaseRequirementReady";
+  eventType: "WorkCaseReceived" | "WorkCaseArchitecting" | "WorkCaseRequirementReady" | "WorkCaseLayerAdvanced";
   payload: string;
   correlationId: string;
   causationId: string;
@@ -22,4 +22,5 @@ export interface WorkCaseStore {
   receiveAtomic(input: { workCase: WorkCaseControlState; rawRequest: string; command: StoredCommand; event: WorkCaseEvent }): Promise<void>;
   saveArchitectureAtomic(input: { previous: WorkCaseControlState; next: WorkCaseControlState; tasks: readonly TaskIdentity[]; confirmedAnswers?: Readonly<Record<string, string | boolean>>; latestAnalysis?: unknown; command: StoredCommand; event: WorkCaseEvent }): Promise<void>;
   markRequirementReadyAtomic(input: { previous: WorkCaseControlState; next: WorkCaseControlState; command: StoredCommand; event: WorkCaseEvent }): Promise<void>;
+  advanceLayerAtomic?(input: { previous: WorkCaseControlState; next: WorkCaseControlState; command: StoredCommand; event: WorkCaseEvent }): Promise<void>;
 }

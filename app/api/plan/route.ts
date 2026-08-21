@@ -1,6 +1,7 @@
 import { derivePreparationStart, enforceSafety, fallbackAnalysis, type JobCategory } from "../../../lib/planner";
 import { applyDoneeoRulesGate } from "../../../lib/rules-gate";
 import { applyCustomerAnswers, buildJobIntelligence } from "../../../lib/job-intelligence";
+import { architecturePosition } from "../../../lib/canonical-architecture";
 import { augmentWithHouseholdKnowledge } from "../../../lib/work-ontology";
 import {
   D1RequirementContractStore,
@@ -419,6 +420,8 @@ export async function POST(request: Request) {
       jobOrderId: current.jobOrderId,
       state: current.state,
       stateVersion: current.stateVersion,
+      currentLayerId: current.currentLayerId,
+      architecture: architecturePosition(current.currentLayerId),
       correlationId,
       requirementReady:
         current.state === "REQUIREMENT_READY" &&
@@ -627,6 +630,8 @@ export async function POST(request: Request) {
       jobOrderId: control.jobOrderId,
       state: control.state,
       stateVersion: control.stateVersion,
+      currentLayerId: control.currentLayerId,
+      architecture: architecturePosition(control.currentLayerId),
       correlationId,
       requirementReady: control.requirementReady,
       requirementContractRef:
