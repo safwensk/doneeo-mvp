@@ -114,5 +114,19 @@ Govern lawful data use, privacy-by-design, classification, data lifecycle, data-
 - P2 owns authoritative data/evidence stores.
 - Privacy controls apply across all domain layers.
 
+## Integrations / callbacks
+
+> Recovered by OCR from the PNG source poster; no SVG exists.
+> Source poster's platform numbering matches current canon (P4=Security, P6=Event/AI/Observability, P7=Messaging, P9=Finance) except P10=Execution, which canon owns as domain layer L10.
+
+- From P1 (Orchestrator)
+- From P2 (Ledger / Data)
+- From P3 (Identity)
+- From P4 (Security & Safety)
+- From P6 (Event, AI, Obs.)
+- From P7 (Messaging)
+- From P9 (Finance)
+- From P10 (Execution)
+
 ## Supersedes / preserves
 Corrects P8 overlap with P3/P4 while preserving privacy/DSR/retention/compliance capabilities.

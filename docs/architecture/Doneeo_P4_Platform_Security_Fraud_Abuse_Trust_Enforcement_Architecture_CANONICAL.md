@@ -108,5 +108,21 @@ Protect accounts, transactions, communications and platform operations through c
 - P3 owns identity/access.
 - P8 owns privacy compliance.
 
+## Integrations / callbacks
+
+> Recovered by OCR from the PNG source poster; no SVG exists.
+> Source poster uses a unified P1-P14 scheme in which P6=Providers, P8=Task Safety, P9=Messaging, P12=Settlement, P13=Claims and P14=Intelligence. NONE of those match current canon. Remap before use.
+
+- From / To P1 Orchestrator (State, Events)
+- From / To P2 Facts (Events, Entities)
+- From / To P3 Identity (Identity, Risk Signals)
+- From / To P6 Providers (Profiles, Status)
+- From / To P8 Task Safety (Hazards, Controls)
+- From / To P9 Messaging (Reports, Flags)
+- From / To P10 Execution (Problems, State)
+- From / To P12 Settlement (Chargebacks)
+- From / To P13 Claims (Safety & Disputes)
+- From / To P14 Intelligence (Risk Models)
+
 ## Supersedes / preserves
 Corrects P4 overlap with L3/P3/P8 while preserving its fraud, abuse, incident and protective-control capabilities.

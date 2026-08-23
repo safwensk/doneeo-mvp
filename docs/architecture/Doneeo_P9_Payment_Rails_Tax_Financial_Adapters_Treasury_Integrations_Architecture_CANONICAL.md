@@ -114,5 +114,17 @@ Execute controlled external financial rail operations for PSPs, banks, payouts, 
 - L12 owns final settlement, ledger and reconciliation; P9 only executes external rail commands and returns evidence.
 - P5 owns generic connector framework; P9 owns financial-domain adapter semantics.
 
+## Integrations / callbacks
+
+> Recovered by OCR from the PNG source poster; no SVG exists.
+> Source poster's platform numbering matches current canon.
+
+- From P1 (Orchestrator)
+- From P2 (Ledger / Data)
+- From P3 (Identity)
+- From P4 (Security & Safety)
+- From P6 (Event, AI, Obs.)
+- From P7 (Messaging)
+
 ## Supersedes / preserves
 Supersedes P9 v1.0 sections that claim pricing/fees or final settlement/reconciliation authority. Preserves payment/payout/tax/FX rail mechanics.
