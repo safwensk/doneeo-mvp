@@ -128,6 +128,23 @@ Determine fair economic consequences using evidence, causality and policy while 
 ## Supersedes / preserves
 Supersedes all 09B contribution-percentage/scoring variants. Preserves the recovered v1.3 causality/material-fact/PPP-CRA-DAC architecture with terminology tightened.
 
+## Special control — CAUSALITY & THREE-WAY ECONOMIC FAIRNESS
+
+- Causality
+- Hidden condition; customer inaccurate/omitted fact; customer scope change; Doneeo planning error; provider prep/execution failure; resource/partner failure; external; safety/regulatory; mixed; undetermined.
+- Customer responsibility test
+- Material fact? Doneeo asked/disclosed?
+- Customer could reasonably know?
+- Inaccurate/omitted? Causal link? Did Doneeo ignore contradictory evidence?
+- Provider Protected Payable
+- Preparation + mobilization + actual work/diagnosis + net lost reserved capacity after backfill + eligible external costs.
+- Calculate per role/person.
+- Customer Reality Adjustment
+- Completed/approved work + eligible customer- responsible disruption/resources − credits − unperformed amounts.
+- Doneeo Absorption / Recovery Credit
+- Platform share for Doneeo/marketplace risk, partner responsibility, retention or policy- defined recovery.
+- NO weighted blame engine. Responsibility = evidence + causality + policy. Provider payable, customer liability and Doneeo absorption are never forced to be equal.
+
 ## Integrations / callbacks
 
 - L09A Reality

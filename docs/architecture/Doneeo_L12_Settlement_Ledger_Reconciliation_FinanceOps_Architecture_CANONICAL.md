@@ -131,6 +131,18 @@ Calculate final customer charge, provider payable, refunds/releases, taxes and l
 - Doneeo/partner share absorbs platform/partner responsibility and Recovery Credits without silently shifting it to customer or executor.
 - Append-only balanced postings; idempotent PSP commands; transactional inbox/outbox; reconciliation; FinanceOps exceptions; no direct balance edits.
 
+## Special control — FINAL SETTLEMENT TRUTH
+
+- Customer final charge
+- Completed contracted work + approved additions + eligible customer-responsible disruption + approved resource actuals − credits − unperformed amounts.
+- Provider payable
+- Completed work + policy-eligible preparation/mobilization/diagnosis + net protected capacity + eligible external costs.
+- Doneeo / partner share
+- Absorb platform/partner responsibility and Recovery
+- Credits without silently shifting it to customer or executor.
+- Ledger & reconciliation
+- Append-only balanced postings; idempotent PSP commands; transactional inbox/outbox; reconciliation; FinanceOps exceptions; no direct balance edits.
+
 ## Golden regression scenarios
 - Provider paid while Doneeo absorbs planning error
 - Unused authorization released after partial close

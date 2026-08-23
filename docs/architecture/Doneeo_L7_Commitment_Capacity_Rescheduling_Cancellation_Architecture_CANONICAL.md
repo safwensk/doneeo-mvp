@@ -130,6 +130,21 @@ Protect real customer/provider commitments while keeping rescheduling and cancel
 ## Supersedes / preserves
 Supersedes the detailed Layer 7 v1.0 poster wherever it shows fixed fee schedules/windows or payment capture as a universal pre-execution sequence. Preserves its capacity/rescheduling mechanics.
 
+## Special control — CANCELLATION, CAPACITY & FAIRNESS PROTOCOL
+
+- Commitment state
+- FREE/LOW → COMMITMENT BEGINS → CAPACITY
+- LOCKED → MOBILIZED → WORK STARTED. Exact thresholds are configurable policy, not canonical fixed hours.
+- Cancellation path
+- Freeze new commitments → CommitmentSnapshot → reschedule test → capacity recovery/backfill → unavoidable eligible cost → responsibility allocation → customer confirmation → Layer 12 settlement.
+- Provider protection
+- Preparation + mobilization + actual work/diagnosis + net lost reserved capacity
+- + eligible external costs, calculated per assigned role/person.
+- Customer protection
+- Never automatically charge the full unperformed job. Customer share requires evidence and policy; voluntary cancellation differs from field-blocked recovery.
+- Retention strategy
+- Prefer reschedule/recovery before closure; same team where feasible; Recovery Credit can be Doneeo-funded.
+
 ## Integrations / callbacks
 
 - L4 Fulfillment

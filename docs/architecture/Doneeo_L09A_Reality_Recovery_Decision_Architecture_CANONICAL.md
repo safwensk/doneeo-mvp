@@ -132,6 +132,37 @@ Reconcile the approved plan with physical reality and find the fastest safe reco
 ## Supersedes / preserves
 Supersedes all 09A variants that encode R0–R5 as severity/no-impact→unsafe. Preserves their evidence, RealityCase and recovery mechanics.
 
+## Special control — R0–R5 SEMANTIC IMPACT + FASTEST-SAFE-SOLUTION
+
+- R0
+- Confirmed as planned
+- Execute approved plan
+- R1
+- Minor operational variance
+- Adjust locally; no architecture change
+- R2
+- Fulfillment/resource variance
+- Requirement valid; change provider/resource
+- R3
+- Requirement-impacting condition
+- Targeted Intelligence reanalysis
+- R4
+- Safety/regulatory change
+- Immediate affected-scope hold + L3
+- R5
+- Independent new work
+- CandidateFollowUp/branch with consent
+- 1 Current executor
+- 2 Small resource adjustment
+- 3 Redistribute team/resources
+- 4 Add helper/specialist
+- 5 Continue unaffected TaskBlocks
+- 6 Replace affected role/provider
+- 7 Prerequisite branch
+- 8 Targeted TaskBlock rearchitecture
+- 9 Full JobOrder replan
+- 10 Cancel affected scope — last resort
+
 ## Integrations / callbacks
 
 - L2 Intelligence
