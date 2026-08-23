@@ -50,10 +50,13 @@ repo_source:  origin/main — QUERY LIVE before every code start. Never cached h
               record the exact base SHA per piece of work, which is where history belongs.
 ci:           CI #1 green at e5444fa. A drift-check defect was then found by Atlas and
               fixed — re-validate on the next run before trusting the gate.
-drive_docs:   18                               highest numbered doc in DONEEO_SHARED_BRAIN
+drive_docs:   21 + INBOX-ATLAS-19/20/21      highest numbered doc in DONEEO_SHARED_BRAIN
 lane_claude:  lib/ · tests/ · db/ · drizzle/
 lane_atlas:   docs/ · Drive canon · acceptance criteria
-next:         S1-2 — wire the Requirement Contract into /api/plan through the WorkCase services
+next:         S1-2 RECONCILE — two independent implementations now exist and neither is
+              merged. Claude's is local and uncommitted; Atlas's is in Drive as
+              S1-2_FINAL_HARDENED_DIFF.patch. This is a Class E merge, not a build.
+              Do not overwrite either blindly (INBOX-ATLAS-21 takeover rule).
 blocked_on:   Safwen to place the corrected ci.yml and push; then confirm the run is green
 ```
 
@@ -67,7 +70,61 @@ entire backend from a commit that was three ahead of it, costing a full day.
 
 *Written by Atlas. Claude clears these before starting anything else.*
 
-- *(empty — INBOX-ATLAS-19 cleared 2026-08-18, see LOG)*
+- **INBOX-ATLAS-20** — private-repo ruleset not enforced. Not yet answered.
+- **INBOX-ATLAS-21** — S1-2 takeover. Read and folded into LOG 2026-08-23. Its takeover
+  rule is now the governing instruction for the next session, quoted here so nobody has
+  to fetch it: *"If Claude later recovers unpublished local S1-2 edits, compare them
+  against the shared-base continuation rather than overwriting either blindly."*
+
+### The reconcile, for whoever picks this up
+
+Two complete S1-2 implementations exist. Neither is on `main`. `main` is still 7e14128
+and `/api/plan` is still unwired, so nothing is broken — but the next hour of work is a
+merge, not a build, and starting to code again would make three.
+
+What is where:
+
+| | Author | Location | State |
+|---|---|---|---|
+| A | Atlas | Drive · `S1-2_FINAL_HARDENED_DIFF.patch` (123 KB) + `apply-s1-2-v6-final-blockers.sh` | six hardening passes, written against its own acceptance spec |
+| B | Claude | this working tree, uncommitted: `lib/application/plan-control-plane.ts`, `app/api/plan/route.ts` | typechecks not yet run; degrades visibly with no D1 binding; conflict→409 mapping keyed off the `invariant` field |
+
+Doc 19 (`19_S1-2_ACCEPTANCE_AND_AUDIT`) is the literal Class D checklist — AC-S1-2-01
+through 18 plus the G1–G6 regression matrix. It was written *before* either
+implementation was reviewed, which is what makes it usable as a neutral referee.
+
+Suggested order:
+
+1. Score **A** against doc 19 first. It is the shared-base continuation and it has had
+   six hardening passes; the burden is on B to justify surviving, not the reverse.
+2. Then check the four things B carries that are worth keeping regardless of which
+   spine wins, because they came from reading the code rather than from the spec:
+   the chained-retry defect above (AC-S1-2-03 / -17), the visible-degradation contract
+   when no D1 binding is present, the `invariant`-keyed 409 mapping rather than message
+   matching, and the deliberate non-widening of `REQUIREMENT_READY`.
+3. Merge on the doc-19 verdict, not on authorship. The precedent is the Class E merge of
+   2026-08-18: Atlas's architecture was adopted and Claude's test depth was ported onto
+   it, and the result was better than either side alone (92 → 107 tests where a naive
+   overlay would have given 58).
+4. Whichever spine survives, **the chained-retry defect must be fixed or explicitly
+   accepted with a reason before S1-2 can claim AC-S1-2-03**. It is unverified whether
+   Atlas's hardening already closed it.
+
+Two caveats on B, stated plainly.
+
+It compiles and does not regress: `npx tsc --noEmit -p tsconfig.check.json` reports zero
+errors and `npm test` is 107/107 green on 2026-08-23 with B in the tree.
+
+But **B has no tests of its own.** The 107 that pass are the pre-existing suite; they
+prove B broke nothing, and they prove nothing about B. Doc 19 asks for evidence against
+eighteen acceptance criteria and B currently supplies evidence for none of them. It has
+also never run against a real D1 binding — only the degraded no-binding path is
+exercised, and that path is exercised by nothing but reading. Green here means "did not
+break the old thing", not "the new thing works".
+
+That gap is the same shape as the defect above: a fully green suite coexisting with
+broken chained retry is what happens when the tests and the code were written from the
+same set of assumptions.
 
 ---
 
@@ -183,6 +240,56 @@ Newest first. One line per piece of work. `KIND` is one of
 2026-08-18  both    DECIDE  Shared Brain v2 ACCEPTED. R35-R47 added to canonical rules.       doc=11
 2026-08-18  claude  BUILD   Requirement Contract boundary + control-spine tables.
                             base=f354d44 -> f1909db
+2026-08-18  atlas   BLOCKED Took over S1-2 after Claude hit the weekly limit. No Claude
+                            S1-2 branch/PR/commit/handoff was shared, so the takeover base
+                            is live main 7e14128. Verified /api/plan still unwired. Atlas
+                            GitHub writes re-tested after the repo went public: still 403 on
+                            branch and issue creation. Public visibility did not grant write
+                            authorization.                                doc=INBOX-ATLAS-21
+2026-08-18  atlas   BUILD   S1-2 acceptance spec AC-S1-2-01..18 + G1-G6 regression matrix,
+                            written BEFORE reviewing any implementation.            doc=19
+2026-08-18  atlas   BUILD   S1-2 implemented independently and hardened through six passes.
+                            Artifacts in Drive: S1-2_IMPLEMENTATION_DIFF.patch, then
+                            S1-2_FINAL_HARDENED_DIFF.patch (123 KB), plus
+                            apply-s1-2-hardening{,-v2,-v3,-v4,-v5}.sh and
+                            apply-s1-2-v6-final-blockers.sh. NOT applied to main.
+2026-08-23  claude  BUILD   S1-2 implemented independently, unaware of the Atlas takeover —
+                            Claude did not re-read the Drive folder before starting, which
+                            is the same false-negative failure already in DO NOT REPEAT.
+                            lib/application/plan-control-plane.ts (composition root, 223 ln)
+                            + app/api/plan/route.ts wiring (+89 ln). Local only, uncommitted,
+                            no branch, no PR.                              base=7e14128
+                            DoD partial: tsc 0 errors, npm test 107/107 green — but B adds
+                            no tests, so green means "broke nothing", not "works". No CI
+                            run, no D1-backed run, no evidence against AC-S1-2-01..18.
+2026-08-23  claude  FINDING Idempotent retry is BROKEN in the shared service layer, and it
+                            is not specific to either S1-2 implementation. Reproduced with a
+                            throwaway in-memory harness, not by reading:
+                              receive#1 -> v1 | arch#1 -> v2 | ready#1 -> v3
+                              receive#2 (same key) -> replays, but returns the CURRENT
+                              state v3, not the v1 the command left behind
+                              arch#2 (same key, expectedVersion now 3 instead of 1)
+                              -> "idempotency key req:architecture reused with different
+                                  WorkCase input"
+                            Cause: WorkCaseService.replay() returns store.get(workCaseId),
+                            i.e. current state, while recordArchitecture/requirementReady
+                            hash expectedVersion into the request hash. Any chained
+                            version-advancing command therefore cannot replay. An identical
+                            retry returns an error instead of the original outcome.
+                            This fails AC-S1-2-03 ("repeating the same command with the same
+                            material input must replay") and AC-S1-2-17 (a retried command
+                            must not break persistence/idempotency semantics). It is a
+                            service-layer defect: BOTH implementations inherit it unless
+                            Atlas's hardening passes already fixed it — UNVERIFIED, because
+                            reading the 123 KB patch would have consumed the remaining
+                            context. Verify before merging either side.
+2026-08-23  claude  NOTE    REQUIREMENT_READY is terminal for /api/plan. beginArchitecting
+                            admits only REQUEST_RECEIVED and ARCHITECTING, so a further
+                            planning round on a published WorkCase raises INVALID_TRANSITION
+                            -> 409. Deliberately NOT widened: re-scoping after the contract
+                            boundary is a change-order flow owned by Outcome/Change/
+                            Continuity, and inventing one here would be speculative
+                            architecture. Recorded so the 409 is understood as designed.
 ```
 
 ---
@@ -215,6 +322,17 @@ Each line is something that actually happened here, with its cause.
   the hash: passes for the wrong reason.
 - **Never audit your own implementation and call it independent.** Claude
   mutation-tested its own hash tests and still missed that the hash was mislabelled.
+- **Checking live HEAD is not the same as checking whether the work is already done.**
+  Claude ran `git ls-remote`, saw 7e14128, and built S1-2 — while Atlas had already
+  built, hardened six times and specced it, all recorded in Drive. HEAD proves nobody
+  *pushed*; it says nothing about who is *working*. The unpushed-work channel is the
+  Drive folder, and reading it is rule 1 of this file. Two full implementations of one
+  slice is the most expensive mistake in this log so far.
+- **Never test idempotency by repeating one command.** The suite proved
+  `receiveRequest` replays and proved `recordArchitecture` replays, each in isolation,
+  and both pass. The defect only appears when the *chain* is retried, because replay
+  returns current state while the next command hashes the version it expected. Retry
+  the whole operation, not each step.
 
 ---
 
