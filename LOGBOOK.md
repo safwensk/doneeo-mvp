@@ -290,7 +290,86 @@ Newest first. One line per piece of work. `KIND` is one of
                             boundary is a change-order flow owned by Outcome/Change/
                             Continuity, and inventing one here would be speculative
                             architecture. Recorded so the 409 is understood as designed.
+2026-08-23  claude  CORRECT The NOTE above named the wrong owner. Canon gives two specific
+                            re-entry paths, not one generic change-order flow:
+                            L09A -> L2 TargetedReanalysisRequest for R3 affected nodes, and
+                            L13 -> L2 for an accepted branch JobOrder. Also "targeted
+                            reanalysis changes only affected TaskGraph nodes", so re-running
+                            the whole planner would itself breach canon. Not widening the
+                            transition was right; the reason given for it was vague.
+2026-08-23  claude  FINDING Read the v2.1 reconciled canon (11 layers + linkage review +
+                            coherence QA, all dated 2026-08-20) and checked it against the
+                            code. Neither S1-2 implementation had been checked against it,
+                            because doc 19 predates it by two days. Ten observations
+                            recorded below under CANON CONFORMANCE. Nothing found blocks
+                            S1-2 and the Requirement Contract boundary survives intact.
 ```
+
+---
+
+## CANON CONFORMANCE — v2.1 (2026-08-20) vs the code
+
+Checked 2026-08-23 against the eleven reconciled canonical candidates (L7, L8, L09A,
+L09B, L11, L13, P2, P4, P6, P8, P9), the Reconciliation & Linkage Review v2.1 and the
+Coherence QA v2.1. Every claim below quotes canon and names the file it was checked
+against. **Nothing here blocks S1-2.** Four items are gaps that predate both S1-2
+implementations.
+
+**1 · The referee is older than canon.** Doc 19 is 2026-08-18; canon is 2026-08-20.
+AC-S1-2-01..18 never mentions RealityCase, R0–R5, cancellation or branches. Passing
+doc 19 is not the same as conforming to canon.
+
+**2 · Cancellation has no representation.** L7: *"Cancellation remains requestable"* at
+every stage; L11: *"Cancelled is final only when L7 finalizes cancellation"* — so canon
+needs a non-final requested state (which triggers CommitmentSnapshot and a capacity
+recovery attempt) and a final one. `lib/work-case.ts` has eleven states and neither, and
+no transition to reach them.
+
+**3 · Control state is per-WorkCase; canon needs it per-TaskBlock.** L09A: *"Continue
+unaffected TaskBlocks when dependencies/safety allow"*; R4 *"holds smallest safe affected
+scope"*. L13: *"PREREQUISITE_FOR blocks only dependent parent TaskBlocks"*. L11 issues
+per-TaskBlock decisions (verified / partial / failed / remediation / disputed).
+`WorkCaseControlState.state` is one field for the whole case, and
+`TaskIdentity.status` is `ACTIVE | RETIRED` — identity reconciliation, not lifecycle.
+The model cannot express *"TaskBlock 2 held, 1 and 3 continue"*, which is the core of the
+entire reality-recovery layer. Largest structural gap; squarely in the Claude lane.
+
+**4 · WorkCase and JobOrder are welded 1:1.** L11: *"JobOrder closure ≠ WorkCase
+closure"*; L13: *"WorkCase may outlive a JobOrder"* — branches create new JobOrders under
+one WorkCase. `createWorkCase` mints both ids together under one state. This one touches
+S1-2 directly: the Requirement Contract's `contractId` **is** the `jobOrderId`
+(`intelligence-control-service.ts` → `tryPublishOrSupersede`), so the pairing gets baked
+into every published contract and a branch JobOrder has nowhere to put its own. Cheapest
+to change now, while nothing is published.
+
+**5 · Executor finds more work — canon's answer.** L09A classifies semantically, never by
+severity. **R3** requirement-impacting → targeted L2 reanalysis of affected nodes only.
+**R5** independent new work → CandidateFollowUp; *"independent observed work never becomes
+current billable scope without consent"*, and *"executor submits facts, not blame or
+self-priced changes"*. Settled in canon, absent from code.
+
+**6 · Executor becomes incapable — three owners, one shared rule.** Credential expiry →
+L8 holds that role, L4 rematches. Provider declines → L7, *"L4 rematch, not L2 replan"*.
+Cannot physically perform → L09A R2 → L4/L5 recovery *"without changing
+RequirementContract"*. All three route **around** the contract, never through it — a
+direct endorsement of the boundary S1-2 builds.
+
+**7 · The chained-retry defect breaches a coherence invariant, not just an AC.** P6:
+*"At-least-once delivery + idempotent consumers + transactional inbox/outbox for
+cross-domain reliability."* Idempotent consumers are load-bearing here, not optional.
+
+**8 · There is no outbox.** P2: *"Append provenance and transactional outbox atomically"*;
+P6: *"P1/domain writes transactional outbox."* `db/schema.ts` `domain_events` has no
+`published` / `delivered_at` / `attempts` column and nothing reads it to dispatch. It is
+an append-only log. Same defect class as 7: stated in canon, absent in code.
+
+**9 · What holds up.** *"Requirement Contract is provider-neutral and authoritative for
+hard work requirements"* and *"P1 coordinates … never owns domain business decisions"*
+both describe what the composition root actually does. The contract boundary and the
+supersede-only rule survive v2.1 unchanged.
+
+**10 · Suggested order.** 3 first — per-TaskBlock state is what every downstream layer
+assumes exists, and 4 is partly a consequence of it. Then 4, then 2, then 8.
 
 ---
 
@@ -320,6 +399,10 @@ Each line is something that actually happened here, with its cause.
   specifically to catch a missing migration and could not have caught one. A green
   check that has never been shown to go red is not evidence. Same failure class as
   the hash: passes for the wrong reason.
+- **An acceptance spec is not canon, and it ages.** Doc 19 was written 2026-08-18 and
+  treated as the S1-2 referee; canon moved on 2026-08-20 and nobody re-checked. Before
+  auditing against a checklist, check the checklist's date against the architecture it
+  claims to enforce.
 - **Never audit your own implementation and call it independent.** Claude
   mutation-tested its own hash tests and still missed that the hash was mislabelled.
 - **Checking live HEAD is not the same as checking whether the work is already done.**
