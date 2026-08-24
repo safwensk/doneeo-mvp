@@ -233,8 +233,11 @@ export const LAYERS: Record<LayerId, Layer> = {
     id: "L7",
     title: "Commitment, Capacity, Rescheduling & Cancellation Architecture",
     kind: "domain",
-    status: "PLANNED",
-    modules: [],
+    status: "PARTIAL",
+    modules: [
+      "lib/layers/l7/commitment.ts",
+      "lib/layers/l7/cancellation.ts",
+    ],
     owns: [
       "Customer commitment state",
       "Provider acceptance state",

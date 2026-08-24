@@ -30,6 +30,7 @@ IMPL = {
         "lib/application/requirement-contract-hashing.ts"],
  "L3": ["lib/rules-gate.ts"],
  "L4": ["lib/work-orders.ts"],
+ "L7": ["lib/layers/l7/commitment.ts","lib/layers/l7/cancellation.ts"],
  "P1": ["lib/application/intelligence-control-service.ts"],
 }
 # Status is derived: modules present -> PARTIAL, unless listed complete here.
