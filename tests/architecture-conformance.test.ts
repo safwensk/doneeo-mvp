@@ -198,7 +198,7 @@ test("the layers backed by real code are the ones the MVP actually has", () => {
   // Deliberately exact. When a layer gains its first module, this test fails and
   // whoever added it updates the list — which is the moment to check the layer's
   // contract against its spec rather than months later.
-  assert.deepEqual(built, ["L09A", "L1", "L2", "L3", "L4", "L7", "P1"],
+  assert.deepEqual(built, ["L09A", "L09B", "L1", "L2", "L3", "L4", "L7", "P1"],
     "a layer gained or lost code; confirm its contract against the canonical spec, then update this list");
 });
 

@@ -333,8 +333,11 @@ export const LAYERS: Record<LayerId, Layer> = {
     id: "L09B",
     title: "Responsibility & Fairness Economic Architecture",
     kind: "domain",
-    status: "PLANNED",
-    modules: [],
+    status: "PARTIAL",
+    modules: [
+      "lib/layers/l09b/responsibility.ts",
+      "lib/layers/l09b/allocation.ts",
+    ],
     owns: [
       "Causality classification",
       "Customer/provider/Doneeo/external responsibility tests",
