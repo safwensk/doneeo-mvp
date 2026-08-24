@@ -57,7 +57,13 @@ next:         IDENTITY RECONCILE — two architecture models now sit on main.
               lib/canonical-architecture.ts uses L01-L13/P01-P09 with a single L09.
               lib/architecture/* uses L1-L13/P1-P9 with L09A and L09B split.
               Canon has NO standalone Layer 9. One identity set must win; see LOG.
-blocked_on:   nothing
+              Atlas's file, Atlas's call — but it cannot stay ambiguous.
+              Then continue the layer build in dependency order. Built so far:
+              P1 L1 L2 L3 L4 L7 L09A L09B. Natural next is L11 (nine-state outcome
+              machine, `Any -> S5 on cancellation from L07`) then L12 (ledger —
+              the only layer permitted to turn L09B's minutes into money).
+blocked_on:   Safwen merging PR claude/architecture-v3 (15 commits). Atlas reads
+              GitHub raw only, so none of the above is visible to him until it lands.
 ```
 
 **Before any code work, run the `verify` command above.** If it disagrees with
@@ -209,6 +215,51 @@ Newest first. One line per piece of work. `KIND` is one of
 `BUILD MERGE AUDIT DECIDE FIX BLOCKED ASK`.
 
 ```
+2026-08-24  claude  BUILD   L09B Responsibility & Fairness Economic. Three independent findings
+                            (customer material-fact test with both defeaters, provider performance
+                            test, Doneeo control test), then exactly one bearer per eligible cost
+                            component. NO weighted blame engine, per the board's SPECIAL CONTROL
+                            panel that every superseded 09B variant violated: PPP, CRA and Doneeo
+                            Absorption are each summed from their own components and none is ever
+                            `whole - others`. A grep test forbids weight/share/percent/contribution
+                            in the source. Invariants made inexpressible rather than merely
+                            unwritten: chargesUnperformedWork is the literal type `false`; a hidden
+                            condition alone throws; missing evidence throws; MIXED and UNDETERMINED
+                            cannot be allocated at all. Protection is per assigned role -- G1's
+                            two-person blocked job yields lead 45, helper 285 after backfill.
+                            16 tests. Typecheck zero errors, 239 tests 0 fail.   base=a58df5a
+2026-08-24  claude  BUILD   L09A Reality & Recovery. R0-R5 as SEMANTIC IMPACT CLASSES, not
+                            severity -- R4 holds affected scope immediately, R5 never enters
+                            current scope. The ten-option fastest-safe-solution hierarchy with
+                            "solution before broad replanning" enforced structurally: FULL_REPLAN
+                            and CANCEL_AFFECTED_SCOPE are unreachable while any preserving option
+                            is viable. Recovered from the SPECIAL CONTROL panel the v2.1
+                            reconciliation had dropped entirely. 15 tests.       base=6cd45c3
+2026-08-24  claude  BUILD   L7 commitment ladder and cancellation. FREE_OR_LOW -> COMMITMENT_BEGINS
+                            -> CAPACITY_LOCKED -> MOBILIZED -> WORK_STARTED, all thresholds injected
+                            through a CommitmentPolicy port so no window or percentage appears in
+                            the layer (a grep test asserts it). Eight-step cancellation sequence
+                            recorded as data so its ORDER is assertable, not just its outcome.
+                            Net Lost Reserved Capacity = Reserved - Successfully Reallocated,
+                            per role. Suite caught a stale-stage read; fixed with currentStage().
+                            16 tests.                                             base=1730fe9
+2026-08-24  claude  BUILD   DONEEO_CANONICAL_ARCHITECTURE_v3.0 generated from the 18 Figma boards,
+                            then emitted as code: lib/architecture/{layers,events,open-rulings}.ts
+                            -- 23 layers, 135 domain events with a single producer each, 15
+                            external boundary events, 7 open rulings carried in code. Measured
+                            what Atlas's linkage actually cost: 52 of 73 consumed events had NO
+                            producer. Split into 26 consumer-side renames and 26 genuine holes,
+                            each hole granted an owner with a recorded rationale. Zero dangling
+                            after. Also recovered 57 golden regression scenarios that v2.1 had
+                            dropped, and found P7__KEEP.png byte-identical to
+                            P10_DRIFT__DISCARD.png (md5 284da22d) -- the reconciliation filed the
+                            discarded poster under the kept poster's name.        base=a87c68a
+2026-08-24  claude  FIX     Chained-retry idempotency. expectedVersion was being hashed into the
+                            request identity, so an identical retry against a moved state looked
+                            like a different command. Proved empirically on shipped code twice
+                            before touching it. It is a precondition for WHEN a command may apply,
+                            not part of WHAT the command is; removed from all three request hashes.
+                                                                                  base=a87c68a
 2026-08-21  codex   BUILD   Integrated the corrected L01-L13/P01-P09 architecture as one master
                             registry and guarded WorkCase control spine. Linked operational work
                             orders to the stable WorkCase, JobOrder and Requirement Contract;
