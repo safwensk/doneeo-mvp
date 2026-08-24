@@ -1,0 +1,240 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1230" viewBox="0 0 1680 1230" font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1230" fill="#F6F9F9"/>
+<rect width="1680" height="168" fill="#02133C"/>
+<rect y="163" width="1680" height="5" fill="#079B9D"/>
+<text x="44" y="46" font-size="17" font-weight="700" fill="#FFFFFF" letter-spacing="3.6">DONEEO</text>
+<text x="162" y="46" font-size="12.5" fill="#13C7BC" letter-spacing="0.4">Intelligence to Get Work Done</text>
+<text x="44" y="92" font-size="31" font-weight="700" fill="#FFFFFF">L1 — INTAKE, CONTEXT &amp; WORKCASE</text>
+<text x="44" y="118" font-size="13.4" fill="#C9D9DE">Capture the customer's messy real-world problem, context and initial evidence in a durable WorkCase without prematurely estimating, matching or deciding execution.</text>
+<rect x="1306" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1357" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">LAYER</text>
+<text x="1357" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">L1</text>
+<rect x="1418" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1469" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">EDITION</text>
+<text x="1469" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">v3.0 clean</text>
+<rect x="1530" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1581" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">DATE</text>
+<text x="1581" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2026-08-23</text>
+<text x="1306" y="106" font-size="10.6" fill="#13C7BC">Numbering, naming and event linkage corrected.</text>
+<text x="1306" y="122" font-size="10.6" fill="#9FB6BE">Items marked FIXED changed in this edition.</text>
+<rect x="44" y="212" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="212" width="4" height="155" rx="2" fill="#02133C"/>
+<text x="59" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">01 OWNS</text>
+<circle cx="62" cy="249" r="2.4" fill="#02133C"/>
+<text x="74" y="253" font-size="12.2" font-weight="400" fill="#233">WorkCase creation and identity</text>
+<circle cx="62" cy="266.5" r="2.4" fill="#02133C"/>
+<text x="74" y="270.5" font-size="12.2" font-weight="400" fill="#233">Original request and normalized intake</text>
+<circle cx="62" cy="284.0" r="2.4" fill="#02133C"/>
+<text x="74" y="288.0" font-size="12.2" font-weight="400" fill="#233">Customer goal / desired outcome</text>
+<circle cx="62" cy="301.5" r="2.4" fill="#02133C"/>
+<text x="74" y="305.5" font-size="12.2" font-weight="400" fill="#233">Context capture: location, timing, access, recipients</text>
+<circle cx="62" cy="319.0" r="2.4" fill="#02133C"/>
+<text x="74" y="323.0" font-size="12.2" font-weight="400" fill="#233">Initial evidence and attachment references</text>
+<circle cx="62" cy="336.5" r="2.4" fill="#02133C"/>
+<text x="74" y="340.5" font-size="12.2" font-weight="400" fill="#233">Continuity link to future JobOrders/branches</text>
+<rect x="44" y="387.0" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="387.0" width="4" height="155" rx="2" fill="#8A3B4A"/>
+<text x="59" y="409.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#8A3B4A">02 DOES NOT OWN</text>
+<circle cx="62" cy="424.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="428.0" font-size="12.2" font-weight="400" fill="#233">Task architecture or RequirementContract</text>
+<circle cx="62" cy="441.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="445.5" font-size="12.2" font-weight="400" fill="#233">Provider selection or availability</text>
+<circle cx="62" cy="459.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="463.0" font-size="12.2" font-weight="400" fill="#233">Safety/legal final decisions</text>
+<circle cx="62" cy="476.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="480.5" font-size="12.2" font-weight="400" fill="#233">Pricing or payment</text>
+<circle cx="62" cy="494.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="498.0" font-size="12.2" font-weight="400" fill="#233">Execution control</text>
+<circle cx="62" cy="511.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="515.5" font-size="12.2" font-weight="400" fill="#233">Outcome verification</text>
+<rect x="44" y="562.0" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="562.0" width="4" height="138" rx="2" fill="#075A6B"/>
+<text x="59" y="584.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">03 KEY INPUTS</text>
+<circle cx="62" cy="599.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="603.0" font-size="12.2" font-weight="400" fill="#233">Customer text/voice/photo/file input</text>
+<circle cx="62" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="620.5" font-size="12.2" font-weight="400" fill="#233">Account/identity context</text>
+<circle cx="62" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="638.0" font-size="12.2" font-weight="400" fill="#233">Known locations and timing</text>
+<circle cx="62" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="655.5" font-size="12.2" font-weight="400" fill="#233">Prior WorkCase context if explicitly linked</text>
+<circle cx="62" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="673.0" font-size="12.2" font-weight="400" fill="#233">Recipient/access details when provided</text>
+<rect x="44" y="719.5" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="719.5" width="4" height="172" rx="2" fill="#075A6B"/>
+<text x="59" y="741.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">04 AUTHORITATIVE OUTPUTS</text>
+<circle cx="62" cy="756.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="760.5" font-size="12.2" font-weight="400" fill="#233">WorkCase</text>
+<circle cx="62" cy="774.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="778.0" font-size="12.2" font-weight="400" fill="#233">NormalizedRequest</text>
+<circle cx="62" cy="791.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="795.5" font-size="12.2" font-weight="400" fill="#233">Initial FactLedger entries</text>
+<circle cx="62" cy="809.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="813.0" font-size="12.2" font-weight="400" fill="#233">Evidence references</text>
+<circle cx="62" cy="826.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="830.5" font-size="12.2" font-weight="400" fill="#233">Customer objective</text>
+<circle cx="62" cy="844.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="848.0" font-size="12.2" font-weight="400" fill="#233">Context snapshot</text>
+<circle cx="62" cy="861.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="865.5" font-size="12.2" font-weight="400" fill="#233">PlanningStarted command</text>
+<rect x="44" y="912.0" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="912.0" width="4" height="155" rx="2" fill="#079B9D"/>
+<text x="59" y="934.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">05 ENGINES / COMPONENTS</text>
+<circle cx="62" cy="949.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="953.0" font-size="12.2" font-weight="400" fill="#233">Input Normalizer</text>
+<circle cx="62" cy="966.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="970.5" font-size="12.2" font-weight="400" fill="#233">Context Capture Engine</text>
+<circle cx="62" cy="984.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="988.0" font-size="12.2" font-weight="400" fill="#233">Evidence Intake Engine</text>
+<circle cx="62" cy="1001.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1005.5" font-size="12.2" font-weight="400" fill="#233">WorkCase Manager</text>
+<circle cx="62" cy="1019.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1023.0" font-size="12.2" font-weight="400" fill="#233">Objective Resolver</text>
+<circle cx="62" cy="1036.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1040.5" font-size="12.2" font-weight="400" fill="#233">Recipient/Access Context Resolver</text>
+<rect x="581" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="212" width="4" height="172" rx="2" fill="#079B9D"/>
+<text x="596" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">06 OPERATING &amp; DECISION PATH</text>
+<circle cx="599" cy="249" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="253" font-size="12.2" font-weight="400" fill="#233">Receive I Need Help request</text>
+<circle cx="599" cy="266.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="270.5" font-size="12.2" font-weight="400" fill="#233">Create WorkCase ID</text>
+<circle cx="599" cy="284.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="288.0" font-size="12.2" font-weight="400" fill="#233">Normalize content and channels</text>
+<circle cx="599" cy="301.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="305.5" font-size="12.2" font-weight="400" fill="#233">Capture stated facts and evidence</text>
+<circle cx="599" cy="319.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="323.0" font-size="12.2" font-weight="400" fill="#233">Resolve customer objective</text>
+<circle cx="599" cy="336.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="340.5" font-size="12.2" font-weight="400" fill="#233">Record context and provenance</text>
+<circle cx="599" cy="354.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="358.0" font-size="12.2" font-weight="400" fill="#233">Hand off to Layer 2 Intelligence</text>
+<rect x="581" y="404.5" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="404.5" width="4" height="102" rx="2" fill="#079B9D"/>
+<text x="596" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">07 DECISION GATES</text>
+<circle cx="599" cy="441.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="445.5" font-size="12.2" font-weight="400" fill="#233">WorkCase identity valid?</text>
+<circle cx="599" cy="459.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="463.0" font-size="12.2" font-weight="400" fill="#233">Customer consent/access valid?</text>
+<circle cx="599" cy="476.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="480.5" font-size="12.2" font-weight="400" fill="#233">Enough input to begin semantic interpretation?</text>
+<rect x="581" y="527.0" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="527.0" width="4" height="155" rx="2" fill="#075A6B"/>
+<text x="596" y="549.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">08 DATA / ARTIFACT OBJECTS</text>
+<circle cx="599" cy="564.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="568.0" font-size="12.2" font-weight="400" fill="#233">WorkCase</text>
+<circle cx="599" cy="581.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="585.5" font-size="12.2" font-weight="400" fill="#233">NormalizedRequest</text>
+<circle cx="599" cy="599.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="603.0" font-size="12.2" font-weight="400" fill="#233">ContextSnapshot</text>
+<circle cx="599" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="620.5" font-size="12.2" font-weight="400" fill="#233">EvidenceRef</text>
+<circle cx="599" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="638.0" font-size="12.2" font-weight="400" fill="#233">CustomerObjective</text>
+<circle cx="599" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="655.5" font-size="12.2" font-weight="400" fill="#233">RecipientContext</text>
+<rect x="581" y="702.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="702.0" width="4" height="120" rx="2" fill="#13C7BC"/>
+<text x="596" y="724.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">09 EVENTS EMITTED</text>
+<circle cx="599" cy="739.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="743.0" font-size="12.2" font-weight="400" fill="#233">WorkCase.Created</text>
+<circle cx="599" cy="756.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="760.5" font-size="12.2" font-weight="400" fill="#233">Evidence.Uploaded</text>
+<circle cx="599" cy="774.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="778.0" font-size="12.2" font-weight="400" fill="#233">Context.Updated</text>
+<circle cx="599" cy="791.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="795.5" font-size="12.2" font-weight="400" fill="#233">PlanningRequested</text>
+<rect x="581" y="842.0" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="842.0" width="4" height="102" rx="2" fill="#13C7BC"/>
+<text x="596" y="864.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">10 EVENTS CONSUMED</text>
+<circle cx="599" cy="879.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="883.0" font-size="12.2" font-weight="400" fill="#233">Customer.MessageReceived</text>
+<circle cx="599" cy="896.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="900.5" font-size="12.2" font-weight="400" fill="#233">Identity.ContextResolved</text>
+<circle cx="599" cy="914.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="918.0" font-size="12.2" font-weight="400" fill="#233">PriorWorkCase.Linked</text>
+<rect x="581" y="964.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="964.5" width="4" height="120" rx="2" fill="#079B9D"/>
+<text x="596" y="986.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">11 INTEGRATIONS / CALLBACKS</text>
+<circle cx="599" cy="1001.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="1005.5" font-size="12.2" font-weight="400" fill="#233">P3 Identity/Consent</text>
+<circle cx="599" cy="1019.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1023.0" font-size="12.2" font-weight="400" fill="#233">P2 FactLedger/Evidence</text>
+<circle cx="599" cy="1036.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="1040.5" font-size="12.2" font-weight="400" fill="#233">L2 Intelligence</text>
+<circle cx="599" cy="1054.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1058.0" font-size="12.2" font-weight="400" fill="#233">P1 Orchestrator</text>
+<rect x="1118" y="212" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="212" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">12 FAILURE &amp; RECOVERY</text>
+<circle cx="1136" cy="249" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="253" font-size="12.2" font-weight="400" fill="#233">Duplicate request -&gt; idempotent reuse/new version</text>
+<circle cx="1136" cy="266.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="270.5" font-size="12.2" font-weight="400" fill="#233">Attachment unavailable -&gt; preserve reference and request retry</text>
+<circle cx="1136" cy="284.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="288.0" font-size="12.2" font-weight="400" fill="#233">Conflicting locations/times -&gt; record conflict for Layer 2</text>
+<circle cx="1136" cy="301.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="305.5" font-size="12.2" font-weight="400" fill="#233">Partial input -&gt; create WorkCase anyway; planning determines MSI</text>
+<rect x="1118" y="352.0" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="352.0" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="1133" y="374.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">13 HUMAN REVIEW</text>
+<circle cx="1136" cy="389.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="393.0" font-size="12.2" font-weight="400" fill="#233">Identity ambiguity</text>
+<circle cx="1136" cy="406.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="410.5" font-size="12.2" font-weight="400" fill="#233">Third-party recipient authority ambiguity</text>
+<circle cx="1136" cy="424.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="428.0" font-size="12.2" font-weight="400" fill="#233">Conflicting customer ownership/authorization</text>
+<rect x="1118" y="474.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="474.5" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="496.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">14 SECURITY / PRIVACY</text>
+<circle cx="1136" cy="511.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="515.5" font-size="12.2" font-weight="400" fill="#233">Minimize collected data</text>
+<circle cx="1136" cy="529.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="533.0" font-size="12.2" font-weight="400" fill="#233">Evidence access scoped to WorkCase roles</text>
+<circle cx="1136" cy="546.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="550.5" font-size="12.2" font-weight="400" fill="#233">Explicit consent for third-party recipient sharing</text>
+<circle cx="1136" cy="564.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="568.0" font-size="12.2" font-weight="400" fill="#233">Encryption in transit/at rest</text>
+<rect x="1118" y="614.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="614.5" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="636.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">15 1M-JOB SCALABILITY</text>
+<circle cx="1136" cy="651.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="655.5" font-size="12.2" font-weight="400" fill="#233">Stateless intake workers</text>
+<circle cx="1136" cy="669.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="673.0" font-size="12.2" font-weight="400" fill="#233">WorkCase-partitioned writes</text>
+<circle cx="1136" cy="686.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="690.5" font-size="12.2" font-weight="400" fill="#233">Object storage for media</text>
+<circle cx="1136" cy="704.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="708.0" font-size="12.2" font-weight="400" fill="#233">Async enrichment allowed; customer acknowledgment remains low latency</text>
+<rect x="1118" y="754.5" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="754.5" width="4" height="102" rx="2" fill="#02133C"/>
+<text x="1133" y="776.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">16 NON-NEGOTIABLE INVARIANTS</text>
+<circle cx="1136" cy="791.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="795.5" font-size="12.2" font-weight="600" fill="#02133C">No plan/estimate/match before Layer 2</text>
+<circle cx="1136" cy="809.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="813.0" font-size="12.2" font-weight="600" fill="#02133C">Original customer input remains immutable source evidence</text>
+<circle cx="1136" cy="826.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="830.5" font-size="12.2" font-weight="600" fill="#02133C">WorkCase is continuity container; JobOrder is not created here</text>
+<rect x="1118" y="877.0" width="517" height="102" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="877.0" width="4" height="102" rx="2" fill="#075A6B"/>
+<text x="1133" y="899.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">17 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="914.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="918.0" font-size="12.2" font-weight="400" fill="#233">Multi-part request preserved as one WorkCase</text>
+<circle cx="1136" cy="931.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="935.5" font-size="12.2" font-weight="400" fill="#233">Third-party recipient captured without over-sharing</text>
+<circle cx="1136" cy="949.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="953.0" font-size="12.2" font-weight="400" fill="#233">Duplicate submit does not duplicate WorkCase</text>
+<rect x="1118" y="999.5" width="517" height="102" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="999.5" width="4" height="102" rx="2" fill="#075A6B"/>
+<text x="1133" y="1021.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">18 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="1036.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1040.5" font-size="12.2" font-weight="400" fill="#233">L1-G1 · Multi-part request preserved as one WorkCase</text>
+<circle cx="1136" cy="1054.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1058.0" font-size="12.2" font-weight="400" fill="#233">L1-G2 · Third-party recipient captured without over-sharing</text>
+<circle cx="1136" cy="1071.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1075.5" font-size="12.2" font-weight="400" fill="#233">L1-G3 · Duplicate submit does not duplicate WorkCase</text>
+<rect y="1166" width="1680" height="64" fill="#02133C"/>
+<text x="44" y="1193" font-size="11.6" fill="#FFFFFF">Board regenerated from the corrected canonical set. Text is real SVG text — readable by script, not only by eye.</text>
+<text x="44" y="1211" font-size="10.4" fill="#13C7BC">Every consumed event on this board has exactly one producer, or is declared external. Open rulings are listed in the canonical file, not decided here.</text>
+<text x="1636" y="1202" text-anchor="end" font-size="11.6" font-weight="700" fill="#13C7BC">L1</text>
+</svg>

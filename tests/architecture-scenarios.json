@@ -1,0 +1,344 @@
+[
+ {
+  "id": "L1-G1",
+  "layer": "L1",
+  "scenario": "Multi-part request preserved as one WorkCase",
+  "source": "Doneeo_01_INTAKE_CONTEXT_WORKCASE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L1-G2",
+  "layer": "L1",
+  "scenario": "Third-party recipient captured without over-sharing",
+  "source": "Doneeo_01_INTAKE_CONTEXT_WORKCASE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L1-G3",
+  "layer": "L1",
+  "scenario": "Duplicate submit does not duplicate WorkCase",
+  "source": "Doneeo_01_INTAKE_CONTEXT_WORKCASE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L2-G1",
+  "layer": "L2",
+  "scenario": "Ground-floor statement suppresses irrelevant elevator question",
+  "source": "Doneeo_02_INTELLIGENCE_PLANNING_ENGINE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L2-G2",
+  "layer": "L2",
+  "scenario": "Multi-task sentence creates distinct TaskBlocks",
+  "source": "Doneeo_02_INTELLIGENCE_PLANNING_ENGINE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L2-G3",
+  "layer": "L2",
+  "scenario": "Field fact changes one TaskBlock without rebuilding unrelated tasks",
+  "source": "Doneeo_02_INTELLIGENCE_PLANNING_ENGINE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L2-G4",
+  "layer": "L2",
+  "scenario": "Requirement Contract remains provider-neutral",
+  "source": "Doneeo_02_INTELLIGENCE_PLANNING_ENGINE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L3-G1",
+  "layer": "L3",
+  "scenario": "Licensed trade requires qualified provider",
+  "source": "Doneeo_03_TRUST_SAFETY_RULES_COMPLIANCE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L3-G2",
+  "layer": "L3",
+  "scenario": "Credential expires after booking before dispatch",
+  "source": "Doneeo_03_TRUST_SAFETY_RULES_COMPLIANCE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L3-G3",
+  "layer": "L3",
+  "scenario": "Field discovery changes regulatory classification",
+  "source": "Doneeo_03_TRUST_SAFETY_RULES_COMPLIANCE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L4-G1",
+  "layer": "L4",
+  "scenario": "Two-person minimum never reduced to one because of scarcity",
+  "source": "Doneeo_04_FULFILLMENT_MATCHING_TEAM_ASSEMBLY_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L4-G2",
+  "layer": "L4",
+  "scenario": "Provider decline rematches only fulfillment",
+  "source": "Doneeo_04_FULFILLMENT_MATCHING_TEAM_ASSEMBLY_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L4-G3",
+  "layer": "L4",
+  "scenario": "No slot at requested time yields alternative feasible times",
+  "source": "Doneeo_04_FULFILLMENT_MATCHING_TEAM_ASSEMBLY_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L5-G1",
+  "layer": "L5",
+  "scenario": "Customer owns required drill so no rental",
+  "source": "Doneeo_05_RESOURCES_RENTALS_LOGISTICS_PARTNERS_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L5-G2",
+  "layer": "L5",
+  "scenario": "Team member asset closes true gap",
+  "source": "Doneeo_05_RESOURCES_RENTALS_LOGISTICS_PARTNERS_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L5-G3",
+  "layer": "L5",
+  "scenario": "On-site missing fitting triggers resource recovery and actual receipt",
+  "source": "Doneeo_05_RESOURCES_RENTALS_LOGISTICS_PARTNERS_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L6-G1",
+  "layer": "L6",
+  "scenario": "Expired rental quote forces offer refresh",
+  "source": "Doneeo_06_COMMERCIAL_OFFER_PRICING_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L6-G2",
+  "layer": "L6",
+  "scenario": "Budget/recommended options differ in real feasible configuration",
+  "source": "Doneeo_06_COMMERCIAL_OFFER_PRICING_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L6-G3",
+  "layer": "L6",
+  "scenario": "Payment topology selected by contract role profile",
+  "source": "Doneeo_06_COMMERCIAL_OFFER_PRICING_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L7-G1",
+  "layer": "L7",
+  "scenario": "Two-person accepted job creates two role reservations",
+  "source": "Doneeo_07_COMMITMENT_CAPACITY_RESCHEDULING_CANCELLATION_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L7-G2",
+  "layer": "L7",
+  "scenario": "Cancellation shortly before start triggers backfill before lost-capacity calculation",
+  "source": "Doneeo_07_COMMITMENT_CAPACITY_RESCHEDULING_CANCELLATION_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L7-G3",
+  "layer": "L7",
+  "scenario": "Reschedule keeps same team when feasible",
+  "source": "Doneeo_07_COMMITMENT_CAPACITY_RESCHEDULING_CANCELLATION_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L8-G1",
+  "layer": "L8",
+  "scenario": "Accepted provider credential expires before start",
+  "source": "Doneeo_08_EXECUTION_PREPARATION_PREFLIGHT_DISPATCH_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L8-G2",
+  "layer": "L8",
+  "scenario": "Rental confirmation missing triggers resource recovery",
+  "source": "Doneeo_08_EXECUTION_PREPARATION_PREFLIGHT_DISPATCH_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L8-G3",
+  "layer": "L8",
+  "scenario": "Ground-floor access confirmed and irrelevant elevator check suppressed",
+  "source": "Doneeo_08_EXECUTION_PREPARATION_PREFLIGHT_DISPATCH_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L09A-G1",
+  "layer": "L09A",
+  "scenario": "R2 missing tool resolved without RC change",
+  "source": "Doneeo_09A_REALITY_RECOVERY_DECISION_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L09A-G2",
+  "layer": "L09A",
+  "scenario": "R3 incompatible connection produces RC vN+1 only for affected task",
+  "source": "Doneeo_09A_REALITY_RECOVERY_DECISION_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L09A-G3",
+  "layer": "L09A",
+  "scenario": "R5 unrelated faucet repair remains CandidateFollowUp",
+  "source": "Doneeo_09A_REALITY_RECOVERY_DECISION_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L09B-G1",
+  "layer": "L09B",
+  "scenario": "Two-person blocked job computes protection per role",
+  "source": "Doneeo_09B_RESPONSIBILITY_FAIRNESS_ECONOMIC_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L09B-G2",
+  "layer": "L09B",
+  "scenario": "Customer inaccurate known fact causes eligible disruption charge but not full job price",
+  "source": "Doneeo_09B_RESPONSIBILITY_FAIRNESS_ECONOMIC_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L09B-G3",
+  "layer": "L09B",
+  "scenario": "Doneeo planning error -> provider protected, customer not charged incremental error cost",
+  "source": "Doneeo_09B_RESPONSIBILITY_FAIRNESS_ECONOMIC_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L10-G1",
+  "layer": "L10",
+  "scenario": "Delay changes ETA without RC change",
+  "source": "Doneeo_10_LIVE_EXECUTION_CHANGE_CONTROL_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L10-G2",
+  "layer": "L10",
+  "scenario": "Hidden condition triggers 09A",
+  "source": "Doneeo_10_LIVE_EXECUTION_CHANGE_CONTROL_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L10-G3",
+  "layer": "L10",
+  "scenario": "Provider handoff preserves context and evidence",
+  "source": "Doneeo_10_LIVE_EXECUTION_CHANGE_CONTROL_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L11-G1",
+  "layer": "L11",
+  "scenario": "Completed installation fails completion criterion -> remediation",
+  "source": "Doneeo_11_OUTCOME_COMPLETION_EVIDENCE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L11-G2",
+  "layer": "L11",
+  "scenario": "Customer unavailable but evidence proves completion",
+  "source": "Doneeo_11_OUTCOME_COMPLETION_EVIDENCE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L11-G3",
+  "layer": "L11",
+  "scenario": "Follow-up suggestion does not keep JobOrder open",
+  "source": "Doneeo_11_OUTCOME_COMPLETION_EVIDENCE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L12-G1",
+  "layer": "L12",
+  "scenario": "Provider paid while Doneeo absorbs planning error",
+  "source": "Doneeo_12_SETTLEMENT_LEDGER_RECONCILIATION_FINANCEOPS_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L12-G2",
+  "layer": "L12",
+  "scenario": "Unused authorization released after partial close",
+  "source": "Doneeo_12_SETTLEMENT_LEDGER_RECONCILIATION_FINANCEOPS_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L12-G3",
+  "layer": "L12",
+  "scenario": "Lost callback replay causes no duplicate financial effect",
+  "source": "Doneeo_12_SETTLEMENT_LEDGER_RECONCILIATION_FINANCEOPS_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L13-G1",
+  "layer": "L13",
+  "scenario": "Prerequisite electrical correction blocks only install",
+  "source": "Doneeo_13_BRANCH_CONTINUITY_CLAIMS_SUPPORT_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L13-G2",
+  "layer": "L13",
+  "scenario": "TaskBlock",
+  "source": "Doneeo_13_BRANCH_CONTINUITY_CLAIMS_SUPPORT_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L13-G3",
+  "layer": "L13",
+  "scenario": "Unrelated faucet becomes follow-up only after customer consent",
+  "source": "Doneeo_13_BRANCH_CONTINUITY_CLAIMS_SUPPORT_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L13-G4",
+  "layer": "L13",
+  "scenario": "Damage claim issues financial remedy via L12 without rewriting",
+  "source": "Doneeo_13_BRANCH_CONTINUITY_CLAIMS_SUPPORT_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "L13-G5",
+  "layer": "L13",
+  "scenario": "Outcome",
+  "source": "Doneeo_13_BRANCH_CONTINUITY_CLAIMS_SUPPORT_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "P1-G1",
+  "layer": "P1",
+  "scenario": "Duplicate payment command no duplicate capture",
+  "source": "Doneeo_P1_PLATFORM_ORCHESTRATOR_WORKFLOW_STATE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "P1-G2",
+  "layer": "P1",
+  "scenario": "Stale RC version rejected",
+  "source": "Doneeo_P1_PLATFORM_ORCHESTRATOR_WORKFLOW_STATE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "P1-G3",
+  "layer": "P1",
+  "scenario": "Provider decline saga rematches fulfillment without changing requirement",
+  "source": "Doneeo_P1_PLATFORM_ORCHESTRATOR_WORKFLOW_STATE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "P2-G1",
+  "layer": "P2",
+  "scenario": "Provider license expiry triggers revalidation",
+  "source": "Doneeo_P2_DATA_FACT_LEDGER_EVIDENCE_DECISIONTRACE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "P2-G2",
+  "layer": "P2",
+  "scenario": "Fact update preserves superseded value",
+  "source": "Doneeo_P2_DATA_FACT_LEDGER_EVIDENCE_DECISIONTRACE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "P2-G3",
+  "layer": "P2",
+  "scenario": "Search index stale but authoritative eligibility recheck prevents bad match",
+  "source": "Doneeo_P2_DATA_FACT_LEDGER_EVIDENCE_DECISIONTRACE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "P3-G1",
+  "layer": "P3",
+  "scenario": "Receiver gets stop-specific instructions only",
+  "source": "Doneeo_P3_IDENTITY_CONSENT_PRIVACY_ACCESS_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "P3-G2",
+  "layer": "P3",
+  "scenario": "Provider cannot view unrelated customer history",
+  "source": "Doneeo_P3_IDENTITY_CONSENT_PRIVACY_ACCESS_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "P3-G3",
+  "layer": "P3",
+  "scenario": "Revoked recipient grant takes effect before next read",
+  "source": "Doneeo_P3_IDENTITY_CONSENT_PRIVACY_ACCESS_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "P6-G1",
+  "layer": "P6",
+  "scenario": "Model provider outage during execution",
+  "source": "Doneeo_P4_EVENT_AI_OBSERVABILITY_1M_JOB_SCALE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "P6-G2",
+  "layer": "P6",
+  "scenario": "1M/mo matching uses derived index + authoritative recheck",
+  "source": "Doneeo_P4_EVENT_AI_OBSERVABILITY_1M_JOB_SCALE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ },
+ {
+  "id": "P6-G3",
+  "layer": "P6",
+  "scenario": "Lost callback replay remains idempotent",
+  "source": "Doneeo_P4_EVENT_AI_OBSERVABILITY_1M_JOB_SCALE_ARCHITECTURE_FULL_DETAIL_v1.2_B.txt"
+ }
+]

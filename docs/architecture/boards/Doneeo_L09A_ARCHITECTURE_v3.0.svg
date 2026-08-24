@@ -1,0 +1,329 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1788" viewBox="0 0 1680 1788" font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1788" fill="#F6F9F9"/>
+<rect width="1680" height="168" fill="#02133C"/>
+<rect y="163" width="1680" height="5" fill="#079B9D"/>
+<text x="44" y="46" font-size="17" font-weight="700" fill="#FFFFFF" letter-spacing="3.6">DONEEO</text>
+<text x="162" y="46" font-size="12.5" fill="#13C7BC" letter-spacing="0.4">Intelligence to Get Work Done</text>
+<text x="44" y="92" font-size="31" font-weight="700" fill="#FFFFFF">L09A — REALITY &amp; RECOVERY DECISION ARCHITECTURE</text>
+<text x="44" y="118" font-size="13.4" fill="#C9D9DE">Reconcile the approved plan with physical reality and find the fastest safe recovery path while preserving unaffected work and authority boundaries.</text>
+<rect x="1306" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1357" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">LAYER</text>
+<text x="1357" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">L09A</text>
+<rect x="1418" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1469" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">EDITION</text>
+<text x="1469" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">v3.0 clean</text>
+<rect x="1530" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1581" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">DATE</text>
+<text x="1581" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2026-08-23</text>
+<text x="1306" y="106" font-size="10.6" fill="#13C7BC">Numbering, naming and event linkage corrected.</text>
+<text x="1306" y="122" font-size="10.6" fill="#9FB6BE">Items marked FIXED changed in this edition.</text>
+<rect x="44" y="212" width="517" height="208" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="212" width="4" height="208" rx="2" fill="#02133C"/>
+<text x="59" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">01 OWNS</text>
+<circle cx="62" cy="249" r="2.4" fill="#02133C"/>
+<text x="74" y="253" font-size="12.2" font-weight="400" fill="#233">RealityCase</text>
+<circle cx="62" cy="266.5" r="2.4" fill="#02133C"/>
+<text x="74" y="270.5" font-size="12.2" font-weight="400" fill="#233">Field evidence + Field MSI</text>
+<circle cx="62" cy="284.0" r="2.4" fill="#02133C"/>
+<text x="74" y="288.0" font-size="12.2" font-weight="400" fill="#233">FactLedger field updates</text>
+<circle cx="62" cy="301.5" r="2.4" fill="#02133C"/>
+<text x="74" y="305.5" font-size="12.2" font-weight="400" fill="#233">Semantic R0–R5 impact classification</text>
+<circle cx="62" cy="319.0" r="2.4" fill="#02133C"/>
+<text x="74" y="323.0" font-size="12.2" font-weight="400" fill="#233">Dependency impact analysis</text>
+<circle cx="62" cy="336.5" r="2.4" fill="#02133C"/>
+<text x="74" y="340.5" font-size="12.2" font-weight="400" fill="#233">Safety interrupt routing</text>
+<circle cx="62" cy="354.0" r="2.4" fill="#02133C"/>
+<text x="74" y="358.0" font-size="12.2" font-weight="400" fill="#233">Fastest-safe-solution hierarchy</text>
+<circle cx="62" cy="371.5" r="2.4" fill="#02133C"/>
+<text x="74" y="375.5" font-size="12.2" font-weight="400" fill="#233">Targeted reanalysis coordination</text>
+<circle cx="62" cy="389.0" r="2.4" fill="#02133C"/>
+<text x="74" y="393.0" font-size="12.2" font-weight="400" fill="#233">Resume/branch/partial-close decision</text>
+<rect x="44" y="439.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="439.5" width="4" height="120" rx="2" fill="#8A3B4A"/>
+<text x="59" y="461.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#8A3B4A">02 DOES NOT OWN</text>
+<circle cx="62" cy="476.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="480.5" font-size="12.2" font-weight="400" fill="#233">Responsibility/economic allocation (09B)</text>
+<circle cx="62" cy="494.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="498.0" font-size="12.2" font-weight="400" fill="#233">Pricing revised work (L6)</text>
+<circle cx="62" cy="511.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="515.5" font-size="12.2" font-weight="400" fill="#233">Final cancellation settlement (L7/L12)</text>
+<circle cx="62" cy="529.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="533.0" font-size="12.2" font-weight="400" fill="#233">Final outcome truth (L11)</text>
+<rect x="44" y="579.5" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="579.5" width="4" height="155" rx="2" fill="#075A6B"/>
+<text x="59" y="601.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">03 KEY INPUTS</text>
+<circle cx="62" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="620.5" font-size="12.2" font-weight="400" fill="#233">RequirementContract</text>
+<circle cx="62" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="638.0" font-size="12.2" font-weight="400" fill="#233">WorkPlan</text>
+<circle cx="62" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="655.5" font-size="12.2" font-weight="400" fill="#233">Execution state</text>
+<circle cx="62" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="673.0" font-size="12.2" font-weight="400" fill="#233">Field observations/photos/measurements</text>
+<circle cx="62" cy="686.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="690.5" font-size="12.2" font-weight="400" fill="#233">Current rules</text>
+<circle cx="62" cy="704.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="708.0" font-size="12.2" font-weight="400" fill="#233">Provider/resource availability</text>
+<rect x="44" y="754.5" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="754.5" width="4" height="190" rx="2" fill="#075A6B"/>
+<text x="59" y="776.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">04 AUTHORITATIVE OUTPUTS</text>
+<circle cx="62" cy="791.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="795.5" font-size="12.2" font-weight="400" fill="#233">RealityCase</text>
+<circle cx="62" cy="809.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="813.0" font-size="12.2" font-weight="400" fill="#233">ChangedFact</text>
+<circle cx="62" cy="826.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="830.5" font-size="12.2" font-weight="400" fill="#233">FieldMSI</text>
+<circle cx="62" cy="844.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="848.0" font-size="12.2" font-weight="400" fill="#233">ImpactClassification</text>
+<circle cx="62" cy="861.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="865.5" font-size="12.2" font-weight="400" fill="#233">RecoveryDecision</text>
+<circle cx="62" cy="879.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="883.0" font-size="12.2" font-weight="400" fill="#233">TargetedReanalysisRequest</text>
+<circle cx="62" cy="896.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="900.5" font-size="12.2" font-weight="400" fill="#233">BranchRequest</text>
+<circle cx="62" cy="914.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="918.0" font-size="12.2" font-weight="400" fill="#233">ResumeDecision</text>
+<rect x="44" y="964.5" width="517" height="225" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="964.5" width="4" height="225" rx="2" fill="#079B9D"/>
+<text x="59" y="986.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">05 ENGINES / COMPONENTS</text>
+<circle cx="62" cy="1001.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1005.5" font-size="12.2" font-weight="400" fill="#233">Reality Reconciliation Engine</text>
+<circle cx="62" cy="1019.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1023.0" font-size="12.2" font-weight="400" fill="#233">Field Evidence Engine</text>
+<circle cx="62" cy="1036.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1040.5" font-size="12.2" font-weight="400" fill="#233">Field MSI Resolver</text>
+<circle cx="62" cy="1054.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1058.0" font-size="12.2" font-weight="400" fill="#233">Semantic R0–R5 Classifier</text>
+<circle cx="62" cy="1071.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1075.5" font-size="12.2" font-weight="400" fill="#233">Dependency Impact Analyzer</text>
+<circle cx="62" cy="1089.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1093.0" font-size="12.2" font-weight="400" fill="#233">Safety Interrupt Router</text>
+<circle cx="62" cy="1106.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1110.5" font-size="12.2" font-weight="400" fill="#233">Recovery Optimizer</text>
+<circle cx="62" cy="1124.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1128.0" font-size="12.2" font-weight="400" fill="#233">Targeted Reanalysis Coordinator</text>
+<circle cx="62" cy="1141.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1145.5" font-size="12.2" font-weight="400" fill="#233">Branch Decision Engine</text>
+<circle cx="62" cy="1159.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1163.0" font-size="12.2" font-weight="400" fill="#233">Resume Controller</text>
+<rect x="581" y="212" width="517" height="365" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="212" width="4" height="365" rx="2" fill="#079B9D"/>
+<text x="596" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">06 OPERATING &amp; DECISION PATH</text>
+<circle cx="599" cy="249" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="253" font-size="12.2" font-weight="400" fill="#233">Observe/verify actual condition.</text>
+<circle cx="599" cy="266.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="270.5" font-size="12.2" font-weight="400" fill="#233">Create RealityCase and capture evidence.</text>
+<circle cx="599" cy="284.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="288.0" font-size="12.2" font-weight="400" fill="#233">Append changed fact preserving superseded value/provenance.</text>
+<circle cx="599" cy="301.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="305.5" font-size="12.2" font-weight="400" fill="#233">Classify semantic R0–R5 impact.</text>
+<circle cx="599" cy="319.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="323.0" font-size="12.2" font-weight="400" fill="#233">R4 immediately holds smallest safe affected scope and calls L3.</text>
+<circle cx="599" cy="336.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="340.5" font-size="12.2" font-weight="400" fill="#233">Analyze affected TaskBlocks/dependencies/resources/completion</text>
+<text x="611" y="358.0" font-size="12.2" font-weight="400" fill="#233">criteria.</text>
+<circle cx="599" cy="371.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="375.5" font-size="12.2" font-weight="400" fill="#233">Search hierarchy: current executor → small resource adjustment →</text>
+<text x="611" y="393.0" font-size="12.2" font-weight="400" fill="#233">redistribute team/resources → add support → continue unaffected tasks</text>
+<text x="611" y="410.5" font-size="12.2" font-weight="400" fill="#233">→ replace affected role → prerequisite branch → targeted TaskBlock</text>
+<text x="611" y="428.0" font-size="12.2" font-weight="400" fill="#233">rearchitecture → full JobOrder replan → cancel affected scope last</text>
+<text x="611" y="445.5" font-size="12.2" font-weight="400" fill="#233">resort.</text>
+<circle cx="599" cy="459.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="463.0" font-size="12.2" font-weight="400" fill="#233">R2 invokes L4/L5 recovery without changing RequirementContract.</text>
+<circle cx="599" cy="476.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="480.5" font-size="12.2" font-weight="400" fill="#233">R3 invokes L2 targeted reanalysis only for affected nodes.</text>
+<circle cx="599" cy="494.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="498.0" font-size="12.2" font-weight="400" fill="#233">R5 remains CandidateFollowUp unless necessary prerequisite and</text>
+<text x="611" y="515.5" font-size="12.2" font-weight="400" fill="#233">approved.</text>
+<circle cx="599" cy="529.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="533.0" font-size="12.2" font-weight="400" fill="#233">Request approval only when scope/price/time/policy requires it.</text>
+<circle cx="599" cy="546.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="550.5" font-size="12.2" font-weight="400" fill="#233">Resume/branch/partial close through P1/L10.</text>
+<rect x="581" y="597.0" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="597.0" width="4" height="155" rx="2" fill="#079B9D"/>
+<text x="596" y="619.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">07 DECISION GATES</text>
+<circle cx="599" cy="634.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="638.0" font-size="12.2" font-weight="400" fill="#233">R0 Confirmed as planned</text>
+<circle cx="599" cy="651.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="655.5" font-size="12.2" font-weight="400" fill="#233">R1 Minor operational variance</text>
+<circle cx="599" cy="669.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="673.0" font-size="12.2" font-weight="400" fill="#233">R2 Fulfillment/resource variance</text>
+<circle cx="599" cy="686.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="690.5" font-size="12.2" font-weight="400" fill="#233">R3 Requirement-impacting condition</text>
+<circle cx="599" cy="704.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="708.0" font-size="12.2" font-weight="400" fill="#233">R4 Safety/regulatory change</text>
+<circle cx="599" cy="721.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="725.5" font-size="12.2" font-weight="400" fill="#233">R5 Independent new work</text>
+<rect x="581" y="772.0" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="772.0" width="4" height="190" rx="2" fill="#075A6B"/>
+<text x="596" y="794.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">08 DATA / ARTIFACT OBJECTS</text>
+<circle cx="599" cy="809.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="813.0" font-size="12.2" font-weight="400" fill="#233">RealityCase</text>
+<circle cx="599" cy="826.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="830.5" font-size="12.2" font-weight="400" fill="#233">ChangedFact</text>
+<circle cx="599" cy="844.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="848.0" font-size="12.2" font-weight="400" fill="#233">FieldMSI</text>
+<circle cx="599" cy="861.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="865.5" font-size="12.2" font-weight="400" fill="#233">ImpactClassification</text>
+<circle cx="599" cy="879.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="883.0" font-size="12.2" font-weight="400" fill="#233">RecoveryOption</text>
+<circle cx="599" cy="896.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="900.5" font-size="12.2" font-weight="400" fill="#233">RecoveryDecision</text>
+<circle cx="599" cy="914.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="918.0" font-size="12.2" font-weight="400" fill="#233">BranchRelationshipRequest</text>
+<circle cx="599" cy="931.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="935.5" font-size="12.2" font-weight="400" fill="#233">DecisionTrace</text>
+<rect x="581" y="982.0" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="982.0" width="4" height="155" rx="2" fill="#13C7BC"/>
+<text x="596" y="1004.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">09 EVENTS EMITTED</text>
+<circle cx="599" cy="1019.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1023.0" font-size="12.2" font-weight="400" fill="#233">RealityCase.Created</text>
+<circle cx="599" cy="1036.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1040.5" font-size="12.2" font-weight="400" fill="#233">FactLedger.FieldUpdated</text>
+<circle cx="599" cy="1054.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1058.0" font-size="12.2" font-weight="400" fill="#233">RecoveryOption.Selected</text>
+<circle cx="599" cy="1071.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1075.5" font-size="12.2" font-weight="400" fill="#233">TargetedReanalysis.Requested</text>
+<circle cx="599" cy="1089.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1093.0" font-size="12.2" font-weight="400" fill="#233">Branch.Requested</text>
+<circle cx="599" cy="1106.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1110.5" font-size="12.2" font-weight="400" fill="#233">Execution.ResumeRequested</text>
+<rect x="581" y="1157.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1157.0" width="4" height="120" rx="2" fill="#13C7BC"/>
+<text x="596" y="1179.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">10 EVENTS CONSUMED</text>
+<circle cx="599" cy="1194.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1198.0" font-size="12.2" font-weight="400" fill="#233">Execution.IssueDetected</text>
+<circle cx="599" cy="1211.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1215.5" font-size="12.2" font-weight="400" fill="#233">Provider.FieldObservation</text>
+<circle cx="599" cy="1229.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1233.0" font-size="12.2" font-weight="400" fill="#233">Customer.FieldUpdate</text>
+<circle cx="599" cy="1246.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1250.5" font-size="12.2" font-weight="400" fill="#233">SafetySignal.Raised</text>
+<rect x="1118" y="212" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="212" width="4" height="190" rx="2" fill="#079B9D"/>
+<text x="1133" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">11 INTEGRATIONS / CALLBACKS</text>
+<circle cx="1136" cy="249" r="2.4" fill="#079B9D"/>
+<text x="1148" y="253" font-size="12.2" font-weight="400" fill="#233">L2 Intelligence</text>
+<circle cx="1136" cy="266.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="270.5" font-size="12.2" font-weight="400" fill="#233">L3 Trust/Safety</text>
+<circle cx="1136" cy="284.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="288.0" font-size="12.2" font-weight="400" fill="#233">L4 Fulfillment</text>
+<circle cx="1136" cy="301.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="305.5" font-size="12.2" font-weight="400" fill="#233">L5 Resources</text>
+<circle cx="1136" cy="319.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="323.0" font-size="12.2" font-weight="400" fill="#233">L7 Cancellation last resort</text>
+<circle cx="1136" cy="336.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="340.5" font-size="12.2" font-weight="400" fill="#233">L09B Fairness</text>
+<circle cx="1136" cy="354.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="358.0" font-size="12.2" font-weight="400" fill="#233">L10 Execution</text>
+<circle cx="1136" cy="371.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="375.5" font-size="12.2" font-weight="400" fill="#233">P2 FactLedger</text>
+<rect x="1118" y="422.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="422.0" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="444.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">12 FAILURE &amp; RECOVERY</text>
+<circle cx="1136" cy="459.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="463.0" font-size="12.2" font-weight="400" fill="#233">Unsafe condition → immediate smallest-safe-scope hold.</text>
+<circle cx="1136" cy="476.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="480.5" font-size="12.2" font-weight="400" fill="#233">No resource solution → expand L4/L5 search.</text>
+<circle cx="1136" cy="494.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="498.0" font-size="12.2" font-weight="400" fill="#233">Cannot isolate impact → full replan last resort.</text>
+<circle cx="1136" cy="511.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="515.5" font-size="12.2" font-weight="400" fill="#233">No safe/viable recovery or customer declines → L7 cancellation path.</text>
+<rect x="1118" y="562.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="562.0" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="584.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">13 HUMAN REVIEW</text>
+<circle cx="1136" cy="599.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="603.0" font-size="12.2" font-weight="400" fill="#233">R4 safety/regulatory</text>
+<circle cx="1136" cy="616.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="620.5" font-size="12.2" font-weight="400" fill="#233">High-impact ambiguous reality</text>
+<circle cx="1136" cy="634.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="638.0" font-size="12.2" font-weight="400" fill="#233">Major scope/cost/time change</text>
+<circle cx="1136" cy="651.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="655.5" font-size="12.2" font-weight="400" fill="#233">Disputed field facts</text>
+<rect x="1118" y="702.0" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="702.0" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="1133" y="724.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">14 SECURITY / PRIVACY</text>
+<circle cx="1136" cy="739.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="743.0" font-size="12.2" font-weight="400" fill="#233">Evidence tied to WorkCase/TaskBlock.</text>
+<circle cx="1136" cy="756.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="760.5" font-size="12.2" font-weight="400" fill="#233">Executor submits facts, not blame or self-priced changes.</text>
+<circle cx="1136" cy="774.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="778.0" font-size="12.2" font-weight="400" fill="#233">Field evidence immutable by reference.</text>
+<rect x="1118" y="824.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="824.5" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="846.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">15 1M-JOB SCALABILITY</text>
+<circle cx="1136" cy="861.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="865.5" font-size="12.2" font-weight="400" fill="#233">Low-latency Field MSI</text>
+<circle cx="1136" cy="879.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="883.0" font-size="12.2" font-weight="400" fill="#233">Affected-node reanalysis</text>
+<circle cx="1136" cy="896.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="900.5" font-size="12.2" font-weight="400" fill="#233">Parallel recovery search</text>
+<circle cx="1136" cy="914.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="918.0" font-size="12.2" font-weight="400" fill="#233">WorkCase ordered events</text>
+<rect x="1118" y="964.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="964.5" width="4" height="138" rx="2" fill="#02133C"/>
+<text x="1133" y="986.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">16 NON-NEGOTIABLE INVARIANTS</text>
+<circle cx="1136" cy="1001.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1005.5" font-size="12.2" font-weight="600" fill="#02133C">R0–R5 are semantic classes, NOT severity.</text>
+<circle cx="1136" cy="1019.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1023.0" font-size="12.2" font-weight="600" fill="#02133C">Physical reality is authoritative but cannot bypass controls.</text>
+<circle cx="1136" cy="1036.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1040.5" font-size="12.2" font-weight="600" fill="#02133C">Solution before broad replanning.</text>
+<circle cx="1136" cy="1054.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1058.0" font-size="12.2" font-weight="600" fill="#02133C">Continue unaffected TaskBlocks when dependencies/safety allow.</text>
+<circle cx="1136" cy="1071.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1075.5" font-size="12.2" font-weight="600" fill="#02133C">Full replan and cancellation are last resort.</text>
+<rect x="1118" y="1122.0" width="517" height="398" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="1122.0" width="4" height="398" rx="2" fill="#02133C"/>
+<text x="1133" y="1144.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">17 SPECIAL CONTROL — R0–R5 SEMANTIC IMPACT +</text>
+<text x="1133" y="1160.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">FASTEST-SAFE-SOLUTION</text>
+<circle cx="1136" cy="1175.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1179.0" font-size="12.2" font-weight="600" fill="#02133C">R0 · Confirmed as planned → Execute approved plan</text>
+<circle cx="1136" cy="1192.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1196.5" font-size="12.2" font-weight="600" fill="#02133C">R1 · Minor operational variance → Adjust locally; no architecture</text>
+<text x="1148" y="1214.0" font-size="12.2" font-weight="600" fill="#02133C">change</text>
+<circle cx="1136" cy="1227.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1231.5" font-size="12.2" font-weight="600" fill="#02133C">R2 · Fulfillment/resource variance → Requirement valid; change</text>
+<text x="1148" y="1249.0" font-size="12.2" font-weight="600" fill="#02133C">provider/resource</text>
+<circle cx="1136" cy="1262.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1266.5" font-size="12.2" font-weight="600" fill="#02133C">R3 · Requirement-impacting condition → Targeted Intelligence</text>
+<text x="1148" y="1284.0" font-size="12.2" font-weight="600" fill="#02133C">reanalysis</text>
+<circle cx="1136" cy="1297.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1301.5" font-size="12.2" font-weight="600" fill="#02133C">R4 · Safety/regulatory change → Immediate affected-scope hold + L3</text>
+<circle cx="1136" cy="1315.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1319.0" font-size="12.2" font-weight="600" fill="#02133C">R5 · Independent new work → CandidateFollowUp/branch with consent</text>
+<circle cx="1136" cy="1332.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1336.5" font-size="12.2" font-weight="600" fill="#02133C">1 Current executor</text>
+<circle cx="1136" cy="1350.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1354.0" font-size="12.2" font-weight="600" fill="#02133C">2 Small resource adjustment</text>
+<circle cx="1136" cy="1367.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1371.5" font-size="12.2" font-weight="600" fill="#02133C">3 Redistribute team/resources</text>
+<circle cx="1136" cy="1385.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1389.0" font-size="12.2" font-weight="600" fill="#02133C">4 Add helper/specialist</text>
+<circle cx="1136" cy="1402.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1406.5" font-size="12.2" font-weight="600" fill="#02133C">5 Continue unaffected TaskBlocks</text>
+<circle cx="1136" cy="1420.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1424.0" font-size="12.2" font-weight="600" fill="#02133C">6 Replace affected role/provider</text>
+<circle cx="1136" cy="1437.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1441.5" font-size="12.2" font-weight="600" fill="#02133C">7 Prerequisite branch</text>
+<circle cx="1136" cy="1455.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1459.0" font-size="12.2" font-weight="600" fill="#02133C">8 Targeted TaskBlock rearchitecture</text>
+<circle cx="1136" cy="1472.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1476.5" font-size="12.2" font-weight="600" fill="#02133C">9 Full JobOrder replan</text>
+<circle cx="1136" cy="1490.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1494.0" font-size="12.2" font-weight="600" fill="#02133C">10 Cancel affected scope — last resort</text>
+<rect x="1118" y="1540.5" width="517" height="120" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="1540.5" width="4" height="120" rx="2" fill="#075A6B"/>
+<text x="1133" y="1562.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">18 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="1577.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1581.5" font-size="12.2" font-weight="400" fill="#233">L09A-G1 · R2 missing tool resolved without RC change</text>
+<circle cx="1136" cy="1595.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1599.0" font-size="12.2" font-weight="400" fill="#233">L09A-G2 · R3 incompatible connection produces RC vN+1 only for</text>
+<text x="1148" y="1616.5" font-size="12.2" font-weight="400" fill="#233">affected task</text>
+<circle cx="1136" cy="1630.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1634.0" font-size="12.2" font-weight="400" fill="#233">L09A-G3 · R5 unrelated faucet repair remains CandidateFollowUp</text>
+<rect y="1724" width="1680" height="64" fill="#02133C"/>
+<text x="44" y="1751" font-size="11.6" fill="#FFFFFF">Board regenerated from the corrected canonical set. Text is real SVG text — readable by script, not only by eye.</text>
+<text x="44" y="1769" font-size="10.4" fill="#13C7BC">Every consumed event on this board has exactly one producer, or is declared external. Open rulings are listed in the canonical file, not decided here.</text>
+<text x="1636" y="1760" text-anchor="end" font-size="11.6" font-weight="700" fill="#13C7BC">L09A</text>
+</svg>

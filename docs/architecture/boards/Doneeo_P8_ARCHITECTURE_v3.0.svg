@@ -1,0 +1,252 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1300" viewBox="0 0 1680 1300" font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1300" fill="#F6F9F9"/>
+<rect width="1680" height="168" fill="#02133C"/>
+<rect y="163" width="1680" height="5" fill="#079B9D"/>
+<text x="44" y="46" font-size="17" font-weight="700" fill="#FFFFFF" letter-spacing="3.6">DONEEO</text>
+<text x="162" y="46" font-size="12.5" fill="#13C7BC" letter-spacing="0.4">Intelligence to Get Work Done</text>
+<text x="44" y="92" font-size="31" font-weight="700" fill="#FFFFFF">P8 — PRIVACY, DATA GOVERNANCE &amp; REGULATORY COMPLIANCE ARCHITECTURE</text>
+<text x="44" y="118" font-size="13.4" fill="#C9D9DE">Govern lawful data use, privacy-by-design, classification, data lifecycle, data-subject rights and compliance assurance without duplicating identity or runtime</text>
+<text x="44" y="137" font-size="13.4" fill="#C9D9DE">security ownership.</text>
+<rect x="1306" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1357" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">LAYER</text>
+<text x="1357" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">P8</text>
+<rect x="1418" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1469" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">EDITION</text>
+<text x="1469" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">v3.0 clean</text>
+<rect x="1530" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1581" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">DATE</text>
+<text x="1581" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2026-08-23</text>
+<text x="1306" y="106" font-size="10.6" fill="#13C7BC">Numbering, naming and event linkage corrected.</text>
+<text x="1306" y="122" font-size="10.6" fill="#9FB6BE">Items marked FIXED changed in this edition.</text>
+<rect x="44" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="212" width="4" height="172" rx="2" fill="#02133C"/>
+<text x="59" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">01 OWNS</text>
+<circle cx="62" cy="249" r="2.4" fill="#02133C"/>
+<text x="74" y="253" font-size="12.2" font-weight="400" fill="#233">Privacy policy</text>
+<circle cx="62" cy="266.5" r="2.4" fill="#02133C"/>
+<text x="74" y="270.5" font-size="12.2" font-weight="400" fill="#233">Data classification/handling rules</text>
+<circle cx="62" cy="284.0" r="2.4" fill="#02133C"/>
+<text x="74" y="288.0" font-size="12.2" font-weight="400" fill="#233">Privacy impact assessments/DPIA</text>
+<circle cx="62" cy="301.5" r="2.4" fill="#02133C"/>
+<text x="74" y="305.5" font-size="12.2" font-weight="400" fill="#233">Data subject rights</text>
+<circle cx="62" cy="319.0" r="2.4" fill="#02133C"/>
+<text x="74" y="323.0" font-size="12.2" font-weight="400" fill="#233">Retention/legal hold/disposal</text>
+<circle cx="62" cy="336.5" r="2.4" fill="#02133C"/>
+<text x="74" y="340.5" font-size="12.2" font-weight="400" fill="#233">Records of processing</text>
+<circle cx="62" cy="354.0" r="2.4" fill="#02133C"/>
+<text x="74" y="358.0" font-size="12.2" font-weight="400" fill="#233">Privacy compliance assurance</text>
+<rect x="44" y="404.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="404.5" width="4" height="138" rx="2" fill="#8A3B4A"/>
+<text x="59" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#8A3B4A">02 DOES NOT OWN</text>
+<circle cx="62" cy="441.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="445.5" font-size="12.2" font-weight="400" fill="#233">Authentication/authorization/session identity (P3)</text>
+<circle cx="62" cy="459.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="463.0" font-size="12.2" font-weight="400" fill="#233">Runtime security/fraud enforcement (P4)</text>
+<circle cx="62" cy="476.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="480.5" font-size="12.2" font-weight="400" fill="#233">Primary data storage (P2)</text>
+<circle cx="62" cy="494.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="498.0" font-size="12.2" font-weight="400" fill="#233">Business decisions</text>
+<circle cx="62" cy="511.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="515.5" font-size="12.2" font-weight="400" fill="#233">Financial settlement</text>
+<rect x="44" y="562.0" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="562.0" width="4" height="155" rx="2" fill="#075A6B"/>
+<text x="59" y="584.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">03 KEY INPUTS</text>
+<circle cx="62" cy="599.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="603.0" font-size="12.2" font-weight="400" fill="#233">P3 identity/consent-grant context</text>
+<circle cx="62" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="620.5" font-size="12.2" font-weight="400" fill="#233">P2 data catalog/lineage</text>
+<circle cx="62" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="638.0" font-size="12.2" font-weight="400" fill="#233">All-layer data processing inventory</text>
+<circle cx="62" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="655.5" font-size="12.2" font-weight="400" fill="#233">P5 third-party contracts</text>
+<circle cx="62" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="673.0" font-size="12.2" font-weight="400" fill="#233">P6 telemetry</text>
+<circle cx="62" cy="686.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="690.5" font-size="12.2" font-weight="400" fill="#233">Jurisdictional requirements</text>
+<rect x="44" y="737.0" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="737.0" width="4" height="172" rx="2" fill="#075A6B"/>
+<text x="59" y="759.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">04 AUTHORITATIVE OUTPUTS</text>
+<circle cx="62" cy="774.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="778.0" font-size="12.2" font-weight="400" fill="#233">PrivacyPolicy</text>
+<circle cx="62" cy="791.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="795.5" font-size="12.2" font-weight="400" fill="#233">DataClassification</text>
+<circle cx="62" cy="809.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="813.0" font-size="12.2" font-weight="400" fill="#233">ProcessingPurpose</text>
+<circle cx="62" cy="826.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="830.5" font-size="12.2" font-weight="400" fill="#233">RetentionPolicy</text>
+<circle cx="62" cy="844.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="848.0" font-size="12.2" font-weight="400" fill="#233">DSRCase</text>
+<circle cx="62" cy="861.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="865.5" font-size="12.2" font-weight="400" fill="#233">DPIA</text>
+<circle cx="62" cy="879.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="883.0" font-size="12.2" font-weight="400" fill="#233">ComplianceFinding</text>
+<rect x="44" y="929.5" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="929.5" width="4" height="172" rx="2" fill="#079B9D"/>
+<text x="59" y="951.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">05 ENGINES / COMPONENTS</text>
+<circle cx="62" cy="966.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="970.5" font-size="12.2" font-weight="400" fill="#233">Privacy Policy Engine</text>
+<circle cx="62" cy="984.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="988.0" font-size="12.2" font-weight="400" fill="#233">Data Classification Service</text>
+<circle cx="62" cy="1001.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1005.5" font-size="12.2" font-weight="400" fill="#233">Processing Inventory/RoPA</text>
+<circle cx="62" cy="1019.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1023.0" font-size="12.2" font-weight="400" fill="#233">DSR Workflow</text>
+<circle cx="62" cy="1036.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1040.5" font-size="12.2" font-weight="400" fill="#233">Retention/Legal Hold Manager</text>
+<circle cx="62" cy="1054.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1058.0" font-size="12.2" font-weight="400" fill="#233">DPIA/Risk Assessment</text>
+<circle cx="62" cy="1071.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1075.5" font-size="12.2" font-weight="400" fill="#233">Compliance Monitoring/Audit</text>
+<rect x="581" y="212" width="517" height="208" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="212" width="4" height="208" rx="2" fill="#079B9D"/>
+<text x="596" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">06 OPERATING &amp; DECISION PATH</text>
+<circle cx="599" cy="249" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="253" font-size="12.2" font-weight="400" fill="#233">Classify data and lawful purpose.</text>
+<circle cx="599" cy="266.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="270.5" font-size="12.2" font-weight="400" fill="#233">Apply minimization/purpose/retention rules.</text>
+<circle cx="599" cy="284.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="288.0" font-size="12.2" font-weight="400" fill="#233">P3 enforces actual access/consent grants; P8 defines privacy</text>
+<text x="611" y="305.5" font-size="12.2" font-weight="400" fill="#233">requirements.</text>
+<circle cx="599" cy="319.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="323.0" font-size="12.2" font-weight="400" fill="#233">P4 enforces runtime security controls; P8 verifies privacy/compliance</text>
+<text x="611" y="340.5" font-size="12.2" font-weight="400" fill="#233">controls.</text>
+<circle cx="599" cy="354.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="358.0" font-size="12.2" font-weight="400" fill="#233">Process DSR requests against P2 authoritative stores.</text>
+<circle cx="599" cy="371.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="375.5" font-size="12.2" font-weight="400" fill="#233">Apply legal holds/retention/disposal with audit evidence.</text>
+<circle cx="599" cy="389.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="393.0" font-size="12.2" font-weight="400" fill="#233">Assess third-party/cross-border processing.</text>
+<rect x="581" y="439.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="439.5" width="4" height="138" rx="2" fill="#079B9D"/>
+<text x="596" y="461.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">07 DECISION GATES</text>
+<circle cx="599" cy="476.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="480.5" font-size="12.2" font-weight="400" fill="#233">Lawful basis/purpose?</text>
+<circle cx="599" cy="494.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="498.0" font-size="12.2" font-weight="400" fill="#233">Data minimization satisfied?</text>
+<circle cx="599" cy="511.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="515.5" font-size="12.2" font-weight="400" fill="#233">Retention/legal hold conflict?</text>
+<circle cx="599" cy="529.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="533.0" font-size="12.2" font-weight="400" fill="#233">DSR identity verified by P3?</text>
+<circle cx="599" cy="546.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="550.5" font-size="12.2" font-weight="400" fill="#233">Cross-border/third-party review required?</text>
+<rect x="581" y="597.0" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="597.0" width="4" height="172" rx="2" fill="#075A6B"/>
+<text x="596" y="619.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">08 DATA / ARTIFACT OBJECTS</text>
+<circle cx="599" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="638.0" font-size="12.2" font-weight="400" fill="#233">PrivacyPolicy</text>
+<circle cx="599" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="655.5" font-size="12.2" font-weight="400" fill="#233">DataClassification</text>
+<circle cx="599" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="673.0" font-size="12.2" font-weight="400" fill="#233">ConsentRequirement</text>
+<circle cx="599" cy="686.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="690.5" font-size="12.2" font-weight="400" fill="#233">DSRCase</text>
+<circle cx="599" cy="704.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="708.0" font-size="12.2" font-weight="400" fill="#233">RetentionAction</text>
+<circle cx="599" cy="721.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="725.5" font-size="12.2" font-weight="400" fill="#233">DPIA</text>
+<circle cx="599" cy="739.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="743.0" font-size="12.2" font-weight="400" fill="#233">AuditEvidence</text>
+<rect x="581" y="789.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="789.5" width="4" height="120" rx="2" fill="#13C7BC"/>
+<text x="596" y="811.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">09 EVENTS EMITTED</text>
+<circle cx="599" cy="826.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="830.5" font-size="12.2" font-weight="400" fill="#233">Privacy.PolicyUpdated</text>
+<circle cx="599" cy="844.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="848.0" font-size="12.2" font-weight="400" fill="#233">DSR.Opened</text>
+<circle cx="599" cy="861.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="865.5" font-size="12.2" font-weight="400" fill="#233">Retention.Actioned</text>
+<circle cx="599" cy="879.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="883.0" font-size="12.2" font-weight="400" fill="#233">Compliance.FindingRaised</text>
+<rect x="581" y="929.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="929.5" width="4" height="120" rx="2" fill="#13C7BC"/>
+<text x="596" y="951.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">10 EVENTS CONSUMED</text>
+<circle cx="599" cy="966.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="970.5" font-size="12.2" font-weight="400" fill="#233">Data.ProcessingRegistered</text>
+<circle cx="599" cy="984.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="988.0" font-size="12.2" font-weight="400" fill="#233">Consent.ContextUpdated</text>
+<circle cx="599" cy="1001.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1005.5" font-size="12.2" font-weight="400" fill="#233">Security.Incident</text>
+<circle cx="599" cy="1019.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1023.0" font-size="12.2" font-weight="400" fill="#233">Integration.ContractUpdated</text>
+<rect x="1118" y="212" width="517" height="260" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="212" width="4" height="260" rx="2" fill="#079B9D"/>
+<text x="1133" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">11 INTEGRATIONS / CALLBACKS</text>
+<text x="1133" y="253" font-size="12.2" font-weight="400" fill="#5A6B72">Recovered by OCR from the PNG source poster; no SVG exists.</text>
+<text x="1133" y="270.5" font-size="12.2" font-weight="400" fill="#5A6B72">Source poster's platform numbering matches current canon (P4=Security,</text>
+<text x="1148" y="288.0" font-size="12.2" font-weight="400" fill="#233">P6=Event/AI/Observability, P7=Messaging, P9=Finance) except</text>
+<text x="1148" y="305.5" font-size="12.2" font-weight="400" fill="#233">P10=Execution, which canon owns as domain layer L10.</text>
+<circle cx="1136" cy="319.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="323.0" font-size="12.2" font-weight="400" fill="#233">From P1 (Orchestrator)</text>
+<circle cx="1136" cy="336.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="340.5" font-size="12.2" font-weight="400" fill="#233">From P2 (Ledger / Data)</text>
+<circle cx="1136" cy="354.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="358.0" font-size="12.2" font-weight="400" fill="#233">From P3 (Identity)</text>
+<circle cx="1136" cy="371.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="375.5" font-size="12.2" font-weight="400" fill="#233">From P4 (Security &amp; Safety)</text>
+<circle cx="1136" cy="389.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="393.0" font-size="12.2" font-weight="400" fill="#233">From P6 (Event, AI, Obs.)</text>
+<circle cx="1136" cy="406.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="410.5" font-size="12.2" font-weight="400" fill="#233">From P7 (Messaging)</text>
+<circle cx="1136" cy="424.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="428.0" font-size="12.2" font-weight="400" fill="#233">From L12 for settlement truth, P9 for rails only</text>
+<circle cx="1136" cy="441.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="445.5" font-size="12.2" font-weight="400" fill="#233">From L10 (Live Execution &amp; Change Control)</text>
+<rect x="1118" y="492.0" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="492.0" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="1133" y="514.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">12 FAILURE &amp; RECOVERY</text>
+<circle cx="1136" cy="529.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="533.0" font-size="12.2" font-weight="400" fill="#233">DSR conflict/legal hold → compliance review.</text>
+<circle cx="1136" cy="546.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="550.5" font-size="12.2" font-weight="400" fill="#233">Unknown processing purpose → block/limit.</text>
+<circle cx="1136" cy="564.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="568.0" font-size="12.2" font-weight="400" fill="#233">Third-party noncompliance → restrict integration.</text>
+<rect x="1118" y="614.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="614.5" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="636.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">13 HUMAN REVIEW</text>
+<circle cx="1136" cy="651.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="655.5" font-size="12.2" font-weight="400" fill="#233">High-risk DPIA</text>
+<circle cx="1136" cy="669.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="673.0" font-size="12.2" font-weight="400" fill="#233">Regulator/audit request</text>
+<circle cx="1136" cy="686.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="690.5" font-size="12.2" font-weight="400" fill="#233">Legal hold conflict</text>
+<circle cx="1136" cy="704.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="708.0" font-size="12.2" font-weight="400" fill="#233">Cross-border exception</text>
+<rect x="1118" y="754.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="754.5" width="4" height="138" rx="2" fill="#5A6B72"/>
+<text x="1133" y="776.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">14 SECURITY / PRIVACY</text>
+<circle cx="1136" cy="791.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="795.5" font-size="12.2" font-weight="400" fill="#233">Privacy by design</text>
+<circle cx="1136" cy="809.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="813.0" font-size="12.2" font-weight="400" fill="#233">Purpose limitation</text>
+<circle cx="1136" cy="826.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="830.5" font-size="12.2" font-weight="400" fill="#233">Minimization</text>
+<circle cx="1136" cy="844.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="848.0" font-size="12.2" font-weight="400" fill="#233">Transparency</text>
+<circle cx="1136" cy="861.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="865.5" font-size="12.2" font-weight="400" fill="#233">Retention discipline</text>
+<rect x="1118" y="912.0" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="912.0" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="1133" y="934.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">15 1M-JOB SCALABILITY</text>
+<circle cx="1136" cy="949.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="953.0" font-size="12.2" font-weight="400" fill="#233">Policy caching</text>
+<circle cx="1136" cy="966.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="970.5" font-size="12.2" font-weight="400" fill="#233">Async inventory/audit</text>
+<circle cx="1136" cy="984.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="988.0" font-size="12.2" font-weight="400" fill="#233">Region-specific rule packs</text>
+<rect x="1118" y="1034.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="1034.5" width="4" height="138" rx="2" fill="#02133C"/>
+<text x="1133" y="1056.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">16 NON-NEGOTIABLE INVARIANTS</text>
+<circle cx="1136" cy="1071.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1075.5" font-size="12.2" font-weight="600" fill="#02133C">P3 owns identity/access/consent grants; P8 owns privacy policy and</text>
+<text x="1148" y="1093.0" font-size="12.2" font-weight="600" fill="#02133C">data lifecycle.</text>
+<circle cx="1136" cy="1106.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1110.5" font-size="12.2" font-weight="600" fill="#02133C">P4 owns runtime security enforcement.</text>
+<circle cx="1136" cy="1124.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1128.0" font-size="12.2" font-weight="600" fill="#02133C">P2 owns authoritative data/evidence stores.</text>
+<circle cx="1136" cy="1141.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1145.5" font-size="12.2" font-weight="600" fill="#02133C">Privacy controls apply across all domain layers.</text>
+<rect y="1236" width="1680" height="64" fill="#02133C"/>
+<text x="44" y="1263" font-size="11.6" fill="#FFFFFF">Board regenerated from the corrected canonical set. Text is real SVG text — readable by script, not only by eye.</text>
+<text x="44" y="1281" font-size="10.4" fill="#13C7BC">Every consumed event on this board has exactly one producer, or is declared external. Open rulings are listed in the canonical file, not decided here.</text>
+<text x="1636" y="1272" text-anchor="end" font-size="11.6" font-weight="700" fill="#13C7BC">P8</text>
+</svg>

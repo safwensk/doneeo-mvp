@@ -1,0 +1,287 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1422" viewBox="0 0 1680 1422" font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1422" fill="#F6F9F9"/>
+<rect width="1680" height="168" fill="#02133C"/>
+<rect y="163" width="1680" height="5" fill="#079B9D"/>
+<text x="44" y="46" font-size="17" font-weight="700" fill="#FFFFFF" letter-spacing="3.6">DONEEO</text>
+<text x="162" y="46" font-size="12.5" fill="#13C7BC" letter-spacing="0.4">Intelligence to Get Work Done</text>
+<text x="44" y="92" font-size="31" font-weight="700" fill="#FFFFFF">L4 — FULFILLMENT, MATCHING &amp; TEAM ASSEMBLY</text>
+<text x="44" y="118" font-size="13.4" fill="#C9D9DE">Resolve real people, teams, availability, resources and schedule into bookable feasible fulfillment options without weakening requirements because supply is scarce.</text>
+<rect x="1306" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1357" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">LAYER</text>
+<text x="1357" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">L4</text>
+<rect x="1418" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1469" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">EDITION</text>
+<text x="1469" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">v3.0 clean</text>
+<rect x="1530" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1581" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">DATE</text>
+<text x="1581" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2026-08-23</text>
+<text x="1306" y="106" font-size="10.6" fill="#13C7BC">Numbering, naming and event linkage corrected.</text>
+<text x="1306" y="122" font-size="10.6" fill="#9FB6BE">Items marked FIXED changed in this edition.</text>
+<rect x="44" y="212" width="517" height="208" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="212" width="4" height="208" rx="2" fill="#02133C"/>
+<text x="59" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">01 OWNS</text>
+<circle cx="62" cy="249" r="2.4" fill="#02133C"/>
+<text x="74" y="253" font-size="12.2" font-weight="400" fill="#233">Candidate retrieval</text>
+<circle cx="62" cy="266.5" r="2.4" fill="#02133C"/>
+<text x="74" y="270.5" font-size="12.2" font-weight="400" fill="#233">Hard eligibility filtering</text>
+<circle cx="62" cy="284.0" r="2.4" fill="#02133C"/>
+<text x="74" y="288.0" font-size="12.2" font-weight="400" fill="#233">Team assembly and roles</text>
+<circle cx="62" cy="301.5" r="2.4" fill="#02133C"/>
+<text x="74" y="305.5" font-size="12.2" font-weight="400" fill="#233">Availability and capacity</text>
+<circle cx="62" cy="319.0" r="2.4" fill="#02133C"/>
+<text x="74" y="323.0" font-size="12.2" font-weight="400" fill="#233">Provider/resource feasibility</text>
+<circle cx="62" cy="336.5" r="2.4" fill="#02133C"/>
+<text x="74" y="340.5" font-size="12.2" font-weight="400" fill="#233">Scheduling/routing coordination</text>
+<circle cx="62" cy="354.0" r="2.4" fill="#02133C"/>
+<text x="74" y="358.0" font-size="12.2" font-weight="400" fill="#233">FulfillmentSimulation</text>
+<circle cx="62" cy="371.5" r="2.4" fill="#02133C"/>
+<text x="74" y="375.5" font-size="12.2" font-weight="400" fill="#233">Feasible option ranking</text>
+<circle cx="62" cy="389.0" r="2.4" fill="#02133C"/>
+<text x="74" y="393.0" font-size="12.2" font-weight="400" fill="#233">FulfillmentCostSnapshot</text>
+<rect x="44" y="439.5" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="439.5" width="4" height="155" rx="2" fill="#8A3B4A"/>
+<text x="59" y="461.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#8A3B4A">02 DOES NOT OWN</text>
+<circle cx="62" cy="476.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="480.5" font-size="12.2" font-weight="400" fill="#233">What work is required</text>
+<circle cx="62" cy="494.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="498.0" font-size="12.2" font-weight="400" fill="#233">Safety/rule definition</text>
+<circle cx="62" cy="511.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="515.5" font-size="12.2" font-weight="400" fill="#233">Customer price</text>
+<circle cx="62" cy="529.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="533.0" font-size="12.2" font-weight="400" fill="#233">Customer commitment/payment</text>
+<circle cx="62" cy="546.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="550.5" font-size="12.2" font-weight="400" fill="#233">Execution truth</text>
+<circle cx="62" cy="564.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="568.0" font-size="12.2" font-weight="400" fill="#233">Final settlement</text>
+<rect x="44" y="614.5" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="614.5" width="4" height="172" rx="2" fill="#075A6B"/>
+<text x="59" y="636.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">03 KEY INPUTS</text>
+<circle cx="62" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="655.5" font-size="12.2" font-weight="400" fill="#233">RequirementContract</text>
+<circle cx="62" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="673.0" font-size="12.2" font-weight="400" fill="#233">RuleSet and qualifications</text>
+<circle cx="62" cy="686.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="690.5" font-size="12.2" font-weight="400" fill="#233">Provider/team profiles</text>
+<circle cx="62" cy="704.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="708.0" font-size="12.2" font-weight="400" fill="#233">Availability/calendars</text>
+<circle cx="62" cy="721.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="725.5" font-size="12.2" font-weight="400" fill="#233">Resource inventory</text>
+<circle cx="62" cy="739.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="743.0" font-size="12.2" font-weight="400" fill="#233">Customer timing/location constraints</text>
+<circle cx="62" cy="756.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="760.5" font-size="12.2" font-weight="400" fill="#233">Pricing policy inputs</text>
+<rect x="44" y="807.0" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="807.0" width="4" height="190" rx="2" fill="#075A6B"/>
+<text x="59" y="829.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">04 AUTHORITATIVE OUTPUTS</text>
+<circle cx="62" cy="844.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="848.0" font-size="12.2" font-weight="400" fill="#233">FeasibleFulfillmentOptions</text>
+<circle cx="62" cy="861.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="865.5" font-size="12.2" font-weight="400" fill="#233">TeamPlan</text>
+<circle cx="62" cy="879.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="883.0" font-size="12.2" font-weight="400" fill="#233">RolePlan</text>
+<circle cx="62" cy="896.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="900.5" font-size="12.2" font-weight="400" fill="#233">Schedule</text>
+<circle cx="62" cy="914.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="918.0" font-size="12.2" font-weight="400" fill="#233">RoutePlan</text>
+<circle cx="62" cy="931.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="935.5" font-size="12.2" font-weight="400" fill="#233">Reservation intents</text>
+<circle cx="62" cy="949.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="953.0" font-size="12.2" font-weight="400" fill="#233">FulfillmentSimulation result</text>
+<circle cx="62" cy="966.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="970.5" font-size="12.2" font-weight="400" fill="#233">FulfillmentCostSnapshot</text>
+<rect x="44" y="1017.0" width="517" height="242" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="1017.0" width="4" height="242" rx="2" fill="#079B9D"/>
+<text x="59" y="1039.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">05 ENGINES / COMPONENTS</text>
+<circle cx="62" cy="1054.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1058.0" font-size="12.2" font-weight="400" fill="#233">Candidate Retrieval Engine</text>
+<circle cx="62" cy="1071.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1075.5" font-size="12.2" font-weight="400" fill="#233">Hard Eligibility Filter</text>
+<circle cx="62" cy="1089.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1093.0" font-size="12.2" font-weight="400" fill="#233">Availability Resolver</text>
+<circle cx="62" cy="1106.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1110.5" font-size="12.2" font-weight="400" fill="#233">Team Assembly Engine</text>
+<circle cx="62" cy="1124.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1128.0" font-size="12.2" font-weight="400" fill="#233">Role Assignment Engine</text>
+<circle cx="62" cy="1141.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1145.5" font-size="12.2" font-weight="400" fill="#233">Resource Resolver</text>
+<circle cx="62" cy="1159.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1163.0" font-size="12.2" font-weight="400" fill="#233">True-Gap Coordinator</text>
+<circle cx="62" cy="1176.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1180.5" font-size="12.2" font-weight="400" fill="#233">Scheduling Engine</text>
+<circle cx="62" cy="1194.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1198.0" font-size="12.2" font-weight="400" fill="#233">Routing Coordinator</text>
+<circle cx="62" cy="1211.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1215.5" font-size="12.2" font-weight="400" fill="#233">Fulfillment Simulator</text>
+<circle cx="62" cy="1229.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1233.0" font-size="12.2" font-weight="400" fill="#233">Feasible Option Ranker</text>
+<rect x="581" y="212" width="517" height="225" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="212" width="4" height="225" rx="2" fill="#079B9D"/>
+<text x="596" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">06 OPERATING &amp; DECISION PATH</text>
+<circle cx="599" cy="249" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="253" font-size="12.2" font-weight="400" fill="#233">Retrieve by geography/capability/time.</text>
+<circle cx="599" cy="266.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="270.5" font-size="12.2" font-weight="400" fill="#233">Apply hard eligibility before ranking.</text>
+<circle cx="599" cy="284.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="288.0" font-size="12.2" font-weight="400" fill="#233">Assemble team/roles.</text>
+<circle cx="599" cy="301.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="305.5" font-size="12.2" font-weight="400" fill="#233">Check availability/capacity.</text>
+<circle cx="599" cy="319.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="323.0" font-size="12.2" font-weight="400" fill="#233">Resolve resources with Layer 5.</text>
+<circle cx="599" cy="336.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="340.5" font-size="12.2" font-weight="400" fill="#233">Build schedule/route/reservations.</text>
+<circle cx="599" cy="354.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="358.0" font-size="12.2" font-weight="400" fill="#233">Run FulfillmentSimulation on actual configuration.</text>
+<circle cx="599" cy="371.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="375.5" font-size="12.2" font-weight="400" fill="#233">Reject infeasible options.</text>
+<circle cx="599" cy="389.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="393.0" font-size="12.2" font-weight="400" fill="#233">Rank feasible options by soft objectives.</text>
+<circle cx="599" cy="406.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="410.5" font-size="12.2" font-weight="400" fill="#233">Produce FulfillmentCostSnapshot.</text>
+<rect x="581" y="457.0" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="457.0" width="4" height="138" rx="2" fill="#079B9D"/>
+<text x="596" y="479.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">07 DECISION GATES</text>
+<circle cx="599" cy="494.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="498.0" font-size="12.2" font-weight="400" fill="#233">All hard requirements covered?</text>
+<circle cx="599" cy="511.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="515.5" font-size="12.2" font-weight="400" fill="#233">Every role eligible?</text>
+<circle cx="599" cy="529.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="533.0" font-size="12.2" font-weight="400" fill="#233">Schedule/route feasible?</text>
+<circle cx="599" cy="546.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="550.5" font-size="12.2" font-weight="400" fill="#233">Critical resources reservable?</text>
+<circle cx="599" cy="564.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="568.0" font-size="12.2" font-weight="400" fill="#233">Bookable feasibility proven?</text>
+<rect x="581" y="614.5" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="614.5" width="4" height="172" rx="2" fill="#075A6B"/>
+<text x="596" y="636.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">08 DATA / ARTIFACT OBJECTS</text>
+<circle cx="599" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="655.5" font-size="12.2" font-weight="400" fill="#233">ProviderCandidate</text>
+<circle cx="599" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="673.0" font-size="12.2" font-weight="400" fill="#233">TeamPlan</text>
+<circle cx="599" cy="686.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="690.5" font-size="12.2" font-weight="400" fill="#233">RoleAssignment</text>
+<circle cx="599" cy="704.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="708.0" font-size="12.2" font-weight="400" fill="#233">AvailabilityHold</text>
+<circle cx="599" cy="721.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="725.5" font-size="12.2" font-weight="400" fill="#233">FulfillmentPlan</text>
+<circle cx="599" cy="739.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="743.0" font-size="12.2" font-weight="400" fill="#233">FulfillmentSimulation</text>
+<circle cx="599" cy="756.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="760.5" font-size="12.2" font-weight="400" fill="#233">FulfillmentCostSnapshot</text>
+<rect x="581" y="807.0" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="807.0" width="4" height="155" rx="2" fill="#13C7BC"/>
+<text x="596" y="829.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">09 EVENTS EMITTED</text>
+<circle cx="599" cy="844.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="848.0" font-size="12.2" font-weight="400" fill="#233">CandidateSet.Retrieved</text>
+<circle cx="599" cy="861.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="865.5" font-size="12.2" font-weight="400" fill="#233">Team.Assembled</text>
+<circle cx="599" cy="879.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="883.0" font-size="12.2" font-weight="400" fill="#233">Availability.Confirmed</text>
+<circle cx="599" cy="896.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="900.5" font-size="12.2" font-weight="400" fill="#233">FulfillmentSimulation.Passed</text>
+<circle cx="599" cy="914.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="918.0" font-size="12.2" font-weight="400" fill="#233">FulfillmentOption.Generated</text>
+<circle cx="599" cy="931.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="935.5" font-size="12.2" font-weight="400" fill="#233">Fulfillment.Failed</text>
+<rect x="581" y="982.0" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="982.0" width="4" height="138" rx="2" fill="#13C7BC"/>
+<text x="596" y="1004.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">10 EVENTS CONSUMED</text>
+<circle cx="599" cy="1019.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1023.0" font-size="12.2" font-weight="400" fill="#233">RequirementContract.Compiled</text>
+<circle cx="599" cy="1036.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1040.5" font-size="12.2" font-weight="400" fill="#233">Rules.Classified</text>
+<circle cx="599" cy="1054.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1058.0" font-size="12.2" font-weight="400" fill="#233">ProviderProfile.Updated</text>
+<circle cx="599" cy="1071.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1075.5" font-size="12.2" font-weight="400" fill="#233">ResourceAvailability.Changed</text>
+<circle cx="599" cy="1089.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1093.0" font-size="12.2" font-weight="400" fill="#233">Cancellation.RescheduleRequested</text>
+<rect x="581" y="1139.5" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1139.5" width="4" height="155" rx="2" fill="#079B9D"/>
+<text x="596" y="1161.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">11 INTEGRATIONS / CALLBACKS</text>
+<circle cx="599" cy="1176.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="1180.5" font-size="12.2" font-weight="400" fill="#233">L2 Requirements</text>
+<circle cx="599" cy="1194.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1198.0" font-size="12.2" font-weight="400" fill="#233">L3 Trust/Safety</text>
+<circle cx="599" cy="1211.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="1215.5" font-size="12.2" font-weight="400" fill="#233">L5 Resources</text>
+<circle cx="599" cy="1229.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1233.0" font-size="12.2" font-weight="400" fill="#233">L6 Commercial</text>
+<circle cx="599" cy="1246.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="1250.5" font-size="12.2" font-weight="400" fill="#233">L7 Commitment</text>
+<circle cx="599" cy="1264.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1268.0" font-size="12.2" font-weight="400" fill="#233">L09A recovery</text>
+<rect x="1118" y="212" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="212" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">12 FAILURE &amp; RECOVERY</text>
+<circle cx="1136" cy="249" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="253" font-size="12.2" font-weight="400" fill="#233">No feasible option -&gt; expand search / alternate time / return to</text>
+<text x="1148" y="270.5" font-size="12.2" font-weight="400" fill="#233">planning only if architecture itself infeasible</text>
+<circle cx="1136" cy="284.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="288.0" font-size="12.2" font-weight="400" fill="#233">Provider decline -&gt; rematch fulfillment, not full requirement rebuild</text>
+<circle cx="1136" cy="301.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="305.5" font-size="12.2" font-weight="400" fill="#233">Resource failure -&gt; rerun affected fulfillment path</text>
+<rect x="1118" y="352.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="352.0" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="374.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">13 HUMAN REVIEW</text>
+<circle cx="1136" cy="389.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="393.0" font-size="12.2" font-weight="400" fill="#233">Low confidence match</text>
+<circle cx="1136" cy="406.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="410.5" font-size="12.2" font-weight="400" fill="#233">No feasible option after policy search horizon</text>
+<circle cx="1136" cy="424.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="428.0" font-size="12.2" font-weight="400" fill="#233">Team role conflict</text>
+<circle cx="1136" cy="441.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="445.5" font-size="12.2" font-weight="400" fill="#233">High-cost variance</text>
+<rect x="1118" y="492.0" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="492.0" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="1133" y="514.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">14 SECURITY / PRIVACY</text>
+<circle cx="1136" cy="529.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="533.0" font-size="12.2" font-weight="400" fill="#233">Provider profile access limited to matching need</text>
+<circle cx="1136" cy="546.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="550.5" font-size="12.2" font-weight="400" fill="#233">No hidden soft score may bypass hard eligibility</text>
+<circle cx="1136" cy="564.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="568.0" font-size="12.2" font-weight="400" fill="#233">Audit ranking inputs</text>
+<rect x="1118" y="614.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="614.5" width="4" height="138" rx="2" fill="#5A6B72"/>
+<text x="1133" y="636.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">15 1M-JOB SCALABILITY</text>
+<circle cx="1136" cy="651.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="655.5" font-size="12.2" font-weight="400" fill="#233">Derived geo/capability/availability search index then authoritative</text>
+<text x="1148" y="673.0" font-size="12.2" font-weight="400" fill="#233">recheck</text>
+<circle cx="1136" cy="686.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="690.5" font-size="12.2" font-weight="400" fill="#233">Parallel candidate evaluation</text>
+<circle cx="1136" cy="704.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="708.0" font-size="12.2" font-weight="400" fill="#233">Partition by region/time</text>
+<circle cx="1136" cy="721.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="725.5" font-size="12.2" font-weight="400" fill="#233">No global serial queue</text>
+<rect x="1118" y="772.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="772.0" width="4" height="120" rx="2" fill="#02133C"/>
+<text x="1133" y="794.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">16 NON-NEGOTIABLE INVARIANTS</text>
+<circle cx="1136" cy="809.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="813.0" font-size="12.2" font-weight="600" fill="#02133C">RequirementContract is authoritative for hard constraints</text>
+<circle cx="1136" cy="826.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="830.5" font-size="12.2" font-weight="600" fill="#02133C">Bookable feasibility precedes customer offer</text>
+<circle cx="1136" cy="844.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="848.0" font-size="12.2" font-weight="600" fill="#02133C">Provider acceptance occurs after customer authorization unless</text>
+<text x="1148" y="865.5" font-size="12.2" font-weight="600" fill="#02133C">category policy requires otherwise</text>
+<rect x="1118" y="912.0" width="517" height="102" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="912.0" width="4" height="102" rx="2" fill="#075A6B"/>
+<text x="1133" y="934.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">17 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="949.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="953.0" font-size="12.2" font-weight="400" fill="#233">Two-person minimum never reduced to one because of scarcity</text>
+<circle cx="1136" cy="966.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="970.5" font-size="12.2" font-weight="400" fill="#233">Provider decline rematches only fulfillment</text>
+<circle cx="1136" cy="984.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="988.0" font-size="12.2" font-weight="400" fill="#233">No slot at requested time yields alternative feasible times</text>
+<rect x="1118" y="1034.5" width="517" height="102" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="1034.5" width="4" height="102" rx="2" fill="#075A6B"/>
+<text x="1133" y="1056.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">18 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="1071.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1075.5" font-size="12.2" font-weight="400" fill="#233">L4-G1 · Two-person minimum never reduced to one because of scarcity</text>
+<circle cx="1136" cy="1089.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1093.0" font-size="12.2" font-weight="400" fill="#233">L4-G2 · Provider decline rematches only fulfillment</text>
+<circle cx="1136" cy="1106.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1110.5" font-size="12.2" font-weight="400" fill="#233">L4-G3 · No slot at requested time yields alternative feasible times</text>
+<rect y="1358" width="1680" height="64" fill="#02133C"/>
+<text x="44" y="1385" font-size="11.6" fill="#FFFFFF">Board regenerated from the corrected canonical set. Text is real SVG text — readable by script, not only by eye.</text>
+<text x="44" y="1403" font-size="10.4" fill="#13C7BC">Every consumed event on this board has exactly one producer, or is declared external. Open rulings are listed in the canonical file, not decided here.</text>
+<text x="1636" y="1394" text-anchor="end" font-size="11.6" font-weight="700" fill="#13C7BC">L4</text>
+</svg>
