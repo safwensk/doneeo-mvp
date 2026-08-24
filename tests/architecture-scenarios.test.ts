@@ -39,7 +39,7 @@ const SCENARIOS: Scenario[] = JSON.parse(
 );
 
 /** Layers with application code today. Everything else is PENDING by definition. */
-const IMPLEMENTED = new Set(["P1", "L1", "L2", "L7"]);
+const IMPLEMENTED = new Set(["P1", "L1", "L2", "L7", "L09A"]);
 
 /**
  * Scenarios given a real assertion below. Anything in SCENARIOS but not here
@@ -50,6 +50,8 @@ const COVERED = new Set([
   "P1-G2", "P1-G3", "L1-G3", "P1-G1",
   // L7 is built; its three scenarios assert in tests/l7-commitment-cancellation.test.ts
   "L7-G1", "L7-G2", "L7-G3",
+  // L09A is built; its scenarios assert in tests/l09a-reality-recovery.test.ts
+  "L09A-G1", "L09A-G2", "L09A-G3",
 ]);
 
 function find(id: string): Scenario {
@@ -198,8 +200,11 @@ test("every recovered scenario is accounted for", () => {
   assert.equal(ids.size, SCENARIOS.length, "scenario ids must be unique");
   for (const id of COVERED) assert.ok(ids.has(id), `${id} is marked covered but is not in the scenario set`);
   // Scenarios asserted in another file must not also appear here as todo.
-  const l7 = SCENARIOS.filter(s => s.layer === "L7").map(s => s.id);
-  for (const id of l7) assert.ok(COVERED.has(id), `${id} belongs to a built layer and must be asserted, not todo`);
+  for (const layer of ["L7", "L09A"]) {
+    for (const s of SCENARIOS.filter(x => x.layer === layer)) {
+      assert.ok(COVERED.has(s.id), `${s.id} belongs to a built layer and must be asserted, not todo`);
+    }
+  }
   const byLayer = new Set(SCENARIOS.map(s => s.layer));
   assert.equal(byLayer.size, 18, "all eighteen boards must be represented");
   for (const layer of IMPLEMENTED) {

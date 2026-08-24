@@ -31,6 +31,7 @@ IMPL = {
  "L3": ["lib/rules-gate.ts"],
  "L4": ["lib/work-orders.ts"],
  "L7": ["lib/layers/l7/commitment.ts","lib/layers/l7/cancellation.ts"],
+ "L09A": ["lib/layers/l09a/reality.ts","lib/layers/l09a/recovery.ts"],
  "P1": ["lib/application/intelligence-control-service.ts"],
 }
 # Status is derived: modules present -> PARTIAL, unless listed complete here.

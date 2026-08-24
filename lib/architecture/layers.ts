@@ -299,8 +299,11 @@ export const LAYERS: Record<LayerId, Layer> = {
     id: "L09A",
     title: "Reality & Recovery Decision Architecture",
     kind: "domain",
-    status: "PLANNED",
-    modules: [],
+    status: "PARTIAL",
+    modules: [
+      "lib/layers/l09a/reality.ts",
+      "lib/layers/l09a/recovery.ts",
+    ],
     owns: [
       "RealityCase",
       "Field evidence + Field MSI",
