@@ -151,43 +151,32 @@ test(`P1-G3 · ${find("P1-G3").scenario}`, async () => {
   );
 });
 
-// ===========================================================================
-// BLOCKED — the layer exists and the scenario does not hold
-// ===========================================================================
-
 test(`P1-G1 · ${find("P1-G1").scenario}`, async () => {
   // "Duplicate payment command no duplicate capture"
   //
-  // Payments are not built, but this scenario is one of three boards asserting
-  // the same underlying property — L12-G3 "Lost callback replay causes no
-  // duplicate financial effect" and P6-G3 "Lost callback replay remains
-  // idempotent" say it too. P6's spec raises it to a coherence invariant:
-  // "at-least-once delivery + idempotent consumers".
+  // Payments are not built, but three boards assert the same underlying
+  // property — this one, L12-G3 "Lost callback replay causes no duplicate
+  // financial effect", and P6-G3 "Lost callback replay remains idempotent" —
+  // and P6 raises it to a coherence invariant.
   //
-  // The generic property IS testable today, and it fails. Replaying a whole
-  // command chain under one key does not replay — it errors. replay() returns
-  // the WorkCase's CURRENT state, while the next command hashes the
-  // expectedVersion it was issued against, so the second attempt looks like a
-  // different command.
-  //
-  // This assertion is written to pass while the defect exists, and to FAIL
-  // once it is fixed — at which point delete it and assert the real property.
+  // This test used to assert the DEFECT: a chained retry threw instead of
+  // replaying, because expectedVersion was hashed into the idempotency key. It
+  // was written to fail the moment that was fixed. It has been, so this is now
+  // the positive assertion. Full coverage lives in tests/idempotent-retry.test.ts.
   const store = new MemoryStore();
   const svc = new WorkCaseService(store, ids());
   const R = "cmd-1";
   const run = async () => {
     const a = await svc.receiveRequest({ commandKey: `${R}:receive`, rawRequest: REQUEST, correlationId: `plan:${R}`, now: T1 });
     const b = await svc.recordArchitecture({ commandKey: `${R}:architecture`, workCaseId: a.workCase.workCaseId, expectedVersion: a.workCase.stateVersion, taskCandidates: TASKS, correlationId: `plan:${R}`, now: T2 });
-    return b;
+    return { a, b };
   };
-  await run();
-  await assert.rejects(
-    run,
-    /reused with different/i,
-    "KNOWN DEFECT: an identical retry should replay. If this now rejects the " +
-    "assertion instead of the retry, the defect is fixed — replace this test " +
-    "with the positive assertion that the retry replays cleanly.",
-  );
+  const first = await run();
+  const retry = await run();
+
+  assert.equal(retry.b.replayed, true, "an identical retry must replay, not re-execute");
+  assert.equal(store.cases.size, 1, "a retry duplicated the WorkCase");
+  assert.equal(retry.b.workCase.stateVersion, first.b.workCase.stateVersion, "a retry advanced the state");
 });
 
 // ===========================================================================

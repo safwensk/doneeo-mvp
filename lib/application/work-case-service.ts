@@ -38,7 +38,12 @@ export class WorkCaseService {
 
   async recordArchitecture(input: { commandKey: string; workCaseId: string; expectedVersion: number; taskCandidates: readonly TaskIdentityCandidate[]; confirmedAnswers?: Readonly<Record<string, string | boolean>>; latestAnalysis?: unknown; correlationId: string; now: string }): Promise<{ workCase: WorkCaseControlState; tasks: ReturnType<typeof reconcileTaskIdentities>; replayed: boolean }> {
     const current = await requiredWorkCase(this.store, input.workCaseId);
-    const requestHash = await sha256Stable({ type: "RecordArchitecture", workCaseId: input.workCaseId, expectedVersion: input.expectedVersion, taskCandidates: input.taskCandidates, confirmedAnswers: input.confirmedAnswers ?? {}, correlationId: input.correlationId });
+    // expectedVersion is deliberately NOT hashed. It is the concurrency
+    // precondition for WHEN this command may apply, not part of WHAT the command
+    // is. Hashing it made an identical retry against a moved state look like a
+    // different command, which broke chained replay. assertExpectedVersion still
+    // enforces staleness in the domain, where that check belongs.
+    const requestHash = await sha256Stable({ type: "RecordArchitecture", workCaseId: input.workCaseId, taskCandidates: input.taskCandidates, confirmedAnswers: input.confirmedAnswers ?? {}, correlationId: input.correlationId });
     const replay = await this.replay(input.commandKey, requestHash);
     if (replay) return { workCase: replay, tasks: await this.store.getTasks(input.workCaseId), replayed: true };
 
@@ -60,7 +65,8 @@ export class WorkCaseService {
 
   async requirementReady(input: { commandKey: string; workCaseId: string; expectedVersion: number; requirementContractRef: string; correlationId: string; now: string }): Promise<{ workCase: WorkCaseControlState; replayed: boolean }> {
     const current = await requiredWorkCase(this.store, input.workCaseId);
-    const requestHash = await sha256Stable({ type: "MarkRequirementReady", workCaseId: input.workCaseId, expectedVersion: input.expectedVersion, requirementContractRef: input.requirementContractRef, correlationId: input.correlationId });
+    // See RecordArchitecture: expectedVersion is a precondition, not identity.
+    const requestHash = await sha256Stable({ type: "MarkRequirementReady", workCaseId: input.workCaseId, requirementContractRef: input.requirementContractRef, correlationId: input.correlationId });
     const replay = await this.replay(input.commandKey, requestHash);
     if (replay) return { workCase: replay, replayed: true };
     const next = markRequirementReady(current, { expectedVersion: input.expectedVersion, requirementContractRef: input.requirementContractRef, now: input.now });
@@ -77,9 +83,9 @@ export class WorkCaseService {
   async advanceLayer(input: { commandKey: string; workCaseId: string; expectedVersion: number; targetLayerId: DomainLayerId; gateArtifactRef: string; actorRole: LayerAuthority; correlationId: string; now: string }): Promise<{ workCase: WorkCaseControlState; replayed: boolean }> {
     const current = await requiredWorkCase(this.store, input.workCaseId);
     const requestHash = await sha256Stable({
+      // See RecordArchitecture: expectedVersion is a precondition, not identity.
       type: "AdvanceWorkCaseLayer",
       workCaseId: input.workCaseId,
-      expectedVersion: input.expectedVersion,
       targetLayerId: input.targetLayerId,
       gateArtifactRef: input.gateArtifactRef,
       actorRole: input.actorRole,
