@@ -111,6 +111,68 @@ Provide durable workflow coordination, command/event routing, version lineage, i
 - Design for failure
 - Commands and events are distinct
 
+## Orchestration principles (non-negotiable)
+
+> Recovered 2026-08-23 from a P1 v1.0 board dated 2026-08-19, present only in
+> the figma folder and in neither package.
+
+- Deterministic Orchestration — same input + state = same orchestration
+- State is the Source of Truth
+- No God Object
+- **Idempotent by Design — every command safe to retry**
+- WorkCase Scoped Ordering — strong order within WorkCase
+- Explicit Version Control — no stale updates, ever
+- Failure is Normal — retry, compensate, continue safely
+- Observable & Traceable — every step logged and correlated
+
+## Recovered component detail
+
+Saga / Transaction Manager:
+
+- Orchestrates long-running sagas
+- Step lifecycle management
+- Timeout and retry policy
+- Compensation orchestration
+- Atomicity across distributed steps
+
+Idempotency Controller:
+
+- Idempotency keys registry
+- Duplicate detection
+- **Safe replay handling**
+- **Exactly-once effect guarantee**
+- Per command / per step
+
+Concurrency & Lock Manager:
+
+- Optimistic concurrency
+- Stale version detection
+- WorkCase scoped locks
+- Conflict detection / resolution
+- Prevents lost updates
+
+Dead Letter Manager: failed event handling · quarantine management ·
+reprocess / replay · root cause tracking · operator tooling
+
+Audit & Trace Logger: immutable orchestration logs · step-by-step trace ·
+correlation ID propagation · causal graph logging · tamper-evident storage
+
+Orchestration data ownership: P1 owns orchestration metadata only — state,
+versions, logs, lineage. Domain layers own their data. P1 guarantees integrity
+and flow, not business truth.
+
+Step flow: Execute Step / Call Domain -> Success? -> yes: Record Result and
+Advance State -> Complete or Next Step -> End / Idle. On no: Handle Failure
+(Retry / Compensate).
+
+Fact Ledger linkage: WorkCase (01) -> Plan / Versions (02) -> Execution (08) ->
+Outcome (11) -> Claim (13) -> Data / Insights (14).
+
+> **Idempotent by Design**, **safe replay handling** and **exactly-once effect
+> guarantee** are three statements of the same property on one board. The repo's
+> chained-retry defect violates it, and scenario P1-G1 in
+> `tests/architecture-scenarios.test.ts` documents that violation.
+
 ## Golden regression scenarios
 - Duplicate payment command no duplicate capture
 - Stale RC version rejected

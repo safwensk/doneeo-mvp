@@ -134,3 +134,53 @@ Supersedes Layer 11 v1.2 where it treats generic plan-vs-actual/customer accepta
 - L13 Branch/Claims
 - P2 Evidence
 
+## Outcome state machine
+
+> Recovered 2026-08-23 from "Layer 11 Outcome Truth Architecture.png" — a
+> version 1.2 board dated 2026-08-19 that appears in NEITHER the FULL_DETAIL
+> package nor the v2.1 reconciliation evidence. It exists only in the figma
+> folder. No other document in the architecture carries this state machine.
+
+- S0 RECEIVED — submission received from Layer 10
+- S1 UNDER REVIEW (AUTO) — validation and reconciliation in progress
+- S2 COMPLETE — all TaskBlocks completed successfully
+- S3 PARTIAL — some completed, some not (defined)
+- S4 BLOCKED (UNAVOIDABLE) — could not proceed further
+- S5 CANCELLED (BY POLICY) — cancelled via Layer 07 decision
+- S6 DISPUTED — outcome contested / needs review
+- S7 FAILED — execution failure / no deliverable
+- S8 LOCKED (FINAL) — outcome immutable and published
+
+Transitions:
+
+- S0 -> S1 on valid submission
+- S1 -> S2/S3/S4/S6/S7 based on evaluation
+- **Any -> S5 on cancellation from L07**
+- S1/S3/S4/S6 -> S8 after acceptance / review
+- S6 -> S1 after dispute resolution
+- S2/S3/S4/S7 -> S6 if dispute raised
+
+`Any -> S5` is the formal expression of L7's invariant that cancellation
+remains requestable at every stage. It is the only place in the architecture
+where that invariant is made mechanical rather than stated in prose.
+
+Outcome invariants, as printed:
+
+- Outcome is based on facts, not opinions
+- Evidence is immutable once locked
+- Outcome cannot be edited, only appended
+- Every outcome has OutcomeReason and timestamp
+- All links and decisions are traceable
+
+## Outcome response types
+
+- OR-COMPLETE — All Work Completed — all TaskBlocks done as planned — e.g. IKEA table delivered and old table removed
+- OR-PARTIAL — Partial Completion — some done, some pending — e.g. 12 desks moved, 3 pending
+- OR-BLOCKED — Blocked / Unavoidable — could not proceed further — e.g. no elevator access available
+- OR-CANCELLED — Cancelled by Policy — cancelled via Layer 07 — e.g. customer cancelled with fee
+- OR-DISPUTED — Disputed — outcome contested — e.g. customer claims incomplete
+- OR-FAILED — Execution Failure — work could not be executed — e.g. provider could not complete
+- OR-OTHER — Other — other defined reason — e.g. weather stopped work
+
+Fact Ledger linkage: OutcomeRecord (11) -> ResponsibilityCase (09B) ->
+LedgerInstruction (12), only after outcomes and responsibility are finalized.

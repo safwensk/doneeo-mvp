@@ -8,7 +8,7 @@ each poster actually says so a decision can be made once.
 
 ## The finding
 
-The poster set was generated across at least **five different numbering
+The poster set was generated across at least **six different numbering
 schemes**, and cross-references inside each poster were never normalised. A
 reference like "P9" resolves to Messaging, Finance, or Payment Rails depending
 on which poster you are holding, and nothing in any document says which.
@@ -26,8 +26,10 @@ became invisible rather than resolved.
 | **C** | P7, P8, P9 posters | `P1–P10`: P4=Security, P6=Event/AI/Obs, P7=Messaging, P9=Finance, P10=Execution |
 | **D** | v1.2 FULL_DETAIL set (18 boards) | `L1–L13` + `P1–P4`, where **P4=Event/AI/Observability** |
 | **E** | v2.1 reconciled specs | `L1–L13` + `P1–P9`, where **P4=Platform Security**, **P6=Event Backbone** |
+| **F** | P1 figma variant | `Layer 01–14`: 06=Customer Interface, 07=Executor Interface, 08=Execution & Monitoring, 14=Data & Intelligence |
 
-Scheme **E** is current canon. Everything else is historical.
+Scheme **E** is current canon; **F** was found last and is the closest to the
+original twenty-document stack. Everything else is historical.
 
 ---
 
@@ -103,3 +105,31 @@ check that fails on any reference to `P10`, `P11`, `P12`, `P13`, `P14`,
 Until that ruling exists, **do not implement any cross-layer contract from a
 poster reference.** Read the target layer's own spec and confirm the artifact
 name matches on both sides.
+
+---
+
+## Scheme F, found 2026-08-23
+
+A P1 board in the figma folder — in neither package — uses a sixth scheme, and
+it is the one that matches the original twenty-document stack (Customer
+Interface, Executor Interface):
+
+| Layer 01 | WorkCase & Intake | Layer 09A | Change & Recovery |
+|---|---|---|---|
+| Layer 02 | Intelligence & Planning | Layer 09B | Responsibility & Econ. |
+| Layer 03 | Trust & Safety | Layer 11 | Outcome & Completion |
+| Layer 04 | Matching & Teams | Layer 12 | Settlement & Ledger |
+| Layer 05 | Fulfillment & Routing | Layer 13 | Claims & Disputes |
+| **Layer 06** | **Customer Interface** | **Layer 14** | **Data & Intelligence** |
+| **Layer 07** | **Executor Interface** | | |
+| **Layer 08** | **Execution & Monitoring** | | |
+
+This collides hardest with canon and with scheme B at once:
+
+- **Layer 06** is Customer Interface here, Planning in scheme B, and Commercial
+  Offer & Pricing in canon. Three different meanings for one number.
+- **Layer 07** is Executor Interface here and Commitment/Cancellation in canon.
+- **Layer 08** is Execution & Monitoring here and Preflight/Dispatch in canon.
+
+Any cross-reference of the form "Layer 06/07/08" is therefore ambiguous across
+three readings and cannot be resolved without knowing which board it came from.
