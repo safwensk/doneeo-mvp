@@ -1,0 +1,330 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1650" viewBox="0 0 1680 1650" font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1650" fill="#F6F9F9"/>
+<rect width="1680" height="168" fill="#02133C"/>
+<rect y="163" width="1680" height="5" fill="#079B9D"/>
+<text x="44" y="46" font-size="17" font-weight="700" fill="#FFFFFF" letter-spacing="3.6">DONEEO</text>
+<text x="162" y="46" font-size="12.5" fill="#13C7BC" letter-spacing="0.4">Intelligence to Get Work Done</text>
+<text x="44" y="92" font-size="31" font-weight="700" fill="#FFFFFF">P1 — PLATFORM ORCHESTRATOR, WORKFLOW &amp; STATE CONTROL</text>
+<text x="44" y="118" font-size="13.4" fill="#C9D9DE">Provide durable workflow coordination, command/event routing, version lineage, idempotency, concurrency control, sagas and callbacks while preserving domain</text>
+<text x="44" y="137" font-size="13.4" fill="#C9D9DE">ownership.</text>
+<rect x="1306" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1357" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">LAYER</text>
+<text x="1357" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">P1</text>
+<rect x="1418" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1469" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">EDITION</text>
+<text x="1469" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">v3.0 clean</text>
+<rect x="1530" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1581" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">DATE</text>
+<text x="1581" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2026-08-23</text>
+<text x="1306" y="106" font-size="10.6" fill="#13C7BC">Numbering, naming and event linkage corrected.</text>
+<text x="1306" y="122" font-size="10.6" fill="#9FB6BE">Items marked FIXED changed in this edition.</text>
+<rect x="44" y="212" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="212" width="4" height="190" rx="2" fill="#02133C"/>
+<text x="59" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">01 OWNS</text>
+<circle cx="62" cy="249" r="2.4" fill="#02133C"/>
+<text x="74" y="253" font-size="12.2" font-weight="400" fill="#233">Workflow coordination</text>
+<circle cx="62" cy="266.5" r="2.4" fill="#02133C"/>
+<text x="74" y="270.5" font-size="12.2" font-weight="400" fill="#233">State transition guards</text>
+<circle cx="62" cy="284.0" r="2.4" fill="#02133C"/>
+<text x="74" y="288.0" font-size="12.2" font-weight="400" fill="#233">Command routing</text>
+<circle cx="62" cy="301.5" r="2.4" fill="#02133C"/>
+<text x="74" y="305.5" font-size="12.2" font-weight="400" fill="#233">Event orchestration</text>
+<circle cx="62" cy="319.0" r="2.4" fill="#02133C"/>
+<text x="74" y="323.0" font-size="12.2" font-weight="400" fill="#233">Version lineage</text>
+<circle cx="62" cy="336.5" r="2.4" fill="#02133C"/>
+<text x="74" y="340.5" font-size="12.2" font-weight="400" fill="#233">Sagas/compensation</text>
+<circle cx="62" cy="354.0" r="2.4" fill="#02133C"/>
+<text x="74" y="358.0" font-size="12.2" font-weight="400" fill="#233">Idempotency/concurrency</text>
+<circle cx="62" cy="371.5" r="2.4" fill="#02133C"/>
+<text x="74" y="375.5" font-size="12.2" font-weight="400" fill="#233">Human-review routing</text>
+<rect x="44" y="422.0" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="422.0" width="4" height="102" rx="2" fill="#8A3B4A"/>
+<text x="59" y="444.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#8A3B4A">02 DOES NOT OWN</text>
+<circle cx="62" cy="459.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="463.0" font-size="12.2" font-weight="400" fill="#233">Planning/safety/pricing/fulfillment/outcome domain decisions</text>
+<circle cx="62" cy="476.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="480.5" font-size="12.2" font-weight="400" fill="#233">Direct ledger edits</text>
+<circle cx="62" cy="494.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="498.0" font-size="12.2" font-weight="400" fill="#233">Arbitrary cross-domain writes</text>
+<rect x="44" y="544.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="544.5" width="4" height="120" rx="2" fill="#075A6B"/>
+<text x="59" y="566.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">03 KEY INPUTS</text>
+<circle cx="62" cy="581.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="585.5" font-size="12.2" font-weight="400" fill="#233">Commands/events from all layers</text>
+<circle cx="62" cy="599.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="603.0" font-size="12.2" font-weight="400" fill="#233">Current aggregate versions</text>
+<circle cx="62" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="620.5" font-size="12.2" font-weight="400" fill="#233">Policy for routing/retries</text>
+<circle cx="62" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="638.0" font-size="12.2" font-weight="400" fill="#233">Human review decisions</text>
+<rect x="44" y="684.5" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="684.5" width="4" height="155" rx="2" fill="#075A6B"/>
+<text x="59" y="706.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">04 AUTHORITATIVE OUTPUTS</text>
+<circle cx="62" cy="721.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="725.5" font-size="12.2" font-weight="400" fill="#233">State transitions</text>
+<circle cx="62" cy="739.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="743.0" font-size="12.2" font-weight="400" fill="#233">Command acknowledgements</text>
+<circle cx="62" cy="756.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="760.5" font-size="12.2" font-weight="400" fill="#233">Domain event envelopes</text>
+<circle cx="62" cy="774.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="778.0" font-size="12.2" font-weight="400" fill="#233">Saga state</text>
+<circle cx="62" cy="791.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="795.5" font-size="12.2" font-weight="400" fill="#233">Idempotency records</text>
+<circle cx="62" cy="809.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="813.0" font-size="12.2" font-weight="400" fill="#233">Review tasks</text>
+<rect x="44" y="859.5" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="859.5" width="4" height="190" rx="2" fill="#079B9D"/>
+<text x="59" y="881.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">05 ENGINES / COMPONENTS</text>
+<circle cx="62" cy="896.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="900.5" font-size="12.2" font-weight="400" fill="#233">E1 Command Router</text>
+<circle cx="62" cy="914.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="918.0" font-size="12.2" font-weight="400" fill="#233">E2 Event Orchestrator</text>
+<circle cx="62" cy="931.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="935.5" font-size="12.2" font-weight="400" fill="#233">E3 State Machine Coordinator</text>
+<circle cx="62" cy="949.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="953.0" font-size="12.2" font-weight="400" fill="#233">E4 Version/Lineage Manager</text>
+<circle cx="62" cy="966.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="970.5" font-size="12.2" font-weight="400" fill="#233">E5 Saga Manager</text>
+<circle cx="62" cy="984.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="988.0" font-size="12.2" font-weight="400" fill="#233">E6 Idempotency Controller</text>
+<circle cx="62" cy="1001.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1005.5" font-size="12.2" font-weight="400" fill="#233">E7 Concurrency Controller</text>
+<circle cx="62" cy="1019.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1023.0" font-size="12.2" font-weight="400" fill="#233">E8 Review Router</text>
+<rect x="44" y="1069.5" width="517" height="208" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="1069.5" width="4" height="208" rx="2" fill="#079B9D"/>
+<text x="59" y="1091.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">06 OPERATING &amp; DECISION PATH</text>
+<circle cx="62" cy="1106.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1110.5" font-size="12.2" font-weight="400" fill="#233">Receive command</text>
+<circle cx="62" cy="1124.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1128.0" font-size="12.2" font-weight="400" fill="#233">Validate caller/version/state</text>
+<circle cx="62" cy="1141.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1145.5" font-size="12.2" font-weight="400" fill="#233">Route to smallest correct owner</text>
+<circle cx="62" cy="1159.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1163.0" font-size="12.2" font-weight="400" fill="#233">Persist idempotency/transition intent</text>
+<circle cx="62" cy="1176.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1180.5" font-size="12.2" font-weight="400" fill="#233">Domain performs decision</text>
+<circle cx="62" cy="1194.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1198.0" font-size="12.2" font-weight="400" fill="#233">Consume resulting event</text>
+<circle cx="62" cy="1211.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1215.5" font-size="12.2" font-weight="400" fill="#233">Advance workflow/saga</text>
+<circle cx="62" cy="1229.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1233.0" font-size="12.2" font-weight="400" fill="#233">Retry/compensate on failure</text>
+<circle cx="62" cy="1246.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1250.5" font-size="12.2" font-weight="400" fill="#233">Publish read-model update</text>
+<rect x="44" y="1297.0" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="1297.0" width="4" height="138" rx="2" fill="#079B9D"/>
+<text x="59" y="1319.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">07 DECISION GATES</text>
+<circle cx="62" cy="1334.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1338.0" font-size="12.2" font-weight="400" fill="#233">Expected version matches?</text>
+<circle cx="62" cy="1351.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1355.5" font-size="12.2" font-weight="400" fill="#233">Transition allowed?</text>
+<circle cx="62" cy="1369.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1373.0" font-size="12.2" font-weight="400" fill="#233">Command duplicate?</text>
+<circle cx="62" cy="1386.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1390.5" font-size="12.2" font-weight="400" fill="#233">Compensation required?</text>
+<circle cx="62" cy="1404.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1408.0" font-size="12.2" font-weight="400" fill="#233">Human review pending?</text>
+<rect x="581" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="212" width="4" height="172" rx="2" fill="#075A6B"/>
+<text x="596" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">08 DATA / ARTIFACT OBJECTS</text>
+<circle cx="599" cy="249" r="2.4" fill="#075A6B"/>
+<text x="611" y="253" font-size="12.2" font-weight="400" fill="#233">CommandEnvelope</text>
+<circle cx="599" cy="266.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="270.5" font-size="12.2" font-weight="400" fill="#233">EventEnvelope</text>
+<circle cx="599" cy="284.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="288.0" font-size="12.2" font-weight="400" fill="#233">StateTransition</text>
+<circle cx="599" cy="301.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="305.5" font-size="12.2" font-weight="400" fill="#233">SagaState</text>
+<circle cx="599" cy="319.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="323.0" font-size="12.2" font-weight="400" fill="#233">IdempotencyKey</text>
+<circle cx="599" cy="336.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="340.5" font-size="12.2" font-weight="400" fill="#233">ReviewTask</text>
+<circle cx="599" cy="354.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="358.0" font-size="12.2" font-weight="400" fill="#233">VersionRef</text>
+<rect x="581" y="404.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="404.5" width="4" height="120" rx="2" fill="#13C7BC"/>
+<text x="596" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">09 EVENTS EMITTED</text>
+<circle cx="599" cy="441.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="445.5" font-size="12.2" font-weight="400" fill="#233">Workflow.Advanced</text>
+<circle cx="599" cy="459.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="463.0" font-size="12.2" font-weight="400" fill="#233">Saga.Compensated</text>
+<circle cx="599" cy="476.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="480.5" font-size="12.2" font-weight="400" fill="#233">Review.Requested</text>
+<circle cx="599" cy="494.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="498.0" font-size="12.2" font-weight="400" fill="#233">Command.RejectedStaleVersion</text>
+<rect x="581" y="544.5" width="517" height="68" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="544.5" width="4" height="68" rx="2" fill="#13C7BC"/>
+<text x="596" y="566.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">10 EVENTS CONSUMED</text>
+<circle cx="599" cy="581.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="585.5" font-size="12.2" font-weight="400" fill="#233">All domain events</text>
+<rect x="581" y="632.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="632.0" width="4" height="120" rx="2" fill="#079B9D"/>
+<text x="596" y="654.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">11 INTEGRATIONS / CALLBACKS</text>
+<circle cx="599" cy="669.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="673.0" font-size="12.2" font-weight="400" fill="#233">All layers</text>
+<circle cx="599" cy="686.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="690.5" font-size="12.2" font-weight="400" fill="#233">P2 Data</text>
+<circle cx="599" cy="704.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="708.0" font-size="12.2" font-weight="400" fill="#233">P3 Identity</text>
+<circle cx="599" cy="721.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="725.5" font-size="12.2" font-weight="400" fill="#233">P6 (Event Backbone, Model Gateway &amp; Observability)</text>
+<rect x="581" y="772.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="772.0" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="596" y="794.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">12 FAILURE &amp; RECOVERY</text>
+<circle cx="599" cy="809.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="813.0" font-size="12.2" font-weight="400" fill="#233">At-least-once duplicate -&gt; idempotent consumer</text>
+<circle cx="599" cy="826.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="830.5" font-size="12.2" font-weight="400" fill="#233">Stale version -&gt; reject/reload</text>
+<circle cx="599" cy="844.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="848.0" font-size="12.2" font-weight="400" fill="#233">Partial saga -&gt; compensating action</text>
+<circle cx="599" cy="861.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="865.5" font-size="12.2" font-weight="400" fill="#233">Downstream unavailable -&gt; queue/retry/DLQ</text>
+<rect x="581" y="912.0" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="912.0" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="596" y="934.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">13 HUMAN REVIEW</text>
+<circle cx="599" cy="949.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="953.0" font-size="12.2" font-weight="400" fill="#233">Cross-domain manual review</text>
+<circle cx="599" cy="966.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="970.5" font-size="12.2" font-weight="400" fill="#233">Irreversible high-impact action</text>
+<circle cx="599" cy="984.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="988.0" font-size="12.2" font-weight="400" fill="#233">Repeated saga failure</text>
+<rect x="581" y="1034.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1034.5" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="596" y="1056.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">14 SECURITY / PRIVACY</text>
+<circle cx="599" cy="1071.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1075.5" font-size="12.2" font-weight="400" fill="#233">Service identity/auth</text>
+<circle cx="599" cy="1089.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1093.0" font-size="12.2" font-weight="400" fill="#233">Audit command actors</text>
+<circle cx="599" cy="1106.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1110.5" font-size="12.2" font-weight="400" fill="#233">No secrets in events</text>
+<circle cx="599" cy="1124.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1128.0" font-size="12.2" font-weight="400" fill="#233">Least privilege event consumers</text>
+<rect x="581" y="1174.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1174.5" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="596" y="1196.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">15 1M-JOB SCALABILITY</text>
+<circle cx="599" cy="1211.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1215.5" font-size="12.2" font-weight="400" fill="#233">Logical boundaries separable later; modular monolith now</text>
+<circle cx="599" cy="1229.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1233.0" font-size="12.2" font-weight="400" fill="#233">WorkCase-scoped ordering</text>
+<circle cx="599" cy="1246.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1250.5" font-size="12.2" font-weight="400" fill="#233">Transactional outbox/inbox</text>
+<circle cx="599" cy="1264.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1268.0" font-size="12.2" font-weight="400" fill="#233">No global serial queue</text>
+<rect x="581" y="1314.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1314.5" width="4" height="120" rx="2" fill="#02133C"/>
+<text x="596" y="1336.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">16 NON-NEGOTIABLE INVARIANTS</text>
+<circle cx="599" cy="1351.5" r="2.4" fill="#02133C"/>
+<text x="611" y="1355.5" font-size="12.2" font-weight="600" fill="#02133C">Orchestrator coordinates; domains decide</text>
+<circle cx="599" cy="1369.0" r="2.4" fill="#02133C"/>
+<text x="611" y="1373.0" font-size="12.2" font-weight="600" fill="#02133C">No God Object</text>
+<circle cx="599" cy="1386.5" r="2.4" fill="#02133C"/>
+<text x="611" y="1390.5" font-size="12.2" font-weight="600" fill="#02133C">Design for failure</text>
+<circle cx="599" cy="1404.0" r="2.4" fill="#02133C"/>
+<text x="611" y="1408.0" font-size="12.2" font-weight="600" fill="#02133C">Commands and events are distinct</text>
+<rect x="1118" y="212" width="517" height="120" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="212" width="4" height="120" rx="2" fill="#075A6B"/>
+<text x="1133" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">17 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="249" r="2.4" fill="#075A6B"/>
+<text x="1148" y="253" font-size="12.2" font-weight="400" fill="#233">Duplicate payment command no duplicate capture</text>
+<circle cx="1136" cy="266.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="270.5" font-size="12.2" font-weight="400" fill="#233">Stale RC version rejected</text>
+<circle cx="1136" cy="284.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="288.0" font-size="12.2" font-weight="400" fill="#233">Provider decline saga rematches fulfillment without changing</text>
+<text x="1148" y="305.5" font-size="12.2" font-weight="400" fill="#233">requirement</text>
+<rect x="1118" y="352.0" width="517" height="242" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="352.0" width="4" height="242" rx="2" fill="#02133C"/>
+<text x="1133" y="374.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">18 ORCHESTRATION PRINCIPLES (NON-NEGOTIABLE)</text>
+<text x="1133" y="393.0" font-size="12.2" font-weight="600" fill="#5A6B72">Recovered 2026-08-23 from a P1 v1.0 board dated 2026-08-19, present only</text>
+<text x="1148" y="410.5" font-size="12.2" font-weight="600" fill="#02133C">in</text>
+<text x="1133" y="428.0" font-size="12.2" font-weight="600" fill="#5A6B72">the figma folder and in neither package.</text>
+<circle cx="1136" cy="441.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="445.5" font-size="12.2" font-weight="600" fill="#02133C">Deterministic Orchestration — same input + state = same orchestration</text>
+<circle cx="1136" cy="459.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="463.0" font-size="12.2" font-weight="600" fill="#02133C">State is the Source of Truth</text>
+<circle cx="1136" cy="476.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="480.5" font-size="12.2" font-weight="600" fill="#02133C">No God Object</text>
+<circle cx="1136" cy="494.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="498.0" font-size="12.2" font-weight="600" fill="#02133C">Idempotent by Design — every command safe to retry</text>
+<circle cx="1136" cy="511.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="515.5" font-size="12.2" font-weight="600" fill="#02133C">WorkCase Scoped Ordering — strong order within WorkCase</text>
+<circle cx="1136" cy="529.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="533.0" font-size="12.2" font-weight="600" fill="#02133C">Explicit Version Control — no stale updates, ever</text>
+<circle cx="1136" cy="546.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="550.5" font-size="12.2" font-weight="600" fill="#02133C">Failure is Normal — retry, compensate, continue safely</text>
+<circle cx="1136" cy="564.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="568.0" font-size="12.2" font-weight="600" fill="#02133C">Observable &amp; Traceable — every step logged and correlated</text>
+<rect x="1118" y="614.5" width="517" height="768" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="614.5" width="4" height="768" rx="2" fill="#02133C"/>
+<text x="1133" y="636.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">19 RECOVERED COMPONENT DETAIL</text>
+<text x="1133" y="655.5" font-size="12.2" font-weight="600" fill="#02133C">Saga / Transaction Manager:</text>
+<circle cx="1136" cy="669.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="673.0" font-size="12.2" font-weight="600" fill="#02133C">Orchestrates long-running sagas</text>
+<circle cx="1136" cy="686.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="690.5" font-size="12.2" font-weight="600" fill="#02133C">Step lifecycle management</text>
+<circle cx="1136" cy="704.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="708.0" font-size="12.2" font-weight="600" fill="#02133C">Timeout and retry policy</text>
+<circle cx="1136" cy="721.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="725.5" font-size="12.2" font-weight="600" fill="#02133C">Compensation orchestration</text>
+<circle cx="1136" cy="739.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="743.0" font-size="12.2" font-weight="600" fill="#02133C">Atomicity across distributed steps</text>
+<text x="1133" y="760.5" font-size="12.2" font-weight="600" fill="#02133C">Idempotency Controller:</text>
+<circle cx="1136" cy="774.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="778.0" font-size="12.2" font-weight="600" fill="#02133C">Idempotency keys registry</text>
+<circle cx="1136" cy="791.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="795.5" font-size="12.2" font-weight="600" fill="#02133C">Duplicate detection</text>
+<circle cx="1136" cy="809.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="813.0" font-size="12.2" font-weight="600" fill="#02133C">Safe replay handling</text>
+<circle cx="1136" cy="826.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="830.5" font-size="12.2" font-weight="600" fill="#02133C">Exactly-once effect guarantee</text>
+<circle cx="1136" cy="844.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="848.0" font-size="12.2" font-weight="600" fill="#02133C">Per command / per step</text>
+<text x="1133" y="865.5" font-size="12.2" font-weight="600" fill="#02133C">Concurrency &amp; Lock Manager:</text>
+<circle cx="1136" cy="879.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="883.0" font-size="12.2" font-weight="600" fill="#02133C">Optimistic concurrency</text>
+<circle cx="1136" cy="896.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="900.5" font-size="12.2" font-weight="600" fill="#02133C">Stale version detection</text>
+<circle cx="1136" cy="914.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="918.0" font-size="12.2" font-weight="600" fill="#02133C">WorkCase scoped locks</text>
+<circle cx="1136" cy="931.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="935.5" font-size="12.2" font-weight="600" fill="#02133C">Conflict detection / resolution</text>
+<circle cx="1136" cy="949.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="953.0" font-size="12.2" font-weight="600" fill="#02133C">Prevents lost updates</text>
+<text x="1133" y="970.5" font-size="12.2" font-weight="600" fill="#02133C">Dead Letter Manager: failed event handling · quarantine management ·</text>
+<text x="1133" y="988.0" font-size="12.2" font-weight="600" fill="#02133C">reprocess / replay · root cause tracking · operator tooling</text>
+<text x="1133" y="1005.5" font-size="12.2" font-weight="600" fill="#02133C">Audit &amp; Trace Logger: immutable orchestration logs · step-by-step trace ·</text>
+<text x="1133" y="1023.0" font-size="12.2" font-weight="600" fill="#02133C">correlation ID propagation · causal graph logging · tamper-evident</text>
+<text x="1148" y="1040.5" font-size="12.2" font-weight="600" fill="#02133C">storage</text>
+<text x="1133" y="1058.0" font-size="12.2" font-weight="600" fill="#02133C">Orchestration data ownership: P1 owns orchestration metadata only —</text>
+<text x="1148" y="1075.5" font-size="12.2" font-weight="600" fill="#02133C">state,</text>
+<text x="1133" y="1093.0" font-size="12.2" font-weight="600" fill="#02133C">versions, logs, lineage. Domain layers own their data. P1 guarantees</text>
+<text x="1148" y="1110.5" font-size="12.2" font-weight="600" fill="#02133C">integrity</text>
+<text x="1133" y="1128.0" font-size="12.2" font-weight="600" fill="#02133C">and flow, not business truth.</text>
+<text x="1133" y="1145.5" font-size="12.2" font-weight="600" fill="#02133C">Step flow: Execute Step / Call Domain -&gt; Success? -&gt; yes: Record Result</text>
+<text x="1148" y="1163.0" font-size="12.2" font-weight="600" fill="#02133C">and</text>
+<text x="1133" y="1180.5" font-size="12.2" font-weight="600" fill="#02133C">Advance State -&gt; Complete or Next Step -&gt; End / Idle. On no: Handle</text>
+<text x="1148" y="1198.0" font-size="12.2" font-weight="600" fill="#02133C">Failure</text>
+<text x="1133" y="1215.5" font-size="12.2" font-weight="600" fill="#02133C">(Retry / Compensate).</text>
+<text x="1133" y="1233.0" font-size="12.2" font-weight="600" fill="#02133C">FactLedger linkage: WorkCase (01) -&gt; Plan / Versions (02) -&gt; Execution</text>
+<text x="1148" y="1250.5" font-size="12.2" font-weight="600" fill="#02133C">(08) -&gt;</text>
+<text x="1133" y="1268.0" font-size="12.2" font-weight="600" fill="#02133C">Outcome (11) -&gt; Claim (13) -&gt; Data / Insights (14).</text>
+<text x="1133" y="1285.5" font-size="12.2" font-weight="600" fill="#5A6B72">Idempotent by Design, safe replay handling and **exactly-once effect</text>
+<text x="1133" y="1303.0" font-size="12.2" font-weight="600" fill="#5A6B72">guarantee** are three statements of the same property on one board. The</text>
+<text x="1148" y="1320.5" font-size="12.2" font-weight="600" fill="#02133C">repo's</text>
+<text x="1133" y="1338.0" font-size="12.2" font-weight="600" fill="#5A6B72">chained-retry defect violates it, and scenario P1-G1 in</text>
+<text x="1133" y="1355.5" font-size="12.2" font-weight="600" fill="#5A6B72">tests/architecture-scenarios.test.ts documents that violation.</text>
+<rect x="1118" y="1402.0" width="517" height="120" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="1402.0" width="4" height="120" rx="2" fill="#075A6B"/>
+<text x="1133" y="1424.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">20 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="1439.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1443.0" font-size="12.2" font-weight="400" fill="#233">P1-G1 · Duplicate payment command no duplicate capture</text>
+<circle cx="1136" cy="1456.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1460.5" font-size="12.2" font-weight="400" fill="#233">P1-G2 · Stale RC version rejected</text>
+<circle cx="1136" cy="1474.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1478.0" font-size="12.2" font-weight="400" fill="#233">P1-G3 · Provider decline saga rematches fulfillment without changing</text>
+<text x="1148" y="1495.5" font-size="12.2" font-weight="400" fill="#233">requirement</text>
+<rect y="1586" width="1680" height="64" fill="#02133C"/>
+<text x="44" y="1613" font-size="11.6" fill="#FFFFFF">Board regenerated from the corrected canonical set. Text is real SVG text — readable by script, not only by eye.</text>
+<text x="44" y="1631" font-size="10.4" fill="#13C7BC">Every consumed event on this board has exactly one producer, or is declared external. Open rulings are listed in the canonical file, not decided here.</text>
+<text x="1636" y="1622" text-anchor="end" font-size="11.6" font-weight="700" fill="#13C7BC">P1</text>
+</svg>

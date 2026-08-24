@@ -1,0 +1,272 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1457" viewBox="0 0 1680 1457" font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1457" fill="#F6F9F9"/>
+<rect width="1680" height="168" fill="#02133C"/>
+<rect y="163" width="1680" height="5" fill="#079B9D"/>
+<text x="44" y="46" font-size="17" font-weight="700" fill="#FFFFFF" letter-spacing="3.6">DONEEO</text>
+<text x="162" y="46" font-size="12.5" fill="#13C7BC" letter-spacing="0.4">Intelligence to Get Work Done</text>
+<text x="44" y="92" font-size="31" font-weight="700" fill="#FFFFFF">L5 — RESOURCES, RENTALS, LOGISTICS &amp; PARTNERS</text>
+<text x="44" y="118" font-size="13.4" fill="#C9D9DE">Identify, source, reserve and coordinate tools, equipment, materials, vehicles, rentals, purchases and partner services using true-gap logic.</text>
+<rect x="1306" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1357" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">LAYER</text>
+<text x="1357" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">L5</text>
+<rect x="1418" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1469" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">EDITION</text>
+<text x="1469" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">v3.0 clean</text>
+<rect x="1530" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1581" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">DATE</text>
+<text x="1581" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2026-08-23</text>
+<text x="1306" y="106" font-size="10.6" fill="#13C7BC">Numbering, naming and event linkage corrected.</text>
+<text x="1306" y="122" font-size="10.6" fill="#9FB6BE">Items marked FIXED changed in this edition.</text>
+<rect x="44" y="212" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="212" width="4" height="155" rx="2" fill="#02133C"/>
+<text x="59" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">01 OWNS</text>
+<circle cx="62" cy="249" r="2.4" fill="#02133C"/>
+<text x="74" y="253" font-size="12.2" font-weight="400" fill="#233">Resource inventory/compatibility</text>
+<circle cx="62" cy="266.5" r="2.4" fill="#02133C"/>
+<text x="74" y="270.5" font-size="12.2" font-weight="400" fill="#233">True-gap calculation</text>
+<circle cx="62" cy="284.0" r="2.4" fill="#02133C"/>
+<text x="74" y="288.0" font-size="12.2" font-weight="400" fill="#233">Rental/purchase/partner sourcing</text>
+<circle cx="62" cy="301.5" r="2.4" fill="#02133C"/>
+<text x="74" y="305.5" font-size="12.2" font-weight="400" fill="#233">Reservation</text>
+<circle cx="62" cy="319.0" r="2.4" fill="#02133C"/>
+<text x="74" y="323.0" font-size="12.2" font-weight="400" fill="#233">Pickup/delivery/return coordination</text>
+<circle cx="62" cy="336.5" r="2.4" fill="#02133C"/>
+<text x="74" y="340.5" font-size="12.2" font-weight="400" fill="#233">Resource readiness and receipts</text>
+<rect x="44" y="387.0" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="387.0" width="4" height="155" rx="2" fill="#8A3B4A"/>
+<text x="59" y="409.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#8A3B4A">02 DOES NOT OWN</text>
+<circle cx="62" cy="424.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="428.0" font-size="12.2" font-weight="400" fill="#233">Task requirements</text>
+<circle cx="62" cy="441.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="445.5" font-size="12.2" font-weight="400" fill="#233">Provider/team matching</text>
+<circle cx="62" cy="459.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="463.0" font-size="12.2" font-weight="400" fill="#233">Customer pricing</text>
+<circle cx="62" cy="476.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="480.5" font-size="12.2" font-weight="400" fill="#233">Cancellation responsibility</text>
+<circle cx="62" cy="494.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="498.0" font-size="12.2" font-weight="400" fill="#233">Execution of task itself</text>
+<circle cx="62" cy="511.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="515.5" font-size="12.2" font-weight="400" fill="#233">Settlement authority</text>
+<rect x="44" y="562.0" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="562.0" width="4" height="155" rx="2" fill="#075A6B"/>
+<text x="59" y="584.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">03 KEY INPUTS</text>
+<circle cx="62" cy="599.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="603.0" font-size="12.2" font-weight="400" fill="#233">AbstractResourcePlan</text>
+<circle cx="62" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="620.5" font-size="12.2" font-weight="400" fill="#233">Selected team assets</text>
+<circle cx="62" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="638.0" font-size="12.2" font-weight="400" fill="#233">Customer-owned resources</text>
+<circle cx="62" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="655.5" font-size="12.2" font-weight="400" fill="#233">Partner/rental inventory</text>
+<circle cx="62" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="673.0" font-size="12.2" font-weight="400" fill="#233">Location/time/route context</text>
+<circle cx="62" cy="686.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="690.5" font-size="12.2" font-weight="400" fill="#233">Capability/safety requirements</text>
+<rect x="44" y="737.0" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="737.0" width="4" height="155" rx="2" fill="#075A6B"/>
+<text x="59" y="759.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">04 AUTHORITATIVE OUTPUTS</text>
+<circle cx="62" cy="774.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="778.0" font-size="12.2" font-weight="400" fill="#233">ResourcePlan</text>
+<circle cx="62" cy="791.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="795.5" font-size="12.2" font-weight="400" fill="#233">Reservation records</text>
+<circle cx="62" cy="809.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="813.0" font-size="12.2" font-weight="400" fill="#233">Pickup/Delivery/Return plan</text>
+<circle cx="62" cy="826.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="830.5" font-size="12.2" font-weight="400" fill="#233">ResourceCostEstimate</text>
+<circle cx="62" cy="844.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="848.0" font-size="12.2" font-weight="400" fill="#233">ResourceProof/Receipts</text>
+<circle cx="62" cy="861.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="865.5" font-size="12.2" font-weight="400" fill="#233">TrueGap status</text>
+<rect x="44" y="912.0" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="912.0" width="4" height="172" rx="2" fill="#079B9D"/>
+<text x="59" y="934.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">05 ENGINES / COMPONENTS</text>
+<circle cx="62" cy="949.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="953.0" font-size="12.2" font-weight="400" fill="#233">Resource Inventory Engine</text>
+<circle cx="62" cy="966.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="970.5" font-size="12.2" font-weight="400" fill="#233">Asset Compatibility Engine</text>
+<circle cx="62" cy="984.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="988.0" font-size="12.2" font-weight="400" fill="#233">True-Gap Resolver</text>
+<circle cx="62" cy="1001.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1005.5" font-size="12.2" font-weight="400" fill="#233">Rental/Purchase Optimizer</text>
+<circle cx="62" cy="1019.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1023.0" font-size="12.2" font-weight="400" fill="#233">Partner Availability Engine</text>
+<circle cx="62" cy="1036.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1040.5" font-size="12.2" font-weight="400" fill="#233">Reservation Engine</text>
+<circle cx="62" cy="1054.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1058.0" font-size="12.2" font-weight="400" fill="#233">Pickup/Return Route Engine</text>
+<rect x="581" y="212" width="517" height="242" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="212" width="4" height="242" rx="2" fill="#079B9D"/>
+<text x="596" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">06 OPERATING &amp; DECISION PATH</text>
+<circle cx="599" cy="249" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="253" font-size="12.2" font-weight="400" fill="#233">Normalize required resources</text>
+<circle cx="599" cy="266.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="270.5" font-size="12.2" font-weight="400" fill="#233">Check customer-owned</text>
+<circle cx="599" cy="284.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="288.0" font-size="12.2" font-weight="400" fill="#233">Check selected provider/team assets</text>
+<circle cx="599" cy="301.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="305.5" font-size="12.2" font-weight="400" fill="#233">Check shared/internal pool</text>
+<circle cx="599" cy="319.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="323.0" font-size="12.2" font-weight="400" fill="#233">Calculate remaining true gap</text>
+<circle cx="599" cy="336.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="340.5" font-size="12.2" font-weight="400" fill="#233">Search partner/rental/purchase/delivery options</text>
+<circle cx="599" cy="354.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="358.0" font-size="12.2" font-weight="400" fill="#233">Compare time+cost+route+risk</text>
+<circle cx="599" cy="371.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="375.5" font-size="12.2" font-weight="400" fill="#233">Reserve best feasible option</text>
+<circle cx="599" cy="389.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="393.0" font-size="12.2" font-weight="400" fill="#233">Plan pickup/delivery/return</text>
+<circle cx="599" cy="406.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="410.5" font-size="12.2" font-weight="400" fill="#233">Confirm receipt/readiness</text>
+<circle cx="599" cy="424.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="428.0" font-size="12.2" font-weight="400" fill="#233">Feed actuals to execution/settlement</text>
+<rect x="581" y="474.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="474.5" width="4" height="120" rx="2" fill="#079B9D"/>
+<text x="596" y="496.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">07 DECISION GATES</text>
+<circle cx="599" cy="511.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="515.5" font-size="12.2" font-weight="400" fill="#233">Resource compatible?</text>
+<circle cx="599" cy="529.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="533.0" font-size="12.2" font-weight="400" fill="#233">Available in required time window?</text>
+<circle cx="599" cy="546.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="550.5" font-size="12.2" font-weight="400" fill="#233">Route/return obligations feasible?</text>
+<circle cx="599" cy="564.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="568.0" font-size="12.2" font-weight="400" fill="#233">Resource changes capability/safety classification?</text>
+<rect x="581" y="614.5" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="614.5" width="4" height="190" rx="2" fill="#075A6B"/>
+<text x="596" y="636.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">08 DATA / ARTIFACT OBJECTS</text>
+<circle cx="599" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="655.5" font-size="12.2" font-weight="400" fill="#233">ResourceRequirement</text>
+<circle cx="599" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="673.0" font-size="12.2" font-weight="400" fill="#233">ResourceInventoryItem</text>
+<circle cx="599" cy="686.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="690.5" font-size="12.2" font-weight="400" fill="#233">ResourceOption</text>
+<circle cx="599" cy="704.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="708.0" font-size="12.2" font-weight="400" fill="#233">Reservation</text>
+<circle cx="599" cy="721.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="725.5" font-size="12.2" font-weight="400" fill="#233">PickupPlan</text>
+<circle cx="599" cy="739.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="743.0" font-size="12.2" font-weight="400" fill="#233">ReturnPlan</text>
+<circle cx="599" cy="756.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="760.5" font-size="12.2" font-weight="400" fill="#233">Receipt</text>
+<circle cx="599" cy="774.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="778.0" font-size="12.2" font-weight="400" fill="#233">ActualResourceCost</text>
+<rect x="581" y="824.5" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="824.5" width="4" height="155" rx="2" fill="#13C7BC"/>
+<text x="596" y="846.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">09 EVENTS EMITTED</text>
+<circle cx="599" cy="861.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="865.5" font-size="12.2" font-weight="400" fill="#233">Resource.GapDetected</text>
+<circle cx="599" cy="879.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="883.0" font-size="12.2" font-weight="400" fill="#233">Resource.Reserved</text>
+<circle cx="599" cy="896.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="900.5" font-size="12.2" font-weight="400" fill="#233">Resource.Delivered</text>
+<circle cx="599" cy="914.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="918.0" font-size="12.2" font-weight="400" fill="#233">Resource.Collected</text>
+<circle cx="599" cy="931.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="935.5" font-size="12.2" font-weight="400" fill="#233">Resource.ReceiptUploaded</text>
+<circle cx="599" cy="949.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="953.0" font-size="12.2" font-weight="400" fill="#233">Resource.CostUpdated</text>
+<rect x="581" y="999.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="999.5" width="4" height="138" rx="2" fill="#13C7BC"/>
+<text x="596" y="1021.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">10 EVENTS CONSUMED</text>
+<circle cx="599" cy="1036.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1040.5" font-size="12.2" font-weight="400" fill="#233">Fulfillment.TeamSelected</text>
+<circle cx="599" cy="1054.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1058.0" font-size="12.2" font-weight="400" fill="#233">RequirementContract.Compiled</text>
+<circle cx="599" cy="1071.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1075.5" font-size="12.2" font-weight="400" fill="#233">RealityCase.Created</text>
+<circle cx="599" cy="1089.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1093.0" font-size="12.2" font-weight="400" fill="#233">Execution.PreflightRequested</text>
+<circle cx="599" cy="1106.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1110.5" font-size="12.2" font-weight="400" fill="#233">Cancellation.Requested</text>
+<rect x="1118" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="212" width="4" height="172" rx="2" fill="#079B9D"/>
+<text x="1133" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">11 INTEGRATIONS / CALLBACKS</text>
+<circle cx="1136" cy="249" r="2.4" fill="#079B9D"/>
+<text x="1148" y="253" font-size="12.2" font-weight="400" fill="#233">L2 Resources</text>
+<circle cx="1136" cy="266.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="270.5" font-size="12.2" font-weight="400" fill="#233">L4 Fulfillment</text>
+<circle cx="1136" cy="284.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="288.0" font-size="12.2" font-weight="400" fill="#233">L6 Commercial</text>
+<circle cx="1136" cy="301.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="305.5" font-size="12.2" font-weight="400" fill="#233">L7 Commitment</text>
+<circle cx="1136" cy="319.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="323.0" font-size="12.2" font-weight="400" fill="#233">L8 Preflight</text>
+<circle cx="1136" cy="336.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="340.5" font-size="12.2" font-weight="400" fill="#233">L09A Reality</text>
+<circle cx="1136" cy="354.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="358.0" font-size="12.2" font-weight="400" fill="#233">L12 Settlement</text>
+<rect x="1118" y="404.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="404.5" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">12 FAILURE &amp; RECOVERY</text>
+<circle cx="1136" cy="441.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="445.5" font-size="12.2" font-weight="400" fill="#233">Supplier unavailable -&gt; alternate source</text>
+<circle cx="1136" cy="459.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="463.0" font-size="12.2" font-weight="400" fill="#233">Reservation expired -&gt; rebook and revalidate fulfillment</text>
+<circle cx="1136" cy="476.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="480.5" font-size="12.2" font-weight="400" fill="#233">Wrong item -&gt; replace before execution</text>
+<circle cx="1136" cy="494.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="498.0" font-size="12.2" font-weight="400" fill="#233">Late delivery -&gt; reroute/adjust or escalate</text>
+<rect x="1118" y="544.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="544.5" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="566.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">13 HUMAN REVIEW</text>
+<circle cx="1136" cy="581.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="585.5" font-size="12.2" font-weight="400" fill="#233">High-cost/specialized asset</text>
+<circle cx="1136" cy="599.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="603.0" font-size="12.2" font-weight="400" fill="#233">Multi-leg logistics</text>
+<circle cx="1136" cy="616.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="620.5" font-size="12.2" font-weight="400" fill="#233">Permit/access-dependent resource</text>
+<circle cx="1136" cy="634.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="638.0" font-size="12.2" font-weight="400" fill="#233">No viable source</text>
+<rect x="1118" y="684.5" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="684.5" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="1133" y="706.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">14 SECURITY / PRIVACY</text>
+<circle cx="1136" cy="721.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="725.5" font-size="12.2" font-weight="400" fill="#233">Protect supplier/customer data</text>
+<circle cx="1136" cy="739.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="743.0" font-size="12.2" font-weight="400" fill="#233">Track serials/high-value assets where needed</text>
+<circle cx="1136" cy="756.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="760.5" font-size="12.2" font-weight="400" fill="#233">Audit reservations and receipts</text>
+<rect x="1118" y="807.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="807.0" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="829.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">15 1M-JOB SCALABILITY</text>
+<circle cx="1136" cy="844.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="848.0" font-size="12.2" font-weight="400" fill="#233">Cached supplier catalogs</text>
+<circle cx="1136" cy="861.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="865.5" font-size="12.2" font-weight="400" fill="#233">Async partner queries</text>
+<circle cx="1136" cy="879.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="883.0" font-size="12.2" font-weight="400" fill="#233">Region-local inventory indexes</text>
+<circle cx="1136" cy="896.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="900.5" font-size="12.2" font-weight="400" fill="#233">Idempotent reservation commands</text>
+<rect x="1118" y="947.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="947.0" width="4" height="120" rx="2" fill="#02133C"/>
+<text x="1133" y="969.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">16 NON-NEGOTIABLE INVARIANTS</text>
+<circle cx="1136" cy="984.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="988.0" font-size="12.2" font-weight="600" fill="#02133C">Check customer -&gt; provider/team -&gt; partner/rental/purchase</text>
+<circle cx="1136" cy="1001.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1005.5" font-size="12.2" font-weight="600" fill="#02133C">Rental pickup/return is not working time unless policy explicitly says</text>
+<text x="1148" y="1023.0" font-size="12.2" font-weight="600" fill="#02133C">otherwise</text>
+<circle cx="1136" cy="1036.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1040.5" font-size="12.2" font-weight="600" fill="#02133C">No arbitrary executor-added resource charge</text>
+<rect x="1118" y="1087.0" width="517" height="102" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="1087.0" width="4" height="102" rx="2" fill="#075A6B"/>
+<text x="1133" y="1109.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">17 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="1124.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1128.0" font-size="12.2" font-weight="400" fill="#233">Customer owns required drill so no rental</text>
+<circle cx="1136" cy="1141.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1145.5" font-size="12.2" font-weight="400" fill="#233">Team member asset closes true gap</text>
+<circle cx="1136" cy="1159.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1163.0" font-size="12.2" font-weight="400" fill="#233">On-site missing fitting triggers resource recovery and actual receipt</text>
+<rect x="1118" y="1209.5" width="517" height="120" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="1209.5" width="4" height="120" rx="2" fill="#075A6B"/>
+<text x="1133" y="1231.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">18 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="1246.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1250.5" font-size="12.2" font-weight="400" fill="#233">L5-G1 · Customer owns required drill so no rental</text>
+<circle cx="1136" cy="1264.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1268.0" font-size="12.2" font-weight="400" fill="#233">L5-G2 · Team member asset closes true gap</text>
+<circle cx="1136" cy="1281.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1285.5" font-size="12.2" font-weight="400" fill="#233">L5-G3 · On-site missing fitting triggers resource recovery and actual</text>
+<text x="1148" y="1303.0" font-size="12.2" font-weight="400" fill="#233">receipt</text>
+<rect y="1393" width="1680" height="64" fill="#02133C"/>
+<text x="44" y="1420" font-size="11.6" fill="#FFFFFF">Board regenerated from the corrected canonical set. Text is real SVG text — readable by script, not only by eye.</text>
+<text x="44" y="1438" font-size="10.4" fill="#13C7BC">Every consumed event on this board has exactly one producer, or is declared external. Open rulings are listed in the canonical file, not decided here.</text>
+<text x="1636" y="1429" text-anchor="end" font-size="11.6" font-weight="700" fill="#13C7BC">L5</text>
+</svg>

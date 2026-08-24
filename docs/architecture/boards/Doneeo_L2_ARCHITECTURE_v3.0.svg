@@ -1,0 +1,335 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1562" viewBox="0 0 1680 1562" font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1562" fill="#F6F9F9"/>
+<rect width="1680" height="168" fill="#02133C"/>
+<rect y="163" width="1680" height="5" fill="#079B9D"/>
+<text x="44" y="46" font-size="17" font-weight="700" fill="#FFFFFF" letter-spacing="3.6">DONEEO</text>
+<text x="162" y="46" font-size="12.5" fill="#13C7BC" letter-spacing="0.4">Intelligence to Get Work Done</text>
+<text x="44" y="92" font-size="31" font-weight="700" fill="#FFFFFF">L2 — INTELLIGENCE &amp; PLANNING</text>
+<text x="44" y="118" font-size="13.4" fill="#C9D9DE">Transform a messy physical-work problem into a complete, versioned RequirementContract based on facts, minimal sufficient information, explicit assumptions and</text>
+<text x="44" y="137" font-size="13.4" fill="#C9D9DE">measurable completion criteria.</text>
+<rect x="1306" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1357" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">LAYER</text>
+<text x="1357" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">L2</text>
+<rect x="1418" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1469" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">EDITION</text>
+<text x="1469" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">v3.0 clean</text>
+<rect x="1530" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1581" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">DATE</text>
+<text x="1581" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2026-08-23</text>
+<text x="1306" y="106" font-size="10.6" fill="#13C7BC">Numbering, naming and event linkage corrected.</text>
+<text x="1306" y="122" font-size="10.6" fill="#9FB6BE">Items marked FIXED changed in this edition.</text>
+<rect x="44" y="212" width="517" height="242" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="212" width="4" height="242" rx="2" fill="#02133C"/>
+<text x="59" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">01 OWNS</text>
+<circle cx="62" cy="249" r="2.4" fill="#02133C"/>
+<text x="74" y="253" font-size="12.2" font-weight="400" fill="#233">Problem understanding</text>
+<circle cx="62" cy="266.5" r="2.4" fill="#02133C"/>
+<text x="74" y="270.5" font-size="12.2" font-weight="400" fill="#233">Task decomposition</text>
+<circle cx="62" cy="284.0" r="2.4" fill="#02133C"/>
+<text x="74" y="288.0" font-size="12.2" font-weight="400" fill="#233">Global pre-analysis</text>
+<circle cx="62" cy="301.5" r="2.4" fill="#02133C"/>
+<text x="74" y="305.5" font-size="12.2" font-weight="400" fill="#233">Fact resolution</text>
+<circle cx="62" cy="319.0" r="2.4" fill="#02133C"/>
+<text x="74" y="323.0" font-size="12.2" font-weight="400" fill="#233">MSI and question strategy</text>
+<circle cx="62" cy="336.5" r="2.4" fill="#02133C"/>
+<text x="74" y="340.5" font-size="12.2" font-weight="400" fill="#233">TaskGraph architecture</text>
+<circle cx="62" cy="354.0" r="2.4" fill="#02133C"/>
+<text x="74" y="358.0" font-size="12.2" font-weight="400" fill="#233">Abstract resource planning</text>
+<circle cx="62" cy="371.5" r="2.4" fill="#02133C"/>
+<text x="74" y="375.5" font-size="12.2" font-weight="400" fill="#233">Time/route/cost estimation</text>
+<circle cx="62" cy="389.0" r="2.4" fill="#02133C"/>
+<text x="74" y="393.0" font-size="12.2" font-weight="400" fill="#233">CompletionSpecification</text>
+<circle cx="62" cy="406.5" r="2.4" fill="#02133C"/>
+<text x="74" y="410.5" font-size="12.2" font-weight="400" fill="#233">Architecture simulation</text>
+<circle cx="62" cy="424.0" r="2.4" fill="#02133C"/>
+<text x="74" y="428.0" font-size="12.2" font-weight="400" fill="#233">RequirementContract compilation</text>
+<rect x="44" y="474.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="474.5" width="4" height="138" rx="2" fill="#8A3B4A"/>
+<text x="59" y="496.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#8A3B4A">02 DOES NOT OWN</text>
+<circle cx="62" cy="511.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="515.5" font-size="12.2" font-weight="400" fill="#233">Provider matching/availability</text>
+<circle cx="62" cy="529.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="533.0" font-size="12.2" font-weight="400" fill="#233">Commercial offer/pricing</text>
+<circle cx="62" cy="546.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="550.5" font-size="12.2" font-weight="400" fill="#233">Final rule authority</text>
+<circle cx="62" cy="564.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="568.0" font-size="12.2" font-weight="400" fill="#233">Payment/settlement</text>
+<circle cx="62" cy="581.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="585.5" font-size="12.2" font-weight="400" fill="#233">Execution truth/outcome</text>
+<rect x="44" y="632.0" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="632.0" width="4" height="155" rx="2" fill="#075A6B"/>
+<text x="59" y="654.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">03 KEY INPUTS</text>
+<circle cx="62" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="673.0" font-size="12.2" font-weight="400" fill="#233">WorkCase and objective</text>
+<circle cx="62" cy="686.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="690.5" font-size="12.2" font-weight="400" fill="#233">FactLedger/evidence</text>
+<circle cx="62" cy="704.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="708.0" font-size="12.2" font-weight="400" fill="#233">Context/location/timing/access</text>
+<circle cx="62" cy="721.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="725.5" font-size="12.2" font-weight="400" fill="#233">Rules metadata</text>
+<circle cx="62" cy="739.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="743.0" font-size="12.2" font-weight="400" fill="#233">Service/task primitive library</text>
+<circle cx="62" cy="756.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="760.5" font-size="12.2" font-weight="400" fill="#233">Historical calibration data</text>
+<rect x="44" y="807.0" width="517" height="225" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="807.0" width="4" height="225" rx="2" fill="#075A6B"/>
+<text x="59" y="829.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">04 AUTHORITATIVE OUTPUTS</text>
+<circle cx="62" cy="844.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="848.0" font-size="12.2" font-weight="400" fill="#233">TaskBlocks</text>
+<circle cx="62" cy="861.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="865.5" font-size="12.2" font-weight="400" fill="#233">TaskGraph</text>
+<circle cx="62" cy="879.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="883.0" font-size="12.2" font-weight="400" fill="#233">MSI state</text>
+<circle cx="62" cy="896.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="900.5" font-size="12.2" font-weight="400" fill="#233">QuestionPlan</text>
+<circle cx="62" cy="914.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="918.0" font-size="12.2" font-weight="400" fill="#233">AbstractResourcePlan</text>
+<circle cx="62" cy="931.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="935.5" font-size="12.2" font-weight="400" fill="#233">Estimates</text>
+<circle cx="62" cy="949.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="953.0" font-size="12.2" font-weight="400" fill="#233">ScenarioSet</text>
+<circle cx="62" cy="966.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="970.5" font-size="12.2" font-weight="400" fill="#233">CompletionSpecification</text>
+<circle cx="62" cy="984.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="988.0" font-size="12.2" font-weight="400" fill="#233">RequirementContract vN</text>
+<circle cx="62" cy="1001.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="1005.5" font-size="12.2" font-weight="400" fill="#233">DecisionTrace</text>
+<rect x="44" y="1052.0" width="517" height="312" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="1052.0" width="4" height="312" rx="2" fill="#079B9D"/>
+<text x="59" y="1074.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">05 ENGINES / COMPONENTS</text>
+<circle cx="62" cy="1089.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1093.0" font-size="12.2" font-weight="400" fill="#233">E1 Semantic Interpreter</text>
+<circle cx="62" cy="1106.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1110.5" font-size="12.2" font-weight="400" fill="#233">E2 Candidate Task Decomposer</text>
+<circle cx="62" cy="1124.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1128.0" font-size="12.2" font-weight="400" fill="#233">E3 Global Pre-analysis</text>
+<circle cx="62" cy="1141.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1145.5" font-size="12.2" font-weight="400" fill="#233">E4 Fact Resolver</text>
+<circle cx="62" cy="1159.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1163.0" font-size="12.2" font-weight="400" fill="#233">E5 Primitive &amp; Task Architect</text>
+<circle cx="62" cy="1176.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1180.5" font-size="12.2" font-weight="400" fill="#233">E6 Dependency / TaskGraph Engine</text>
+<circle cx="62" cy="1194.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1198.0" font-size="12.2" font-weight="400" fill="#233">E7 MSI / Gap / Evidence Resolver</text>
+<circle cx="62" cy="1211.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1215.5" font-size="12.2" font-weight="400" fill="#233">E8 Question Orchestrator</text>
+<circle cx="62" cy="1229.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1233.0" font-size="12.2" font-weight="400" fill="#233">E9 Abstract Resource Planner</text>
+<circle cx="62" cy="1246.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1250.5" font-size="12.2" font-weight="400" fill="#233">E10 Time / Route / Cost Estimator</text>
+<circle cx="62" cy="1264.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1268.0" font-size="12.2" font-weight="400" fill="#233">E11 CompletionSpecification Engine</text>
+<circle cx="62" cy="1281.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1285.5" font-size="12.2" font-weight="400" fill="#233">E12 Scenario / Constraint Optimizer</text>
+<circle cx="62" cy="1299.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1303.0" font-size="12.2" font-weight="400" fill="#233">E13 Architecture Simulator</text>
+<circle cx="62" cy="1316.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1320.5" font-size="12.2" font-weight="400" fill="#233">E14 Risk-Based Quality Checker</text>
+<circle cx="62" cy="1334.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1338.0" font-size="12.2" font-weight="400" fill="#233">E15 Requirement Compiler</text>
+<rect x="581" y="212" width="517" height="312" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="212" width="4" height="312" rx="2" fill="#079B9D"/>
+<text x="596" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">06 OPERATING &amp; DECISION PATH</text>
+<circle cx="599" cy="249" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="253" font-size="12.2" font-weight="400" fill="#233">Semantic interpretation</text>
+<circle cx="599" cy="266.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="270.5" font-size="12.2" font-weight="400" fill="#233">Candidate task decomposition</text>
+<circle cx="599" cy="284.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="288.0" font-size="12.2" font-weight="400" fill="#233">Global pre-analysis for shared facts/dependencies</text>
+<circle cx="599" cy="301.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="305.5" font-size="12.2" font-weight="400" fill="#233">Fact resolution to authoritative FactLedger</text>
+<circle cx="599" cy="319.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="323.0" font-size="12.2" font-weight="400" fill="#233">MSI check</text>
+<circle cx="599" cy="336.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="340.5" font-size="12.2" font-weight="400" fill="#233">Ask only targeted missing questions; deterministic per-answer update</text>
+<text x="611" y="358.0" font-size="12.2" font-weight="400" fill="#233">loop</text>
+<circle cx="599" cy="371.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="375.5" font-size="12.2" font-weight="400" fill="#233">Build TaskGraph and primitives</text>
+<circle cx="599" cy="389.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="393.0" font-size="12.2" font-weight="400" fill="#233">Plan abstract resources</text>
+<circle cx="599" cy="406.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="410.5" font-size="12.2" font-weight="400" fill="#233">Estimate time/route/cost</text>
+<circle cx="599" cy="424.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="428.0" font-size="12.2" font-weight="400" fill="#233">Define completion specification</text>
+<circle cx="599" cy="441.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="445.5" font-size="12.2" font-weight="400" fill="#233">Generate scenarios</text>
+<circle cx="599" cy="459.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="463.0" font-size="12.2" font-weight="400" fill="#233">Architecture simulation</text>
+<circle cx="599" cy="476.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="480.5" font-size="12.2" font-weight="400" fill="#233">Risk-based quality challenge</text>
+<circle cx="599" cy="494.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="498.0" font-size="12.2" font-weight="400" fill="#233">Compile RequirementContract vN</text>
+<rect x="581" y="544.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="544.5" width="4" height="138" rx="2" fill="#079B9D"/>
+<text x="596" y="566.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">07 DECISION GATES</text>
+<circle cx="599" cy="581.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="585.5" font-size="12.2" font-weight="400" fill="#233">MSI cleared or explicit assumption accepted?</text>
+<circle cx="599" cy="599.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="603.0" font-size="12.2" font-weight="400" fill="#233">Architecture feasible independent of supply?</text>
+<circle cx="599" cy="616.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="620.5" font-size="12.2" font-weight="400" fill="#233">Hard constraints satisfied?</text>
+<circle cx="599" cy="634.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="638.0" font-size="12.2" font-weight="400" fill="#233">Risk requires independent checker/human?</text>
+<circle cx="599" cy="651.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="655.5" font-size="12.2" font-weight="400" fill="#233">RequirementContract internally consistent?</text>
+<rect x="581" y="702.0" width="517" height="242" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="702.0" width="4" height="242" rx="2" fill="#075A6B"/>
+<text x="596" y="724.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">08 DATA / ARTIFACT OBJECTS</text>
+<circle cx="599" cy="739.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="743.0" font-size="12.2" font-weight="400" fill="#233">FactLedger</text>
+<circle cx="599" cy="756.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="760.5" font-size="12.2" font-weight="400" fill="#233">TaskBlock</text>
+<circle cx="599" cy="774.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="778.0" font-size="12.2" font-weight="400" fill="#233">TaskGraph</text>
+<circle cx="599" cy="791.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="795.5" font-size="12.2" font-weight="400" fill="#233">MSIItem</text>
+<circle cx="599" cy="809.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="813.0" font-size="12.2" font-weight="400" fill="#233">QuestionPlan</text>
+<circle cx="599" cy="826.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="830.5" font-size="12.2" font-weight="400" fill="#233">AbstractResourceNeed</text>
+<circle cx="599" cy="844.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="848.0" font-size="12.2" font-weight="400" fill="#233">Estimate</text>
+<circle cx="599" cy="861.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="865.5" font-size="12.2" font-weight="400" fill="#233">Scenario</text>
+<circle cx="599" cy="879.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="883.0" font-size="12.2" font-weight="400" fill="#233">CompletionSpecification</text>
+<circle cx="599" cy="896.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="900.5" font-size="12.2" font-weight="400" fill="#233">RequirementContract</text>
+<circle cx="599" cy="914.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="918.0" font-size="12.2" font-weight="400" fill="#233">DecisionTrace</text>
+<rect x="581" y="964.5" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="964.5" width="4" height="172" rx="2" fill="#13C7BC"/>
+<text x="596" y="986.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">09 EVENTS EMITTED</text>
+<circle cx="599" cy="1001.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1005.5" font-size="12.2" font-weight="400" fill="#233">FactLedger.Updated</text>
+<circle cx="599" cy="1019.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1023.0" font-size="12.2" font-weight="400" fill="#233">MSI.Updated</text>
+<circle cx="599" cy="1036.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1040.5" font-size="12.2" font-weight="400" fill="#233">Question.Requested</text>
+<circle cx="599" cy="1054.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1058.0" font-size="12.2" font-weight="400" fill="#233">TaskGraph.Created</text>
+<circle cx="599" cy="1071.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1075.5" font-size="12.2" font-weight="400" fill="#233">ArchitectureSimulation.Completed</text>
+<circle cx="599" cy="1089.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1093.0" font-size="12.2" font-weight="400" fill="#233">RequirementContract.Compiled</text>
+<circle cx="599" cy="1106.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1110.5" font-size="12.2" font-weight="400" fill="#233">Planning.NeedsHumanReview</text>
+<rect x="581" y="1157.0" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1157.0" width="4" height="138" rx="2" fill="#13C7BC"/>
+<text x="596" y="1179.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">10 EVENTS CONSUMED</text>
+<circle cx="599" cy="1194.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1198.0" font-size="12.2" font-weight="400" fill="#233">WorkCase.Created</text>
+<circle cx="599" cy="1211.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1215.5" font-size="12.2" font-weight="400" fill="#233">Customer.AnsweredQuestion</text>
+<circle cx="599" cy="1229.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1233.0" font-size="12.2" font-weight="400" fill="#233">Evidence.Uploaded</text>
+<circle cx="599" cy="1246.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1250.5" font-size="12.2" font-weight="400" fill="#233">Rules.MetadataUpdated</text>
+<circle cx="599" cy="1264.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1268.0" font-size="12.2" font-weight="400" fill="#233">Reality.NewFact callback</text>
+<rect x="1118" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="212" width="4" height="172" rx="2" fill="#079B9D"/>
+<text x="1133" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">11 INTEGRATIONS / CALLBACKS</text>
+<circle cx="1136" cy="249" r="2.4" fill="#079B9D"/>
+<text x="1148" y="253" font-size="12.2" font-weight="400" fill="#233">L1 Intake</text>
+<circle cx="1136" cy="266.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="270.5" font-size="12.2" font-weight="400" fill="#233">L3 Trust/Safety</text>
+<circle cx="1136" cy="284.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="288.0" font-size="12.2" font-weight="400" fill="#233">L4 Fulfillment</text>
+<circle cx="1136" cy="301.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="305.5" font-size="12.2" font-weight="400" fill="#233">L6 Commercial</text>
+<circle cx="1136" cy="319.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="323.0" font-size="12.2" font-weight="400" fill="#233">L09A Reality callback</text>
+<circle cx="1136" cy="336.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="340.5" font-size="12.2" font-weight="400" fill="#233">P2 DecisionTrace</text>
+<circle cx="1136" cy="354.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="358.0" font-size="12.2" font-weight="400" fill="#233">P4 Model Gateway</text>
+<rect x="1118" y="404.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="404.5" width="4" height="138" rx="2" fill="#5A6B72"/>
+<text x="1133" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">12 FAILURE &amp; RECOVERY</text>
+<circle cx="1136" cy="441.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="445.5" font-size="12.2" font-weight="400" fill="#233">Ambiguous intent -&gt; targeted clarification</text>
+<circle cx="1136" cy="459.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="463.0" font-size="12.2" font-weight="400" fill="#233">Conflicting facts -&gt; flag and resolve</text>
+<circle cx="1136" cy="476.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="480.5" font-size="12.2" font-weight="400" fill="#233">Estimator low confidence -&gt; wider range / more evidence</text>
+<circle cx="1136" cy="494.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="498.0" font-size="12.2" font-weight="400" fill="#233">Architecture simulation fail -&gt; revise assumptions/resources</text>
+<circle cx="1136" cy="511.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="515.5" font-size="12.2" font-weight="400" fill="#233">Field reality -&gt; targeted affected-node reanalysis, not full restart</text>
+<rect x="1118" y="562.0" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="562.0" width="4" height="138" rx="2" fill="#5A6B72"/>
+<text x="1133" y="584.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">13 HUMAN REVIEW</text>
+<circle cx="1136" cy="599.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="603.0" font-size="12.2" font-weight="400" fill="#233">High-risk/safety-sensitive work</text>
+<circle cx="1136" cy="616.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="620.5" font-size="12.2" font-weight="400" fill="#233">Regulatory uncertainty</text>
+<circle cx="1136" cy="634.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="638.0" font-size="12.2" font-weight="400" fill="#233">Conflicting low-confidence facts</text>
+<circle cx="1136" cy="651.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="655.5" font-size="12.2" font-weight="400" fill="#233">Very high cost/time impact</text>
+<circle cx="1136" cy="669.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="673.0" font-size="12.2" font-weight="400" fill="#233">Quality checker escalation</text>
+<rect x="1118" y="719.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="719.5" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="741.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">14 SECURITY / PRIVACY</text>
+<circle cx="1136" cy="756.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="760.5" font-size="12.2" font-weight="400" fill="#233">Store only necessary facts</text>
+<circle cx="1136" cy="774.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="778.0" font-size="12.2" font-weight="400" fill="#233">Do not expose customer data to provider selection beyond need-to-know</text>
+<circle cx="1136" cy="791.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="795.5" font-size="12.2" font-weight="400" fill="#233">Model Gateway logging without leaking sensitive evidence</text>
+<circle cx="1136" cy="809.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="813.0" font-size="12.2" font-weight="400" fill="#233">Version every assumption and decision</text>
+<rect x="1118" y="859.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="859.5" width="4" height="138" rx="2" fill="#5A6B72"/>
+<text x="1133" y="881.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">15 1M-JOB SCALABILITY</text>
+<circle cx="1136" cy="896.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="900.5" font-size="12.2" font-weight="400" fill="#233">Fast clarification path uses deterministic FactLedger/MSI updates</text>
+<circle cx="1136" cy="914.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="918.0" font-size="12.2" font-weight="400" fill="#233">Strong models only at high-value reasoning checkpoints</text>
+<circle cx="1136" cy="931.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="935.5" font-size="12.2" font-weight="400" fill="#233">Async architecture simulation permitted</text>
+<circle cx="1136" cy="949.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="953.0" font-size="12.2" font-weight="400" fill="#233">Partition by WorkCase</text>
+<circle cx="1136" cy="966.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="970.5" font-size="12.2" font-weight="400" fill="#233">Cache task/rule metadata</text>
+<rect x="1118" y="1017.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="1017.0" width="4" height="120" rx="2" fill="#02133C"/>
+<text x="1133" y="1039.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">16 NON-NEGOTIABLE INVARIANTS</text>
+<circle cx="1136" cy="1054.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1058.0" font-size="12.2" font-weight="600" fill="#02133C">Plan before supply</text>
+<circle cx="1136" cy="1071.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1075.5" font-size="12.2" font-weight="600" fill="#02133C">Use AI for meaning; code for authority</text>
+<circle cx="1136" cy="1089.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1093.0" font-size="12.2" font-weight="600" fill="#02133C">Ask only material questions; never repeat known facts</text>
+<circle cx="1136" cy="1106.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1110.5" font-size="12.2" font-weight="600" fill="#02133C">Full reanalysis only when affected scope cannot be isolated</text>
+<rect x="1118" y="1157.0" width="517" height="120" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="1157.0" width="4" height="120" rx="2" fill="#075A6B"/>
+<text x="1133" y="1179.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">17 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="1194.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1198.0" font-size="12.2" font-weight="400" fill="#233">Ground-floor statement suppresses irrelevant elevator question</text>
+<circle cx="1136" cy="1211.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1215.5" font-size="12.2" font-weight="400" fill="#233">Multi-task sentence creates distinct TaskBlocks</text>
+<circle cx="1136" cy="1229.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1233.0" font-size="12.2" font-weight="400" fill="#233">Field fact changes one TaskBlock without rebuilding unrelated tasks</text>
+<circle cx="1136" cy="1246.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1250.5" font-size="12.2" font-weight="400" fill="#233">RequirementContract remains provider-neutral</text>
+<rect x="1118" y="1297.0" width="517" height="138" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="1297.0" width="4" height="138" rx="2" fill="#075A6B"/>
+<text x="1133" y="1319.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">18 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="1334.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1338.0" font-size="12.2" font-weight="400" fill="#233">L2-G1 · Ground-floor statement suppresses irrelevant elevator question</text>
+<circle cx="1136" cy="1351.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1355.5" font-size="12.2" font-weight="400" fill="#233">L2-G2 · Multi-task sentence creates distinct TaskBlocks</text>
+<circle cx="1136" cy="1369.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1373.0" font-size="12.2" font-weight="400" fill="#233">L2-G3 · Field fact changes one TaskBlock without rebuilding unrelated</text>
+<text x="1148" y="1390.5" font-size="12.2" font-weight="400" fill="#233">tasks</text>
+<circle cx="1136" cy="1404.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1408.0" font-size="12.2" font-weight="400" fill="#233">L2-G4 · Requirement Contract remains provider-neutral</text>
+<rect y="1498" width="1680" height="64" fill="#02133C"/>
+<text x="44" y="1525" font-size="11.6" fill="#FFFFFF">Board regenerated from the corrected canonical set. Text is real SVG text — readable by script, not only by eye.</text>
+<text x="44" y="1543" font-size="10.4" fill="#13C7BC">Every consumed event on this board has exactly one producer, or is declared external. Open rulings are listed in the canonical file, not decided here.</text>
+<text x="1636" y="1534" text-anchor="end" font-size="11.6" font-weight="700" fill="#13C7BC">L2</text>
+</svg>

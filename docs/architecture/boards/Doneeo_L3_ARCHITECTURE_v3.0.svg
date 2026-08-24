@@ -1,0 +1,271 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1387" viewBox="0 0 1680 1387" font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1387" fill="#F6F9F9"/>
+<rect width="1680" height="168" fill="#02133C"/>
+<rect y="163" width="1680" height="5" fill="#079B9D"/>
+<text x="44" y="46" font-size="17" font-weight="700" fill="#FFFFFF" letter-spacing="3.6">DONEEO</text>
+<text x="162" y="46" font-size="12.5" fill="#13C7BC" letter-spacing="0.4">Intelligence to Get Work Done</text>
+<text x="44" y="92" font-size="31" font-weight="700" fill="#FFFFFF">L3 — TRUST, SAFETY, RULES &amp; COMPLIANCE</text>
+<text x="44" y="118" font-size="13.4" fill="#C9D9DE">Act as a blocking control surface for legal, safety, qualification and policy requirements across planning, fulfillment, preflight and execution.</text>
+<rect x="1306" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1357" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">LAYER</text>
+<text x="1357" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">L3</text>
+<rect x="1418" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1469" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">EDITION</text>
+<text x="1469" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">v3.0 clean</text>
+<rect x="1530" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1581" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">DATE</text>
+<text x="1581" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2026-08-23</text>
+<text x="1306" y="106" font-size="10.6" fill="#13C7BC">Numbering, naming and event linkage corrected.</text>
+<text x="1306" y="122" font-size="10.6" fill="#9FB6BE">Items marked FIXED changed in this edition.</text>
+<rect x="44" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="212" width="4" height="172" rx="2" fill="#02133C"/>
+<text x="59" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">01 OWNS</text>
+<circle cx="62" cy="249" r="2.4" fill="#02133C"/>
+<text x="74" y="253" font-size="12.2" font-weight="400" fill="#233">Rule applicability</text>
+<circle cx="62" cy="266.5" r="2.4" fill="#02133C"/>
+<text x="74" y="270.5" font-size="12.2" font-weight="400" fill="#233">Risk/regulatory classification</text>
+<circle cx="62" cy="284.0" r="2.4" fill="#02133C"/>
+<text x="74" y="288.0" font-size="12.2" font-weight="400" fill="#233">Qualification/control requirements</text>
+<circle cx="62" cy="301.5" r="2.4" fill="#02133C"/>
+<text x="74" y="305.5" font-size="12.2" font-weight="400" fill="#233">Provider eligibility rules</text>
+<circle cx="62" cy="319.0" r="2.4" fill="#02133C"/>
+<text x="74" y="323.0" font-size="12.2" font-weight="400" fill="#233">Dynamic risk reassessment</text>
+<circle cx="62" cy="336.5" r="2.4" fill="#02133C"/>
+<text x="74" y="340.5" font-size="12.2" font-weight="400" fill="#233">Safety holds</text>
+<circle cx="62" cy="354.0" r="2.4" fill="#02133C"/>
+<text x="74" y="358.0" font-size="12.2" font-weight="400" fill="#233">Policy exceptions and manual review</text>
+<rect x="44" y="404.5" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="404.5" width="4" height="155" rx="2" fill="#8A3B4A"/>
+<text x="59" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#8A3B4A">02 DOES NOT OWN</text>
+<circle cx="62" cy="441.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="445.5" font-size="12.2" font-weight="400" fill="#233">Task planning</text>
+<circle cx="62" cy="459.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="463.0" font-size="12.2" font-weight="400" fill="#233">Provider ranking beyond eligibility</text>
+<circle cx="62" cy="476.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="480.5" font-size="12.2" font-weight="400" fill="#233">Pricing</text>
+<circle cx="62" cy="494.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="498.0" font-size="12.2" font-weight="400" fill="#233">Payment capture</text>
+<circle cx="62" cy="511.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="515.5" font-size="12.2" font-weight="400" fill="#233">Execution state</text>
+<circle cx="62" cy="529.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="533.0" font-size="12.2" font-weight="400" fill="#233">Outcome truth</text>
+<rect x="44" y="579.5" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="579.5" width="4" height="155" rx="2" fill="#075A6B"/>
+<text x="59" y="601.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">03 KEY INPUTS</text>
+<circle cx="62" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="620.5" font-size="12.2" font-weight="400" fill="#233">TaskBlocks/method/location</text>
+<circle cx="62" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="638.0" font-size="12.2" font-weight="400" fill="#233">RequirementContract</text>
+<circle cx="62" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="655.5" font-size="12.2" font-weight="400" fill="#233">Provider/team credentials</text>
+<circle cx="62" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="673.0" font-size="12.2" font-weight="400" fill="#233">Site/preflight context</text>
+<circle cx="62" cy="686.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="690.5" font-size="12.2" font-weight="400" fill="#233">Evidence</text>
+<circle cx="62" cy="704.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="708.0" font-size="12.2" font-weight="400" fill="#233">Versioned RulePack and regulatory sources</text>
+<rect x="44" y="754.5" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="754.5" width="4" height="172" rx="2" fill="#075A6B"/>
+<text x="59" y="776.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">04 AUTHORITATIVE OUTPUTS</text>
+<circle cx="62" cy="791.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="795.5" font-size="12.2" font-weight="400" fill="#233">RuleSet</text>
+<circle cx="62" cy="809.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="813.0" font-size="12.2" font-weight="400" fill="#233">RiskProfile</text>
+<circle cx="62" cy="826.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="830.5" font-size="12.2" font-weight="400" fill="#233">RequiredQualifications</text>
+<circle cx="62" cy="844.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="848.0" font-size="12.2" font-weight="400" fill="#233">RequiredControls</text>
+<circle cx="62" cy="861.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="865.5" font-size="12.2" font-weight="400" fill="#233">EligibilityDecision</text>
+<circle cx="62" cy="879.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="883.0" font-size="12.2" font-weight="400" fill="#233">SafetyHold/Clearance</text>
+<circle cx="62" cy="896.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="900.5" font-size="12.2" font-weight="400" fill="#233">DecisionTrace</text>
+<rect x="44" y="947.0" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="947.0" width="4" height="172" rx="2" fill="#079B9D"/>
+<text x="59" y="969.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">05 ENGINES / COMPONENTS</text>
+<circle cx="62" cy="984.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="988.0" font-size="12.2" font-weight="400" fill="#233">Rule Applicability Engine</text>
+<circle cx="62" cy="1001.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1005.5" font-size="12.2" font-weight="400" fill="#233">Risk Classification Engine</text>
+<circle cx="62" cy="1019.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1023.0" font-size="12.2" font-weight="400" fill="#233">Regulatory Classifier</text>
+<circle cx="62" cy="1036.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1040.5" font-size="12.2" font-weight="400" fill="#233">Capability Policy Engine</text>
+<circle cx="62" cy="1054.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1058.0" font-size="12.2" font-weight="400" fill="#233">Provider Eligibility Rules Engine</text>
+<circle cx="62" cy="1071.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1075.5" font-size="12.2" font-weight="400" fill="#233">Dynamic Risk Engine</text>
+<circle cx="62" cy="1089.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1093.0" font-size="12.2" font-weight="400" fill="#233">Safety Hold Controller</text>
+<rect x="581" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="212" width="4" height="172" rx="2" fill="#079B9D"/>
+<text x="596" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">06 OPERATING &amp; DECISION PATH</text>
+<circle cx="599" cy="249" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="253" font-size="12.2" font-weight="400" fill="#233">T1 Requirement Classification during planning.</text>
+<circle cx="599" cy="266.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="270.5" font-size="12.2" font-weight="400" fill="#233">Issue RuleSet and controls.</text>
+<circle cx="599" cy="284.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="288.0" font-size="12.2" font-weight="400" fill="#233">T2 Provider/Team Eligibility before ranking.</text>
+<circle cx="599" cy="301.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="305.5" font-size="12.2" font-weight="400" fill="#233">Pass / PassWithControls / ManualReview / Block.</text>
+<circle cx="599" cy="319.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="323.0" font-size="12.2" font-weight="400" fill="#233">T3 Preflight/Field Eligibility immediately before/during work.</text>
+<circle cx="599" cy="336.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="340.5" font-size="12.2" font-weight="400" fill="#233">Dynamic reassessment on new reality.</text>
+<circle cx="599" cy="354.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="358.0" font-size="12.2" font-weight="400" fill="#233">Safety hold smallest affected scope when required.</text>
+<rect x="581" y="404.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="404.5" width="4" height="120" rx="2" fill="#079B9D"/>
+<text x="596" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">07 DECISION GATES</text>
+<circle cx="599" cy="441.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="445.5" font-size="12.2" font-weight="400" fill="#233">T1 rules determined?</text>
+<circle cx="599" cy="459.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="463.0" font-size="12.2" font-weight="400" fill="#233">T2 provider/team satisfies every hard requirement?</text>
+<circle cx="599" cy="476.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="480.5" font-size="12.2" font-weight="400" fill="#233">T3 credentials/site/method still valid?</text>
+<circle cx="599" cy="494.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="498.0" font-size="12.2" font-weight="400" fill="#233">Manual review required?</text>
+<rect x="581" y="544.5" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="544.5" width="4" height="190" rx="2" fill="#075A6B"/>
+<text x="596" y="566.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">08 DATA / ARTIFACT OBJECTS</text>
+<circle cx="599" cy="581.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="585.5" font-size="12.2" font-weight="400" fill="#233">RuleRelease</text>
+<circle cx="599" cy="599.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="603.0" font-size="12.2" font-weight="400" fill="#233">RuleSet</text>
+<circle cx="599" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="620.5" font-size="12.2" font-weight="400" fill="#233">RiskProfile</text>
+<circle cx="599" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="638.0" font-size="12.2" font-weight="400" fill="#233">QualificationRequirement</text>
+<circle cx="599" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="655.5" font-size="12.2" font-weight="400" fill="#233">ControlRequirement</text>
+<circle cx="599" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="673.0" font-size="12.2" font-weight="400" fill="#233">EligibilityDecision</text>
+<circle cx="599" cy="686.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="690.5" font-size="12.2" font-weight="400" fill="#233">SafetyHold</text>
+<circle cx="599" cy="704.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="708.0" font-size="12.2" font-weight="400" fill="#233">PolicyException</text>
+<rect x="581" y="754.5" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="754.5" width="4" height="155" rx="2" fill="#13C7BC"/>
+<text x="596" y="776.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">09 EVENTS EMITTED</text>
+<circle cx="599" cy="791.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="795.5" font-size="12.2" font-weight="400" fill="#233">Rules.Classified</text>
+<circle cx="599" cy="809.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="813.0" font-size="12.2" font-weight="400" fill="#233">Eligibility.Passed</text>
+<circle cx="599" cy="826.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="830.5" font-size="12.2" font-weight="400" fill="#233">Eligibility.PassWithControls</text>
+<circle cx="599" cy="844.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="848.0" font-size="12.2" font-weight="400" fill="#233">Eligibility.Blocked</text>
+<circle cx="599" cy="861.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="865.5" font-size="12.2" font-weight="400" fill="#233">SafetyHold.Placed</text>
+<circle cx="599" cy="879.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="883.0" font-size="12.2" font-weight="400" fill="#233">SafetyHold.Cleared</text>
+<rect x="581" y="929.5" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="929.5" width="4" height="155" rx="2" fill="#13C7BC"/>
+<text x="596" y="951.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">10 EVENTS CONSUMED</text>
+<circle cx="599" cy="966.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="970.5" font-size="12.2" font-weight="400" fill="#233">RequirementContract.Compiled</text>
+<circle cx="599" cy="984.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="988.0" font-size="12.2" font-weight="400" fill="#233">ProviderCandidate.Proposed</text>
+<circle cx="599" cy="1001.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1005.5" font-size="12.2" font-weight="400" fill="#233">Provider.Accepted</text>
+<circle cx="599" cy="1019.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1023.0" font-size="12.2" font-weight="400" fill="#233">Preflight.Requested</text>
+<circle cx="599" cy="1036.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1040.5" font-size="12.2" font-weight="400" fill="#233">RealityCase.Created</text>
+<circle cx="599" cy="1054.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1058.0" font-size="12.2" font-weight="400" fill="#233">Incident.Reported</text>
+<rect x="581" y="1104.5" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1104.5" width="4" height="155" rx="2" fill="#079B9D"/>
+<text x="596" y="1126.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">11 INTEGRATIONS / CALLBACKS</text>
+<circle cx="599" cy="1141.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="1145.5" font-size="12.2" font-weight="400" fill="#233">L2 Planning</text>
+<circle cx="599" cy="1159.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1163.0" font-size="12.2" font-weight="400" fill="#233">L4 Fulfillment</text>
+<circle cx="599" cy="1176.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="1180.5" font-size="12.2" font-weight="400" fill="#233">L8 Preflight</text>
+<circle cx="599" cy="1194.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1198.0" font-size="12.2" font-weight="400" fill="#233">L09A Reality</text>
+<circle cx="599" cy="1211.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="1215.5" font-size="12.2" font-weight="400" fill="#233">L10 Execution</text>
+<circle cx="599" cy="1229.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1233.0" font-size="12.2" font-weight="400" fill="#233">P2 DecisionTrace</text>
+<rect x="1118" y="212" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="212" width="4" height="138" rx="2" fill="#5A6B72"/>
+<text x="1133" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">12 FAILURE &amp; RECOVERY</text>
+<circle cx="1136" cy="249" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="253" font-size="12.2" font-weight="400" fill="#233">Rule source unavailable -&gt; conservative hold/manual review for</text>
+<text x="1148" y="270.5" font-size="12.2" font-weight="400" fill="#233">material risk</text>
+<circle cx="1136" cy="284.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="288.0" font-size="12.2" font-weight="400" fill="#233">Expired credential -&gt; block affected assignment</text>
+<circle cx="1136" cy="301.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="305.5" font-size="12.2" font-weight="400" fill="#233">Conflicting rules -&gt; compliance review</text>
+<circle cx="1136" cy="319.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="323.0" font-size="12.2" font-weight="400" fill="#233">Unsafe field condition -&gt; immediate hold</text>
+<rect x="1118" y="369.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="369.5" width="4" height="138" rx="2" fill="#5A6B72"/>
+<text x="1133" y="391.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">13 HUMAN REVIEW</text>
+<circle cx="1136" cy="406.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="410.5" font-size="12.2" font-weight="400" fill="#233">Rule conflict/ambiguity</text>
+<circle cx="1136" cy="424.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="428.0" font-size="12.2" font-weight="400" fill="#233">High/critical risk classification</text>
+<circle cx="1136" cy="441.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="445.5" font-size="12.2" font-weight="400" fill="#233">Borderline provider eligibility</text>
+<circle cx="1136" cy="459.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="463.0" font-size="12.2" font-weight="400" fill="#233">Policy exception</text>
+<circle cx="1136" cy="476.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="480.5" font-size="12.2" font-weight="400" fill="#233">Safety hold escalation</text>
+<rect x="1118" y="527.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="527.0" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="549.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">14 SECURITY / PRIVACY</text>
+<circle cx="1136" cy="564.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="568.0" font-size="12.2" font-weight="400" fill="#233">Credential access least privilege</text>
+<circle cx="1136" cy="581.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="585.5" font-size="12.2" font-weight="400" fill="#233">Audit all rule decisions</text>
+<circle cx="1136" cy="599.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="603.0" font-size="12.2" font-weight="400" fill="#233">Effective-dated rules</text>
+<circle cx="1136" cy="616.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="620.5" font-size="12.2" font-weight="400" fill="#233">Protect sensitive provider records</text>
+<rect x="1118" y="667.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="667.0" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="689.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">15 1M-JOB SCALABILITY</text>
+<circle cx="1136" cy="704.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="708.0" font-size="12.2" font-weight="400" fill="#233">Versioned/cached RulePacks</text>
+<circle cx="1136" cy="721.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="725.5" font-size="12.2" font-weight="400" fill="#233">Deterministic evaluation workers</text>
+<circle cx="1136" cy="739.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="743.0" font-size="12.2" font-weight="400" fill="#233">Regional policy partitions</text>
+<circle cx="1136" cy="756.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="760.5" font-size="12.2" font-weight="400" fill="#233">Revalidate only affected entities on change</text>
+<rect x="1118" y="807.0" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="807.0" width="4" height="102" rx="2" fill="#02133C"/>
+<text x="1133" y="829.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">16 NON-NEGOTIABLE INVARIANTS</text>
+<circle cx="1136" cy="844.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="848.0" font-size="12.2" font-weight="600" fill="#02133C">Hard legal/safety constraints cannot be outvoted by optimization</text>
+<circle cx="1136" cy="861.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="865.5" font-size="12.2" font-weight="600" fill="#02133C">Eligibility at offer time does not imply dispatch readiness</text>
+<circle cx="1136" cy="879.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="883.0" font-size="12.2" font-weight="600" fill="#02133C">Payment never implies safety clearance</text>
+<rect x="1118" y="929.5" width="517" height="102" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="929.5" width="4" height="102" rx="2" fill="#075A6B"/>
+<text x="1133" y="951.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">17 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="966.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="970.5" font-size="12.2" font-weight="400" fill="#233">Licensed trade requires qualified provider</text>
+<circle cx="1136" cy="984.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="988.0" font-size="12.2" font-weight="400" fill="#233">Credential expires after booking before dispatch</text>
+<circle cx="1136" cy="1001.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1005.5" font-size="12.2" font-weight="400" fill="#233">Field discovery changes regulatory classification</text>
+<rect x="1118" y="1052.0" width="517" height="102" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="1052.0" width="4" height="102" rx="2" fill="#075A6B"/>
+<text x="1133" y="1074.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">18 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="1089.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1093.0" font-size="12.2" font-weight="400" fill="#233">L3-G1 · Licensed trade requires qualified provider</text>
+<circle cx="1136" cy="1106.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1110.5" font-size="12.2" font-weight="400" fill="#233">L3-G2 · Credential expires after booking before dispatch</text>
+<circle cx="1136" cy="1124.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1128.0" font-size="12.2" font-weight="400" fill="#233">L3-G3 · Field discovery changes regulatory classification</text>
+<rect y="1323" width="1680" height="64" fill="#02133C"/>
+<text x="44" y="1350" font-size="11.6" fill="#FFFFFF">Board regenerated from the corrected canonical set. Text is real SVG text — readable by script, not only by eye.</text>
+<text x="44" y="1368" font-size="10.4" fill="#13C7BC">Every consumed event on this board has exactly one producer, or is declared external. Open rulings are listed in the canonical file, not decided here.</text>
+<text x="1636" y="1359" text-anchor="end" font-size="11.6" font-weight="700" fill="#13C7BC">L3</text>
+</svg>

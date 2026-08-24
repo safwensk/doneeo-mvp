@@ -1,0 +1,245 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1352" viewBox="0 0 1680 1352" font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1352" fill="#F6F9F9"/>
+<rect width="1680" height="168" fill="#02133C"/>
+<rect y="163" width="1680" height="5" fill="#079B9D"/>
+<text x="44" y="46" font-size="17" font-weight="700" fill="#FFFFFF" letter-spacing="3.6">DONEEO</text>
+<text x="162" y="46" font-size="12.5" fill="#13C7BC" letter-spacing="0.4">Intelligence to Get Work Done</text>
+<text x="44" y="92" font-size="31" font-weight="700" fill="#FFFFFF">P4 — PLATFORM SECURITY, FRAUD/ABUSE &amp; TRUST ENFORCEMENT ARCHITECTURE</text>
+<text x="44" y="118" font-size="13.4" fill="#C9D9DE">Protect accounts, transactions, communications and platform operations through cross-cutting security, fraud/abuse controls and incident response without replacing</text>
+<text x="44" y="137" font-size="13.4" fill="#C9D9DE">job-specific Trust/Safety rules.</text>
+<rect x="1306" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1357" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">LAYER</text>
+<text x="1357" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">P4</text>
+<rect x="1418" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1469" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">EDITION</text>
+<text x="1469" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">v3.0 clean</text>
+<rect x="1530" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1581" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">DATE</text>
+<text x="1581" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2026-08-23</text>
+<text x="1306" y="106" font-size="10.6" fill="#13C7BC">Numbering, naming and event linkage corrected.</text>
+<text x="1306" y="122" font-size="10.6" fill="#9FB6BE">Items marked FIXED changed in this edition.</text>
+<rect x="44" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="212" width="4" height="172" rx="2" fill="#02133C"/>
+<text x="59" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">01 OWNS</text>
+<circle cx="62" cy="249" r="2.4" fill="#02133C"/>
+<text x="74" y="253" font-size="12.2" font-weight="400" fill="#233">Platform threat/risk signals</text>
+<circle cx="62" cy="266.5" r="2.4" fill="#02133C"/>
+<text x="74" y="270.5" font-size="12.2" font-weight="400" fill="#233">Fraud/abuse detection</text>
+<circle cx="62" cy="284.0" r="2.4" fill="#02133C"/>
+<text x="74" y="288.0" font-size="12.2" font-weight="400" fill="#233">Account/device/session protective controls</text>
+<circle cx="62" cy="301.5" r="2.4" fill="#02133C"/>
+<text x="74" y="305.5" font-size="12.2" font-weight="400" fill="#233">Transaction risk signals</text>
+<circle cx="62" cy="319.0" r="2.4" fill="#02133C"/>
+<text x="74" y="323.0" font-size="12.2" font-weight="400" fill="#233">Runtime security enforcement</text>
+<circle cx="62" cy="336.5" r="2.4" fill="#02133C"/>
+<text x="74" y="340.5" font-size="12.2" font-weight="400" fill="#233">Security incidents</text>
+<circle cx="62" cy="354.0" r="2.4" fill="#02133C"/>
+<text x="74" y="358.0" font-size="12.2" font-weight="400" fill="#233">Cross-layer security holds</text>
+<rect x="44" y="404.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="404.5" width="4" height="120" rx="2" fill="#8A3B4A"/>
+<text x="59" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#8A3B4A">02 DOES NOT OWN</text>
+<circle cx="62" cy="441.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="445.5" font-size="12.2" font-weight="400" fill="#233">Job-specific regulatory/rule/qualification authority (L3)</text>
+<circle cx="62" cy="459.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="463.0" font-size="12.2" font-weight="400" fill="#233">Identity/AuthN/AuthZ ownership (P3)</text>
+<circle cx="62" cy="476.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="480.5" font-size="12.2" font-weight="400" fill="#233">Privacy governance/DSR/retention (P8)</text>
+<circle cx="62" cy="494.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="498.0" font-size="12.2" font-weight="400" fill="#233">Commercial/settlement decisions</text>
+<rect x="44" y="544.5" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="544.5" width="4" height="155" rx="2" fill="#075A6B"/>
+<text x="59" y="566.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">03 KEY INPUTS</text>
+<circle cx="62" cy="581.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="585.5" font-size="12.2" font-weight="400" fill="#233">P3 identity/session context</text>
+<circle cx="62" cy="599.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="603.0" font-size="12.2" font-weight="400" fill="#233">L3 safety/rule events</text>
+<circle cx="62" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="620.5" font-size="12.2" font-weight="400" fill="#233">P9 payment signals</text>
+<circle cx="62" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="638.0" font-size="12.2" font-weight="400" fill="#233">P6 telemetry/anomalies</text>
+<circle cx="62" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="655.5" font-size="12.2" font-weight="400" fill="#233">P7 abuse reports</text>
+<circle cx="62" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="673.0" font-size="12.2" font-weight="400" fill="#233">All-layer incident signals</text>
+<rect x="44" y="719.5" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="719.5" width="4" height="155" rx="2" fill="#075A6B"/>
+<text x="59" y="741.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">04 AUTHORITATIVE OUTPUTS</text>
+<circle cx="62" cy="756.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="760.5" font-size="12.2" font-weight="400" fill="#233">SecurityDecision</text>
+<circle cx="62" cy="774.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="778.0" font-size="12.2" font-weight="400" fill="#233">FraudRiskSignal</text>
+<circle cx="62" cy="791.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="795.5" font-size="12.2" font-weight="400" fill="#233">AbuseCase</text>
+<circle cx="62" cy="809.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="813.0" font-size="12.2" font-weight="400" fill="#233">ProtectiveControl</text>
+<circle cx="62" cy="826.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="830.5" font-size="12.2" font-weight="400" fill="#233">SecurityIncident</text>
+<circle cx="62" cy="844.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="848.0" font-size="12.2" font-weight="400" fill="#233">SecurityHold</text>
+<rect x="44" y="894.5" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="894.5" width="4" height="155" rx="2" fill="#079B9D"/>
+<text x="59" y="916.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">05 ENGINES / COMPONENTS</text>
+<circle cx="62" cy="931.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="935.5" font-size="12.2" font-weight="400" fill="#233">Threat Signal Engine</text>
+<circle cx="62" cy="949.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="953.0" font-size="12.2" font-weight="400" fill="#233">Fraud/Abuse Detection</text>
+<circle cx="62" cy="966.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="970.5" font-size="12.2" font-weight="400" fill="#233">Risk Scoring Engine</text>
+<circle cx="62" cy="984.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="988.0" font-size="12.2" font-weight="400" fill="#233">Protective Control Engine</text>
+<circle cx="62" cy="1001.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1005.5" font-size="12.2" font-weight="400" fill="#233">Security Incident Manager</text>
+<circle cx="62" cy="1019.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1023.0" font-size="12.2" font-weight="400" fill="#233">Security Policy Enforcement Gateway</text>
+<rect x="581" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="212" width="4" height="172" rx="2" fill="#079B9D"/>
+<text x="596" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">06 OPERATING &amp; DECISION PATH</text>
+<circle cx="599" cy="249" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="253" font-size="12.2" font-weight="400" fill="#233">Collect cross-platform security signals.</text>
+<circle cx="599" cy="266.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="270.5" font-size="12.2" font-weight="400" fill="#233">Assess account/device/transaction/communication risk.</text>
+<circle cx="599" cy="284.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="288.0" font-size="12.2" font-weight="400" fill="#233">Apply deterministic security policy and protective controls.</text>
+<circle cx="599" cy="301.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="305.5" font-size="12.2" font-weight="400" fill="#233">Escalate severe/ambiguous cases to security operations.</text>
+<circle cx="599" cy="319.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="323.0" font-size="12.2" font-weight="400" fill="#233">For physical-job safety/legal qualification decisions, call L3 rather</text>
+<text x="611" y="340.5" font-size="12.2" font-weight="400" fill="#233">than duplicate it.</text>
+<circle cx="599" cy="354.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="358.0" font-size="12.2" font-weight="400" fill="#233">Record security facts/DecisionTrace in P2.</text>
+<rect x="581" y="404.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="404.5" width="4" height="120" rx="2" fill="#079B9D"/>
+<text x="596" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">07 DECISION GATES</text>
+<circle cx="599" cy="441.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="445.5" font-size="12.2" font-weight="400" fill="#233">Platform security threat?</text>
+<circle cx="599" cy="459.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="463.0" font-size="12.2" font-weight="400" fill="#233">Fraud/abuse threshold?</text>
+<circle cx="599" cy="476.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="480.5" font-size="12.2" font-weight="400" fill="#233">Account/session control needed?</text>
+<circle cx="599" cy="494.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="498.0" font-size="12.2" font-weight="400" fill="#233">Job-specific safety matter → L3?</text>
+<rect x="581" y="544.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="544.5" width="4" height="138" rx="2" fill="#075A6B"/>
+<text x="596" y="566.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">08 DATA / ARTIFACT OBJECTS</text>
+<circle cx="599" cy="581.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="585.5" font-size="12.2" font-weight="400" fill="#233">SecurityDecision</text>
+<circle cx="599" cy="599.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="603.0" font-size="12.2" font-weight="400" fill="#233">RiskSignal</text>
+<circle cx="599" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="620.5" font-size="12.2" font-weight="400" fill="#233">ProtectiveControl</text>
+<circle cx="599" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="638.0" font-size="12.2" font-weight="400" fill="#233">SecurityIncident</text>
+<circle cx="599" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="655.5" font-size="12.2" font-weight="400" fill="#233">AbuseCase</text>
+<rect x="581" y="702.0" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="702.0" width="4" height="138" rx="2" fill="#13C7BC"/>
+<text x="596" y="724.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">09 EVENTS EMITTED</text>
+<circle cx="599" cy="739.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="743.0" font-size="12.2" font-weight="400" fill="#233">Security.RiskDetected</text>
+<circle cx="599" cy="756.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="760.5" font-size="12.2" font-weight="400" fill="#233">Security.ControlApplied</text>
+<circle cx="599" cy="774.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="778.0" font-size="12.2" font-weight="400" fill="#233">Fraud.SignalRaised</text>
+<circle cx="599" cy="791.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="795.5" font-size="12.2" font-weight="400" fill="#233">Abuse.CaseOpened</text>
+<circle cx="599" cy="809.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="813.0" font-size="12.2" font-weight="400" fill="#233">Security.IncidentOpened</text>
+<rect x="581" y="859.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="859.5" width="4" height="138" rx="2" fill="#13C7BC"/>
+<text x="596" y="881.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">10 EVENTS CONSUMED</text>
+<circle cx="599" cy="896.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="900.5" font-size="12.2" font-weight="400" fill="#233">Identity.Event</text>
+<circle cx="599" cy="914.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="918.0" font-size="12.2" font-weight="400" fill="#233">Payment.Signal</text>
+<circle cx="599" cy="931.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="935.5" font-size="12.2" font-weight="400" fill="#233">Message.AbuseReport</text>
+<circle cx="599" cy="949.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="953.0" font-size="12.2" font-weight="400" fill="#233">Telemetry.Anomaly</text>
+<circle cx="599" cy="966.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="970.5" font-size="12.2" font-weight="400" fill="#233">L3.SafetyHold</text>
+<rect x="1118" y="212" width="517" height="348" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="212" width="4" height="348" rx="2" fill="#079B9D"/>
+<text x="1133" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">11 INTEGRATIONS / CALLBACKS</text>
+<text x="1133" y="253" font-size="12.2" font-weight="400" fill="#5A6B72">Recovered by OCR from the PNG source poster; no SVG exists.</text>
+<text x="1133" y="270.5" font-size="12.2" font-weight="400" fill="#5A6B72">Source poster uses a unified P1-P14 scheme in which P6=Providers, P8=Task</text>
+<text x="1148" y="288.0" font-size="12.2" font-weight="400" fill="#233">Safety, P9=Messaging, P12=Settlement, P13=Claims and P14=Intelligence.</text>
+<text x="1148" y="305.5" font-size="12.2" font-weight="400" fill="#233">NONE of those match current canon. Remap before use.</text>
+<circle cx="1136" cy="319.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="323.0" font-size="12.2" font-weight="400" fill="#233">From / To P1 Orchestrator (State, Events)</text>
+<circle cx="1136" cy="336.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="340.5" font-size="12.2" font-weight="400" fill="#233">From / To P2 Facts (Events, Entities)</text>
+<circle cx="1136" cy="354.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="358.0" font-size="12.2" font-weight="400" fill="#233">From / To P3 Identity (Identity, Risk Signals)</text>
+<circle cx="1136" cy="371.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="375.5" font-size="12.2" font-weight="400" fill="#233">From / To L4 (Fulfillment, Matching &amp; Team Assembly) (Profiles,</text>
+<text x="1148" y="393.0" font-size="12.2" font-weight="400" fill="#233">Status)</text>
+<circle cx="1136" cy="406.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="410.5" font-size="12.2" font-weight="400" fill="#233">From / To L3 (Trust, Safety, Rules &amp; Compliance) (Hazards, Controls)</text>
+<circle cx="1136" cy="424.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="428.0" font-size="12.2" font-weight="400" fill="#233">From / To P7 (Notifications, Messaging &amp; User Engagement) (Reports,</text>
+<text x="1148" y="445.5" font-size="12.2" font-weight="400" fill="#233">Flags)</text>
+<circle cx="1136" cy="459.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="463.0" font-size="12.2" font-weight="400" fill="#233">From / To L10 (Live Execution &amp; Change Control) (Problems, State)</text>
+<circle cx="1136" cy="476.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="480.5" font-size="12.2" font-weight="400" fill="#233">From / To L12 (Settlement, Ledger &amp; Reconciliation) (Chargebacks)</text>
+<circle cx="1136" cy="494.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="498.0" font-size="12.2" font-weight="400" fill="#233">From / To L13 (Branch, Continuity, Claims &amp; Support) (Safety &amp;</text>
+<text x="1148" y="515.5" font-size="12.2" font-weight="400" fill="#233">Disputes)</text>
+<circle cx="1136" cy="529.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="533.0" font-size="12.2" font-weight="400" fill="#233">From / To L2 (Intelligence &amp; Planning) (Risk Models)</text>
+<rect x="1118" y="579.5" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="579.5" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="1133" y="601.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">12 FAILURE &amp; RECOVERY</text>
+<circle cx="1136" cy="616.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="620.5" font-size="12.2" font-weight="400" fill="#233">False positive → controlled appeal/review.</text>
+<circle cx="1136" cy="634.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="638.0" font-size="12.2" font-weight="400" fill="#233">Security system unavailable → fail-safe according to risk class.</text>
+<circle cx="1136" cy="651.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="655.5" font-size="12.2" font-weight="400" fill="#233">Credential/physical work concern → route L3.</text>
+<rect x="1118" y="702.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="702.0" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="724.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">13 HUMAN REVIEW</text>
+<circle cx="1136" cy="739.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="743.0" font-size="12.2" font-weight="400" fill="#233">Account suspension/ban</text>
+<circle cx="1136" cy="756.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="760.5" font-size="12.2" font-weight="400" fill="#233">High-value fraud</text>
+<circle cx="1136" cy="774.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="778.0" font-size="12.2" font-weight="400" fill="#233">Severe abuse/harassment</text>
+<circle cx="1136" cy="791.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="795.5" font-size="12.2" font-weight="400" fill="#233">Security incident</text>
+<rect x="1118" y="842.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="842.0" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="864.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">14 SECURITY / PRIVACY</text>
+<circle cx="1136" cy="879.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="883.0" font-size="12.2" font-weight="400" fill="#233">Least privilege</text>
+<circle cx="1136" cy="896.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="900.5" font-size="12.2" font-weight="400" fill="#233">Secrets/KMS</text>
+<circle cx="1136" cy="914.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="918.0" font-size="12.2" font-weight="400" fill="#233">Tamper-evident logs</text>
+<circle cx="1136" cy="931.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="935.5" font-size="12.2" font-weight="400" fill="#233">No unnecessary work content</text>
+<rect x="1118" y="982.0" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="982.0" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="1133" y="1004.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">15 1M-JOB SCALABILITY</text>
+<circle cx="1136" cy="1019.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="1023.0" font-size="12.2" font-weight="400" fill="#233">Stream risk workers</text>
+<circle cx="1136" cy="1036.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="1040.5" font-size="12.2" font-weight="400" fill="#233">Rate/velocity controls</text>
+<circle cx="1136" cy="1054.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="1058.0" font-size="12.2" font-weight="400" fill="#233">Regional security operations</text>
+<rect x="1118" y="1104.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="1104.5" width="4" height="120" rx="2" fill="#02133C"/>
+<text x="1133" y="1126.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">16 NON-NEGOTIABLE INVARIANTS</text>
+<circle cx="1136" cy="1141.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1145.5" font-size="12.2" font-weight="600" fill="#02133C">L3 owns job safety/legal/qualification decisions.</text>
+<circle cx="1136" cy="1159.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1163.0" font-size="12.2" font-weight="600" fill="#02133C">P4 owns platform security/fraud/abuse/runtime protection.</text>
+<circle cx="1136" cy="1176.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1180.5" font-size="12.2" font-weight="600" fill="#02133C">P3 owns identity/access.</text>
+<circle cx="1136" cy="1194.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1198.0" font-size="12.2" font-weight="600" fill="#02133C">P8 owns privacy compliance.</text>
+<rect y="1288" width="1680" height="64" fill="#02133C"/>
+<text x="44" y="1315" font-size="11.6" fill="#FFFFFF">Board regenerated from the corrected canonical set. Text is real SVG text — readable by script, not only by eye.</text>
+<text x="44" y="1333" font-size="10.4" fill="#13C7BC">Every consumed event on this board has exactly one producer, or is declared external. Open rulings are listed in the canonical file, not decided here.</text>
+<text x="1636" y="1324" text-anchor="end" font-size="11.6" font-weight="700" fill="#13C7BC">P4</text>
+</svg>

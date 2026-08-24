@@ -1,0 +1,247 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1265" viewBox="0 0 1680 1265" font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1265" fill="#F6F9F9"/>
+<rect width="1680" height="168" fill="#02133C"/>
+<rect y="163" width="1680" height="5" fill="#079B9D"/>
+<text x="44" y="46" font-size="17" font-weight="700" fill="#FFFFFF" letter-spacing="3.6">DONEEO</text>
+<text x="162" y="46" font-size="12.5" fill="#13C7BC" letter-spacing="0.4">Intelligence to Get Work Done</text>
+<text x="44" y="92" font-size="31" font-weight="700" fill="#FFFFFF">P9 — PAYMENT RAILS, TAX/FINANCIAL ADAPTERS &amp; TREASURY INTEGRATIONS ARCHITECTURE</text>
+<text x="44" y="118" font-size="13.4" fill="#C9D9DE">Execute controlled external financial rail operations for PSPs, banks, payouts, tax and FX under instructions from authoritative commercial/settlement layers.</text>
+<rect x="1306" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1357" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">LAYER</text>
+<text x="1357" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">P9</text>
+<rect x="1418" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1469" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">EDITION</text>
+<text x="1469" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">v3.0 clean</text>
+<rect x="1530" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1581" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">DATE</text>
+<text x="1581" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2026-08-23</text>
+<text x="1306" y="106" font-size="10.6" fill="#13C7BC">Numbering, naming and event linkage corrected.</text>
+<text x="1306" y="122" font-size="10.6" fill="#9FB6BE">Items marked FIXED changed in this edition.</text>
+<rect x="44" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="212" width="4" height="172" rx="2" fill="#02133C"/>
+<text x="59" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">01 OWNS</text>
+<circle cx="62" cy="249" r="2.4" fill="#02133C"/>
+<text x="74" y="253" font-size="12.2" font-weight="400" fill="#233">Payment-method token/reference boundary</text>
+<circle cx="62" cy="266.5" r="2.4" fill="#02133C"/>
+<text x="74" y="270.5" font-size="12.2" font-weight="400" fill="#233">PSP authorization/capture/refund/void adapter calls</text>
+<circle cx="62" cy="284.0" r="2.4" fill="#02133C"/>
+<text x="74" y="288.0" font-size="12.2" font-weight="400" fill="#233">Payout/bank transfer rails</text>
+<circle cx="62" cy="301.5" r="2.4" fill="#02133C"/>
+<text x="74" y="305.5" font-size="12.2" font-weight="400" fill="#233">Tax-provider/remittance adapters</text>
+<circle cx="62" cy="319.0" r="2.4" fill="#02133C"/>
+<text x="74" y="323.0" font-size="12.2" font-weight="400" fill="#233">FX/provider adapters</text>
+<circle cx="62" cy="336.5" r="2.4" fill="#02133C"/>
+<text x="74" y="340.5" font-size="12.2" font-weight="400" fill="#233">Financial webhook normalization</text>
+<circle cx="62" cy="354.0" r="2.4" fill="#02133C"/>
+<text x="74" y="358.0" font-size="12.2" font-weight="400" fill="#233">Rail-level retries/idempotency/status</text>
+<rect x="44" y="404.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="404.5" width="4" height="138" rx="2" fill="#8A3B4A"/>
+<text x="59" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#8A3B4A">02 DOES NOT OWN</text>
+<circle cx="62" cy="441.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="445.5" font-size="12.2" font-weight="400" fill="#233">Pricing/fees/customer offer (L6)</text>
+<circle cx="62" cy="459.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="463.0" font-size="12.2" font-weight="400" fill="#233">Final settlement allocation/customer charge/provider payable (L12/09B)</text>
+<circle cx="62" cy="476.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="480.5" font-size="12.2" font-weight="400" fill="#233">Authoritative ledger/reconciliation (L12)</text>
+<circle cx="62" cy="494.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="498.0" font-size="12.2" font-weight="400" fill="#233">Fraud/security policy (P4)</text>
+<circle cx="62" cy="511.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="515.5" font-size="12.2" font-weight="400" fill="#233">Generic connector framework (P5)</text>
+<rect x="44" y="562.0" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="562.0" width="4" height="138" rx="2" fill="#075A6B"/>
+<text x="59" y="584.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">03 KEY INPUTS</text>
+<circle cx="62" cy="599.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="603.0" font-size="12.2" font-weight="400" fill="#233">PaymentTopologyPolicy/ContractRoleProfile refs</text>
+<circle cx="62" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="620.5" font-size="12.2" font-weight="400" fill="#233">Idempotent FinancialCommand from L12</text>
+<circle cx="62" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="638.0" font-size="12.2" font-weight="400" fill="#233">P3 payer/payee identity refs</text>
+<circle cx="62" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="655.5" font-size="12.2" font-weight="400" fill="#233">P4 fraud/security clearance</text>
+<circle cx="62" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="673.0" font-size="12.2" font-weight="400" fill="#233">P5 connector transport primitives</text>
+<rect x="44" y="719.5" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="719.5" width="4" height="190" rx="2" fill="#075A6B"/>
+<text x="59" y="741.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">04 AUTHORITATIVE OUTPUTS</text>
+<circle cx="62" cy="756.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="760.5" font-size="12.2" font-weight="400" fill="#233">FinancialRailResult</text>
+<circle cx="62" cy="774.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="778.0" font-size="12.2" font-weight="400" fill="#233">AuthorizationRef</text>
+<circle cx="62" cy="791.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="795.5" font-size="12.2" font-weight="400" fill="#233">CaptureRef</text>
+<circle cx="62" cy="809.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="813.0" font-size="12.2" font-weight="400" fill="#233">RefundRef</text>
+<circle cx="62" cy="826.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="830.5" font-size="12.2" font-weight="400" fill="#233">PayoutRef</text>
+<circle cx="62" cy="844.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="848.0" font-size="12.2" font-weight="400" fill="#233">TaxRailResult</text>
+<circle cx="62" cy="861.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="865.5" font-size="12.2" font-weight="400" fill="#233">FXQuoteRef</text>
+<circle cx="62" cy="879.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="883.0" font-size="12.2" font-weight="400" fill="#233">NormalizedFinancialWebhook</text>
+<rect x="44" y="929.5" width="517" height="208" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="929.5" width="4" height="208" rx="2" fill="#079B9D"/>
+<text x="59" y="951.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">05 ENGINES / COMPONENTS</text>
+<circle cx="62" cy="966.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="970.5" font-size="12.2" font-weight="400" fill="#233">PSP Adapter Gateway</text>
+<circle cx="62" cy="984.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="988.0" font-size="12.2" font-weight="400" fill="#233">Payment Method Token Service</text>
+<circle cx="62" cy="1001.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1005.5" font-size="12.2" font-weight="400" fill="#233">Authorization/Capture Adapter</text>
+<circle cx="62" cy="1019.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1023.0" font-size="12.2" font-weight="400" fill="#233">Refund/Void Adapter</text>
+<circle cx="62" cy="1036.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1040.5" font-size="12.2" font-weight="400" fill="#233">Payout/Bank Adapter</text>
+<circle cx="62" cy="1054.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1058.0" font-size="12.2" font-weight="400" fill="#233">Tax/Remittance Adapter</text>
+<circle cx="62" cy="1071.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1075.5" font-size="12.2" font-weight="400" fill="#233">FX Adapter</text>
+<circle cx="62" cy="1089.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1093.0" font-size="12.2" font-weight="400" fill="#233">Webhook Normalizer</text>
+<circle cx="62" cy="1106.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1110.5" font-size="12.2" font-weight="400" fill="#233">Rail Retry/Idempotency Controller</text>
+<rect x="581" y="212" width="517" height="208" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="212" width="4" height="208" rx="2" fill="#079B9D"/>
+<text x="596" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">06 OPERATING &amp; DECISION PATH</text>
+<circle cx="599" cy="249" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="253" font-size="12.2" font-weight="400" fill="#233">Receive signed/idempotent command from L12.</text>
+<circle cx="599" cy="266.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="270.5" font-size="12.2" font-weight="400" fill="#233">Resolve PaymentTopologyPolicy adapter path without changing business</text>
+<text x="611" y="288.0" font-size="12.2" font-weight="400" fill="#233">allocation.</text>
+<circle cx="599" cy="301.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="305.5" font-size="12.2" font-weight="400" fill="#233">Execute PSP/bank/tax/FX operation.</text>
+<circle cx="599" cy="319.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="323.0" font-size="12.2" font-weight="400" fill="#233">Normalize callback/webhook and correlate to command.</text>
+<circle cx="599" cy="336.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="340.5" font-size="12.2" font-weight="400" fill="#233">Return rail result/status to L12.</text>
+<circle cx="599" cy="354.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="358.0" font-size="12.2" font-weight="400" fill="#233">L12 posts ledger and performs authoritative reconciliation.</text>
+<circle cx="599" cy="371.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="375.5" font-size="12.2" font-weight="400" fill="#233">P4 handles fraud/security signals; P8 handles privacy/compliance</text>
+<text x="611" y="393.0" font-size="12.2" font-weight="400" fill="#233">requirements; P5 provides generic external-connector patterns.</text>
+<rect x="581" y="439.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="439.5" width="4" height="138" rx="2" fill="#079B9D"/>
+<text x="596" y="461.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">07 DECISION GATES</text>
+<circle cx="599" cy="476.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="480.5" font-size="12.2" font-weight="400" fill="#233">Command authorized/idempotent?</text>
+<circle cx="599" cy="494.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="498.0" font-size="12.2" font-weight="400" fill="#233">Adapter/rail available?</text>
+<circle cx="599" cy="511.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="515.5" font-size="12.2" font-weight="400" fill="#233">Token/reference valid?</text>
+<circle cx="599" cy="529.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="533.0" font-size="12.2" font-weight="400" fill="#233">External result conclusive?</text>
+<circle cx="599" cy="546.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="550.5" font-size="12.2" font-weight="400" fill="#233">Retry safe?</text>
+<rect x="581" y="597.0" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="597.0" width="4" height="172" rx="2" fill="#075A6B"/>
+<text x="596" y="619.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">08 DATA / ARTIFACT OBJECTS</text>
+<circle cx="599" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="638.0" font-size="12.2" font-weight="400" fill="#233">FinancialCommand</text>
+<circle cx="599" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="655.5" font-size="12.2" font-weight="400" fill="#233">FinancialRailResult</text>
+<circle cx="599" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="673.0" font-size="12.2" font-weight="400" fill="#233">PaymentMethodTokenRef</text>
+<circle cx="599" cy="686.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="690.5" font-size="12.2" font-weight="400" fill="#233">PSPWebhook</text>
+<circle cx="599" cy="704.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="708.0" font-size="12.2" font-weight="400" fill="#233">BankTransferRef</text>
+<circle cx="599" cy="721.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="725.5" font-size="12.2" font-weight="400" fill="#233">TaxRemittanceRef</text>
+<circle cx="599" cy="739.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="743.0" font-size="12.2" font-weight="400" fill="#233">FXQuoteRef</text>
+<rect x="581" y="789.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="789.5" width="4" height="120" rx="2" fill="#13C7BC"/>
+<text x="596" y="811.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">09 EVENTS EMITTED</text>
+<circle cx="599" cy="826.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="830.5" font-size="12.2" font-weight="400" fill="#233">Rail.CommandAccepted</text>
+<circle cx="599" cy="844.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="848.0" font-size="12.2" font-weight="400" fill="#233">Rail.ResultReceived</text>
+<circle cx="599" cy="861.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="865.5" font-size="12.2" font-weight="400" fill="#233">Rail.CallbackNormalized</text>
+<circle cx="599" cy="879.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="883.0" font-size="12.2" font-weight="400" fill="#233">Rail.Failed</text>
+<rect x="581" y="929.5" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="929.5" width="4" height="102" rx="2" fill="#13C7BC"/>
+<text x="596" y="951.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">10 EVENTS CONSUMED</text>
+<circle cx="599" cy="966.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="970.5" font-size="12.2" font-weight="400" fill="#233">Settlement.FinancialCommand</text>
+<circle cx="599" cy="984.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="988.0" font-size="12.2" font-weight="400" fill="#233">PSPWebhookReceived</text>
+<circle cx="599" cy="1001.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1005.5" font-size="12.2" font-weight="400" fill="#233">BankCallbackReceived</text>
+<rect x="1118" y="212" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="212" width="4" height="190" rx="2" fill="#079B9D"/>
+<text x="1133" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">11 INTEGRATIONS / CALLBACKS</text>
+<text x="1133" y="253" font-size="12.2" font-weight="400" fill="#5A6B72">Recovered by OCR from the PNG source poster; no SVG exists.</text>
+<text x="1133" y="270.5" font-size="12.2" font-weight="400" fill="#5A6B72">Source poster's platform numbering matches current canon.</text>
+<circle cx="1136" cy="284.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="288.0" font-size="12.2" font-weight="400" fill="#233">From P1 (Orchestrator)</text>
+<circle cx="1136" cy="301.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="305.5" font-size="12.2" font-weight="400" fill="#233">From P2 (Ledger / Data)</text>
+<circle cx="1136" cy="319.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="323.0" font-size="12.2" font-weight="400" fill="#233">From P3 (Identity)</text>
+<circle cx="1136" cy="336.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="340.5" font-size="12.2" font-weight="400" fill="#233">From P4 (Security &amp; Safety)</text>
+<circle cx="1136" cy="354.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="358.0" font-size="12.2" font-weight="400" fill="#233">From P6 (Event, AI, Obs.)</text>
+<circle cx="1136" cy="371.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="375.5" font-size="12.2" font-weight="400" fill="#233">From P7 (Messaging)</text>
+<rect x="1118" y="422.0" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="422.0" width="4" height="138" rx="2" fill="#5A6B72"/>
+<text x="1133" y="444.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">12 FAILURE &amp; RECOVERY</text>
+<circle cx="1136" cy="459.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="463.0" font-size="12.2" font-weight="400" fill="#233">Timeout → query/retry with idempotency.</text>
+<circle cx="1136" cy="476.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="480.5" font-size="12.2" font-weight="400" fill="#233">Unknown callback → quarantine/manual review.</text>
+<circle cx="1136" cy="494.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="498.0" font-size="12.2" font-weight="400" fill="#233">Provider outage → alternate rail only if PaymentTopologyPolicy</text>
+<text x="1148" y="515.5" font-size="12.2" font-weight="400" fill="#233">permits.</text>
+<circle cx="1136" cy="529.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="533.0" font-size="12.2" font-weight="400" fill="#233">Never infer success from timeout.</text>
+<rect x="1118" y="579.5" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="579.5" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="1133" y="601.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">13 HUMAN REVIEW</text>
+<circle cx="1136" cy="616.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="620.5" font-size="12.2" font-weight="400" fill="#233">High-value manual transfer</text>
+<circle cx="1136" cy="634.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="638.0" font-size="12.2" font-weight="400" fill="#233">Unknown external status</text>
+<circle cx="1136" cy="651.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="655.5" font-size="12.2" font-weight="400" fill="#233">Compliance/rail exception</text>
+<rect x="1118" y="702.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="702.0" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="724.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">14 SECURITY / PRIVACY</text>
+<circle cx="1136" cy="739.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="743.0" font-size="12.2" font-weight="400" fill="#233">Tokenize/minimize PCI data</text>
+<circle cx="1136" cy="756.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="760.5" font-size="12.2" font-weight="400" fill="#233">No raw credentials in domain stores</text>
+<circle cx="1136" cy="774.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="778.0" font-size="12.2" font-weight="400" fill="#233">Secrets vault</text>
+<circle cx="1136" cy="791.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="795.5" font-size="12.2" font-weight="400" fill="#233">Signed webhooks</text>
+<rect x="1118" y="842.0" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="842.0" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="1133" y="864.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">15 1M-JOB SCALABILITY</text>
+<circle cx="1136" cy="879.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="883.0" font-size="12.2" font-weight="400" fill="#233">Adapter workers horizontally scalable</text>
+<circle cx="1136" cy="896.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="900.5" font-size="12.2" font-weight="400" fill="#233">Per-rail bulkheads</text>
+<circle cx="1136" cy="914.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="918.0" font-size="12.2" font-weight="400" fill="#233">Circuit breakers/rate limits</text>
+<rect x="1118" y="964.5" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="964.5" width="4" height="155" rx="2" fill="#02133C"/>
+<text x="1133" y="986.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">16 NON-NEGOTIABLE INVARIANTS</text>
+<circle cx="1136" cy="1001.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1005.5" font-size="12.2" font-weight="600" fill="#02133C">L6 owns price; P9 does not.</text>
+<circle cx="1136" cy="1019.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1023.0" font-size="12.2" font-weight="600" fill="#02133C">09B owns responsibility allocation; P9 does not.</text>
+<circle cx="1136" cy="1036.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1040.5" font-size="12.2" font-weight="600" fill="#02133C">L12 owns final settlement, ledger and reconciliation; P9 only executes</text>
+<text x="1148" y="1058.0" font-size="12.2" font-weight="600" fill="#02133C">external rail commands and returns evidence.</text>
+<circle cx="1136" cy="1071.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1075.5" font-size="12.2" font-weight="600" fill="#02133C">P5 owns generic connector framework; P9 owns financial-domain adapter</text>
+<text x="1148" y="1093.0" font-size="12.2" font-weight="600" fill="#02133C">semantics.</text>
+<rect y="1201" width="1680" height="64" fill="#02133C"/>
+<text x="44" y="1228" font-size="11.6" fill="#FFFFFF">Board regenerated from the corrected canonical set. Text is real SVG text — readable by script, not only by eye.</text>
+<text x="44" y="1246" font-size="10.4" fill="#13C7BC">Every consumed event on this board has exactly one producer, or is declared external. Open rulings are listed in the canonical file, not decided here.</text>
+<text x="1636" y="1237" text-anchor="end" font-size="11.6" font-weight="700" fill="#13C7BC">P9</text>
+</svg>
