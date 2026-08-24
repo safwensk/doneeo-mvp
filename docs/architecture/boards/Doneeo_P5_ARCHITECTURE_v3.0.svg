@@ -1,0 +1,341 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1811" viewBox="0 0 1680 1811" font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1811" fill="#F6F9F9"/>
+<rect width="1680" height="168" fill="#02133C"/>
+<rect y="163" width="1680" height="5" fill="#079B9D"/>
+<text x="44" y="46" font-size="17" font-weight="700" fill="#FFFFFF" letter-spacing="3.6">DONEEO</text>
+<text x="162" y="46" font-size="12.5" fill="#13C7BC" letter-spacing="0.4">Intelligence to Get Work Done</text>
+<text x="44" y="92" font-size="31" font-weight="700" fill="#FFFFFF">P5 — INTEGRATIONS, CONNECTORS &amp; EXTERNAL SERVICES</text>
+<text x="44" y="118" font-size="13.4" fill="#C9D9DE">Securely connect Doneeo to external systems, APIs, data and services with</text>
+<rect x="1306" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1357" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">LAYER</text>
+<text x="1357" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">P5</text>
+<rect x="1418" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1469" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">EDITION</text>
+<text x="1469" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">v3.0 clean</text>
+<rect x="1530" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1581" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">DATE</text>
+<text x="1581" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2026-08-23</text>
+<text x="1306" y="106" font-size="10.6" fill="#13C7BC">Numbering, naming and event linkage corrected.</text>
+<text x="1306" y="122" font-size="10.6" fill="#9FB6BE">Items marked FIXED changed in this edition.</text>
+<rect x="44" y="206" width="1592" height="77" rx="8" fill="#FFF6E9" stroke="#D9A441"/>
+<rect x="44" y="206" width="4" height="77" rx="2" fill="#D9A441"/>
+<text x="59" y="226" font-size="11" font-weight="700" letter-spacing="0.8" fill="#8A5B12">PROVENANCE WARNING</text>
+<text x="239" y="226" font-size="12" fill="#5C4A26">Numbering warning. This poster predates the current layer scheme and its cross-references are NOT valid against canon. It cites "L2 (Intelligence &amp; Planning)", "L13 (Branch, Continuity, Claims &amp; Support)" and</text>
+<text x="239" y="243" font-size="12" fill="#5C4A26">"L2 (Intelligence &amp; Planning)" as distinct layers, and scopes exclusions as "the domain layers L2-L11" and "L12 (Settlement, Ledger &amp; Reconciliation)". Current canon has thirteen domain layers with Intelligence</text>
+<text x="239" y="260" font-size="12" fill="#5C4A26">and Planning merged into L2. Every layer reference below is transcribed as printed and must be remapped before use. Platform references (P1–P4) do match current canon.</text>
+<rect x="44" y="303" width="517" height="312" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="303" width="4" height="312" rx="2" fill="#02133C"/>
+<text x="59" y="325" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">01 OWNS</text>
+<circle cx="62" cy="340" r="2.4" fill="#02133C"/>
+<text x="74" y="344" font-size="12.2" font-weight="400" fill="#233">Provide controlled connectivity to external systems</text>
+<circle cx="62" cy="357.5" r="2.4" fill="#02133C"/>
+<text x="74" y="361.5" font-size="12.2" font-weight="400" fill="#233">Normalize, validate and translate external data</text>
+<circle cx="62" cy="375.0" r="2.4" fill="#02133C"/>
+<text x="74" y="379.0" font-size="12.2" font-weight="400" fill="#233">Manage API integrations, webhooks and connectors</text>
+<circle cx="62" cy="392.5" r="2.4" fill="#02133C"/>
+<text x="74" y="396.5" font-size="12.2" font-weight="400" fill="#233">Ensure security, reliability and resilience</text>
+<circle cx="62" cy="410.0" r="2.4" fill="#02133C"/>
+<text x="74" y="414.0" font-size="12.2" font-weight="400" fill="#233">Monitor health, performance and usage</text>
+<circle cx="62" cy="427.5" r="2.4" fill="#02133C"/>
+<text x="74" y="431.5" font-size="12.2" font-weight="400" fill="#233">Enforce data mapping, governance and compliance</text>
+<circle cx="62" cy="445.0" r="2.4" fill="#02133C"/>
+<text x="74" y="449.0" font-size="12.2" font-weight="400" fill="#233">Enable extensibility and ecosystem growth</text>
+<circle cx="62" cy="462.5" r="2.4" fill="#02133C"/>
+<text x="74" y="466.5" font-size="12.2" font-weight="400" fill="#233">Expose and consume APIs securely</text>
+<circle cx="62" cy="480.0" r="2.4" fill="#02133C"/>
+<text x="74" y="484.0" font-size="12.2" font-weight="400" fill="#233">Transform data to Doneeo canonical models</text>
+<circle cx="62" cy="497.5" r="2.4" fill="#02133C"/>
+<text x="74" y="501.5" font-size="12.2" font-weight="400" fill="#233">Manage authentication and authorization</text>
+<circle cx="62" cy="515.0" r="2.4" fill="#02133C"/>
+<text x="74" y="519.0" font-size="12.2" font-weight="400" fill="#233">Handle webhooks, callbacks and event subscriptions</text>
+<circle cx="62" cy="532.5" r="2.4" fill="#02133C"/>
+<text x="74" y="536.5" font-size="12.2" font-weight="400" fill="#233">Provide connector SDKs and integration patterns</text>
+<circle cx="62" cy="550.0" r="2.4" fill="#02133C"/>
+<text x="74" y="554.0" font-size="12.2" font-weight="400" fill="#233">Ensure retries, idempotency and error handling</text>
+<circle cx="62" cy="567.5" r="2.4" fill="#02133C"/>
+<text x="74" y="571.5" font-size="12.2" font-weight="400" fill="#233">Monitor and alert on integration health</text>
+<circle cx="62" cy="585.0" r="2.4" fill="#02133C"/>
+<text x="74" y="589.0" font-size="12.2" font-weight="400" fill="#233">Version and govern external contracts</text>
+<rect x="44" y="635.5" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="635.5" width="4" height="155" rx="2" fill="#8A3B4A"/>
+<text x="59" y="657.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#8A3B4A">02 DOES NOT OWN</text>
+<circle cx="62" cy="672.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="676.5" font-size="12.2" font-weight="400" fill="#233">Business logic or decisions (the domain layers L2-L11)</text>
+<circle cx="62" cy="690.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="694.0" font-size="12.2" font-weight="400" fill="#233">Data storage or ledger (P2)</text>
+<circle cx="62" cy="707.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="711.5" font-size="12.2" font-weight="400" fill="#233">Identity or access (P3)</text>
+<circle cx="62" cy="725.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="729.0" font-size="12.2" font-weight="400" fill="#233">Security enforcement (P4)</text>
+<circle cx="62" cy="742.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="746.5" font-size="12.2" font-weight="400" fill="#233">Orchestration or state (P1)</text>
+<circle cx="62" cy="760.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="764.0" font-size="12.2" font-weight="400" fill="#233">Financial settlement (L12 (Settlement, Ledger &amp; Reconciliation))</text>
+<rect x="44" y="810.5" width="517" height="85" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="810.5" width="4" height="85" rx="2" fill="#075A6B"/>
+<text x="59" y="832.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">03 KEY INPUTS</text>
+<circle cx="62" cy="847.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="851.5" font-size="12.2" font-weight="400" fill="#233">(not specified in source poster — the board states hooks rather than</text>
+<text x="74" y="869.0" font-size="12.2" font-weight="400" fill="#233">typed inputs; see Integrations / callbacks)</text>
+<rect x="44" y="915.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="915.5" width="4" height="120" rx="2" fill="#075A6B"/>
+<text x="59" y="937.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">04 AUTHORITATIVE OUTPUTS</text>
+<circle cx="62" cy="952.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="956.5" font-size="12.2" font-weight="400" fill="#233">IntegrationEvent (02)</text>
+<circle cx="62" cy="970.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="974.0" font-size="12.2" font-weight="400" fill="#233">ExternalInteraction (03)</text>
+<circle cx="62" cy="987.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="991.5" font-size="12.2" font-weight="400" fill="#233">ConnectorLog (P5)</text>
+<circle cx="62" cy="1005.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="1009.0" font-size="12.2" font-weight="400" fill="#233">AuditLog (P5)</text>
+<rect x="44" y="1055.5" width="517" height="260" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="1055.5" width="4" height="260" rx="2" fill="#079B9D"/>
+<text x="59" y="1077.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">05 ENGINES / COMPONENTS</text>
+<circle cx="62" cy="1092.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1096.5" font-size="12.2" font-weight="400" fill="#233">Native Connectors — built and maintained by Doneeo</text>
+<circle cx="62" cy="1110.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1114.0" font-size="12.2" font-weight="400" fill="#233">Certified Connectors — verified third-party</text>
+<circle cx="62" cy="1127.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1131.5" font-size="12.2" font-weight="400" fill="#233">Community Connectors — open source / community</text>
+<circle cx="62" cy="1145.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1149.0" font-size="12.2" font-weight="400" fill="#233">Custom Connectors — built for specific needs</text>
+<circle cx="62" cy="1162.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1166.5" font-size="12.2" font-weight="400" fill="#233">Authentication (OAuth2, API keys, mTLS)</text>
+<circle cx="62" cy="1180.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1184.0" font-size="12.2" font-weight="400" fill="#233">Rate Limiting — throttle and quota management</text>
+<circle cx="62" cy="1197.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1201.5" font-size="12.2" font-weight="400" fill="#233">Retry &amp; Backoff — exponential / configurable</text>
+<circle cx="62" cy="1215.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1219.0" font-size="12.2" font-weight="400" fill="#233">Idempotency — deduplication and keys</text>
+<circle cx="62" cy="1232.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1236.5" font-size="12.2" font-weight="400" fill="#233">Data Transformation — map and normalize data</text>
+<circle cx="62" cy="1250.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1254.0" font-size="12.2" font-weight="400" fill="#233">Error Handling — standardized error model</text>
+<circle cx="62" cy="1267.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1271.5" font-size="12.2" font-weight="400" fill="#233">Fallback &amp; Failover — alternate endpoints</text>
+<circle cx="62" cy="1285.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1289.0" font-size="12.2" font-weight="400" fill="#233">Observability — logs, metrics, traces</text>
+<rect x="44" y="1335.5" width="517" height="348" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="1335.5" width="4" height="348" rx="2" fill="#079B9D"/>
+<text x="59" y="1357.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">06 OPERATING &amp; DECISION PATH</text>
+<text x="59" y="1376.5" font-size="12.2" font-weight="400" fill="#233">Integration lifecycle:</text>
+<circle cx="62" cy="1390.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1394.0" font-size="12.2" font-weight="400" fill="#233">Discover — identify need and provider</text>
+<circle cx="62" cy="1407.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1411.5" font-size="12.2" font-weight="400" fill="#233">Evaluate — assess capability, risk and compliance</text>
+<circle cx="62" cy="1425.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1429.0" font-size="12.2" font-weight="400" fill="#233">Design — define data model, flows and contracts</text>
+<circle cx="62" cy="1442.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1446.5" font-size="12.2" font-weight="400" fill="#233">Build — implement connector / integration</text>
+<circle cx="62" cy="1460.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1464.0" font-size="12.2" font-weight="400" fill="#233">Test — validate, sandbox and certify</text>
+<circle cx="62" cy="1477.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1481.5" font-size="12.2" font-weight="400" fill="#233">Deploy — go live with monitoring</text>
+<circle cx="62" cy="1495.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1499.0" font-size="12.2" font-weight="400" fill="#233">Monitor — track health, usage and errors</text>
+<circle cx="62" cy="1512.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1516.5" font-size="12.2" font-weight="400" fill="#233">Maintain — update, version and improve</text>
+<circle cx="62" cy="1530.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1534.0" font-size="12.2" font-weight="400" fill="#233">Review — review, audit and retire</text>
+<text x="59" y="1551.5" font-size="12.2" font-weight="400" fill="#233">Typical data flow: Doneeo layer or service issues a Request / Command to</text>
+<text x="74" y="1569.0" font-size="12.2" font-weight="400" fill="#233">a P5</text>
+<text x="59" y="1586.5" font-size="12.2" font-weight="400" fill="#233">connector, which calls the external service or API; the External Response</text>
+<text x="74" y="1604.0" font-size="12.2" font-weight="400" fill="#233">/ Data</text>
+<text x="59" y="1621.5" font-size="12.2" font-weight="400" fill="#233">returns through the connector, and a Callback / Webhook / Event may</text>
+<text x="74" y="1639.0" font-size="12.2" font-weight="400" fill="#233">arrive</text>
+<text x="59" y="1656.5" font-size="12.2" font-weight="400" fill="#233">asynchronously and re-enter through P5.</text>
+<rect x="581" y="303" width="517" height="85" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="303" width="4" height="85" rx="2" fill="#079B9D"/>
+<text x="596" y="325" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">07 DECISION GATES</text>
+<circle cx="599" cy="340" r="2.4" fill="#079B9D"/>
+<text x="611" y="344" font-size="12.2" font-weight="400" fill="#233">(not specified in source poster — this board carries no decision-gate</text>
+<text x="611" y="361.5" font-size="12.2" font-weight="400" fill="#233">section)</text>
+<rect x="581" y="408.0" width="517" height="522" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="408.0" width="4" height="522" rx="2" fill="#075A6B"/>
+<text x="596" y="430.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">08 DATA / ARTIFACT OBJECTS</text>
+<circle cx="599" cy="445.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="449.0" font-size="12.2" font-weight="400" fill="#233">IntegrationEvent (02)</text>
+<circle cx="599" cy="462.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="466.5" font-size="12.2" font-weight="400" fill="#233">ExternalInteraction (03)</text>
+<circle cx="599" cy="480.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="484.0" font-size="12.2" font-weight="400" fill="#233">ConnectorLog (P5)</text>
+<circle cx="599" cy="497.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="501.5" font-size="12.2" font-weight="400" fill="#233">AuditLog (P5)</text>
+<circle cx="599" cy="515.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="519.0" font-size="12.2" font-weight="400" fill="#233">Reports &amp; Analytics (14)</text>
+<text x="596" y="536.5" font-size="12.2" font-weight="400" fill="#233">External system categories the layer integrates:</text>
+<circle cx="599" cy="550.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="554.0" font-size="12.2" font-weight="400" fill="#233">Maps &amp; Location — Google Maps / Places, Routing / Distance, Geocoding</text>
+<text x="611" y="571.5" font-size="12.2" font-weight="400" fill="#233">/ Reverse Geocoding, Traffic / ETA, Address Validation</text>
+<circle cx="599" cy="585.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="589.0" font-size="12.2" font-weight="400" fill="#233">Payments &amp; Financial — Payment Gateways (PSP), Banking / Open Banking,</text>
+<text x="611" y="606.5" font-size="12.2" font-weight="400" fill="#233">Payouts / Transfers, Fraud / Risk Services, Currency / FX Services</text>
+<circle cx="599" cy="620.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="624.0" font-size="12.2" font-weight="400" fill="#233">Communication — Email Services (SendGrid), SMS / OTP (Twilio), Push</text>
+<text x="611" y="641.5" font-size="12.2" font-weight="400" fill="#233">Notifications (FCM / APNs), Chat / Messaging, Voice / Call Services</text>
+<circle cx="599" cy="655.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="659.0" font-size="12.2" font-weight="400" fill="#233">Identity &amp; Verification — ID Verification (Onfido / Trulioo), Document</text>
+<text x="611" y="676.5" font-size="12.2" font-weight="400" fill="#233">Verification, Biometric / Liveness, Address Verification, KYC / AML</text>
+<text x="611" y="694.0" font-size="12.2" font-weight="400" fill="#233">Providers</text>
+<circle cx="599" cy="707.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="711.5" font-size="12.2" font-weight="400" fill="#233">Storage &amp; Files — Cloud Storage (S3 / GCS / Azure), CDN (CloudFront /</text>
+<text x="611" y="729.0" font-size="12.2" font-weight="400" fill="#233">Cloud CDN), Image / Video Processing, File Conversion / OCR, Backup /</text>
+<text x="611" y="746.5" font-size="12.2" font-weight="400" fill="#233">Archive Services</text>
+<circle cx="599" cy="760.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="764.0" font-size="12.2" font-weight="400" fill="#233">Logistics &amp; Transport — Courier / Delivery APIs, Fleet / Vehicle APIs,</text>
+<text x="611" y="781.5" font-size="12.2" font-weight="400" fill="#233">Shipping Rate Providers, Tracking APIs, Route Optimization</text>
+<circle cx="599" cy="795.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="799.0" font-size="12.2" font-weight="400" fill="#233">Insurance &amp; Safety — Insurance Verification, Policy Management, Claims</text>
+<text x="611" y="816.5" font-size="12.2" font-weight="400" fill="#233">APIs, Safety Data Providers, Background Checks</text>
+<circle cx="599" cy="830.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="834.0" font-size="12.2" font-weight="400" fill="#233">Government &amp; Regulatory — Business Registry, Tax / VAT / GST APIs,</text>
+<text x="611" y="851.5" font-size="12.2" font-weight="400" fill="#233">License Verification, Sanction / Watchlist, Compliance Databases</text>
+<text x="596" y="869.0" font-size="12.2" font-weight="400" fill="#233">Integration patterns: REST / HTTPS APIs · GraphQL APIs · Webhooks</text>
+<text x="611" y="886.5" font-size="12.2" font-weight="400" fill="#233">(inbound / outbound) · Event Streaming (Pub / Sub) · Polling / Scheduled</text>
+<text x="611" y="904.0" font-size="12.2" font-weight="400" fill="#233">Sync · File / SFTP / Batch · SDK / Library Integration · Message Queues</text>
+<rect x="581" y="950.5" width="517" height="68" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="950.5" width="4" height="68" rx="2" fill="#13C7BC"/>
+<text x="596" y="972.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">09 EVENTS EMITTED</text>
+<circle cx="599" cy="987.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="991.5" font-size="12.2" font-weight="400" fill="#233">(not specified in source poster — no events section on this board)</text>
+<rect x="581" y="1038.0" width="517" height="68" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1038.0" width="4" height="68" rx="2" fill="#13C7BC"/>
+<text x="596" y="1060.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">10 EVENTS CONSUMED</text>
+<circle cx="599" cy="1075.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1079.0" font-size="12.2" font-weight="400" fill="#233">(not specified in source poster — no events section on this board)</text>
+<rect x="581" y="1125.5" width="517" height="242" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1125.5" width="4" height="242" rx="2" fill="#079B9D"/>
+<text x="596" y="1147.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">11 INTEGRATIONS / CALLBACKS</text>
+<circle cx="599" cy="1162.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="1166.5" font-size="12.2" font-weight="400" fill="#233">From P1 (Orchestrator) — Command / Event Integration</text>
+<circle cx="599" cy="1180.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1184.0" font-size="12.2" font-weight="400" fill="#233">From P2 (Ledger / Events) — Events / Facts Integration</text>
+<circle cx="599" cy="1197.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="1201.5" font-size="12.2" font-weight="400" fill="#233">From P3 (Identity / Access) — AuthN / AuthZ Integration</text>
+<circle cx="599" cy="1215.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1219.0" font-size="12.2" font-weight="400" fill="#233">From P4 (Security / Safety) — Risk / Policy Integration</text>
+<circle cx="599" cy="1232.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="1236.5" font-size="12.2" font-weight="400" fill="#233">From L2 (Intelligence &amp; Planning) — External Data / APIs</text>
+<circle cx="599" cy="1250.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1254.0" font-size="12.2" font-weight="400" fill="#233">From L10 (Live Execution &amp; Change Control) — Status / Tracking / ETA</text>
+<circle cx="599" cy="1267.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="1271.5" font-size="12.2" font-weight="400" fill="#233">From L11 (Outcome, Completion &amp; Evidence) — Evidence / Reports</text>
+<circle cx="599" cy="1285.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1289.0" font-size="12.2" font-weight="400" fill="#233">From L12 (Settlement, Ledger &amp; Reconciliation) — Payment / Payout /</text>
+<text x="611" y="1306.5" font-size="12.2" font-weight="400" fill="#233">Tax</text>
+<circle cx="599" cy="1320.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1324.0" font-size="12.2" font-weight="400" fill="#233">From L13 (Branch, Continuity, Claims &amp; Support) — Evidence / Case Data</text>
+<circle cx="599" cy="1337.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="1341.5" font-size="12.2" font-weight="400" fill="#233">From L2 (Intelligence &amp; Planning) — Insights / Enrichment</text>
+<rect x="581" y="1388.0" width="517" height="295" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1388.0" width="4" height="295" rx="2" fill="#5A6B72"/>
+<text x="596" y="1410.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">12 FAILURE &amp; RECOVERY</text>
+<circle cx="599" cy="1425.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1429.0" font-size="12.2" font-weight="400" fill="#233">Timeouts &amp; circuit breakers</text>
+<circle cx="599" cy="1442.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1446.5" font-size="12.2" font-weight="400" fill="#233">Retry policies</text>
+<circle cx="599" cy="1460.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1464.0" font-size="12.2" font-weight="400" fill="#233">Bulkheads &amp; isolation</text>
+<circle cx="599" cy="1477.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1481.5" font-size="12.2" font-weight="400" fill="#233">Queue buffering</text>
+<circle cx="599" cy="1495.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1499.0" font-size="12.2" font-weight="400" fill="#233">Dead letter handling</text>
+<circle cx="599" cy="1512.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1516.5" font-size="12.2" font-weight="400" fill="#233">Graceful degradation</text>
+<circle cx="599" cy="1530.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1534.0" font-size="12.2" font-weight="400" fill="#233">Disaster recovery</text>
+<circle cx="599" cy="1547.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1551.5" font-size="12.2" font-weight="400" fill="#233">Standard error model</text>
+<circle cx="599" cy="1565.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1569.0" font-size="12.2" font-weight="400" fill="#233">Error classification</text>
+<circle cx="599" cy="1582.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1586.5" font-size="12.2" font-weight="400" fill="#233">User-friendly messages</text>
+<circle cx="599" cy="1600.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1604.0" font-size="12.2" font-weight="400" fill="#233">Automatic retries</text>
+<circle cx="599" cy="1617.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1621.5" font-size="12.2" font-weight="400" fill="#233">Manual resolution flow</text>
+<circle cx="599" cy="1635.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1639.0" font-size="12.2" font-weight="400" fill="#233">Escalation rules</text>
+<circle cx="599" cy="1652.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1656.5" font-size="12.2" font-weight="400" fill="#233">Root cause tracking</text>
+<rect x="1118" y="303" width="517" height="85" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="303" width="4" height="85" rx="2" fill="#5A6B72"/>
+<text x="1133" y="325" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">13 HUMAN REVIEW</text>
+<circle cx="1136" cy="340" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="344" font-size="12.2" font-weight="400" fill="#233">(not specified in source poster — the board lists a manual resolution</text>
+<text x="1148" y="361.5" font-size="12.2" font-weight="400" fill="#233">flow and approval workflow but no human-review triggers)</text>
+<rect x="1118" y="408.0" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="408.0" width="4" height="172" rx="2" fill="#5A6B72"/>
+<text x="1133" y="430.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">14 SECURITY / PRIVACY</text>
+<circle cx="1136" cy="445.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="449.0" font-size="12.2" font-weight="400" fill="#233">Secure transport (TLS 1.2+)</text>
+<circle cx="1136" cy="462.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="466.5" font-size="12.2" font-weight="400" fill="#233">Secrets management (Vault / KMS)</text>
+<circle cx="1136" cy="480.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="484.0" font-size="12.2" font-weight="400" fill="#233">Least privilege access</text>
+<circle cx="1136" cy="497.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="501.5" font-size="12.2" font-weight="400" fill="#233">Data minimization</text>
+<circle cx="1136" cy="515.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="519.0" font-size="12.2" font-weight="400" fill="#233">PII / sensitive data controls</text>
+<circle cx="1136" cy="532.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="536.5" font-size="12.2" font-weight="400" fill="#233">Compliance monitoring</text>
+<circle cx="1136" cy="550.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="554.0" font-size="12.2" font-weight="400" fill="#233">Audit logging</text>
+<rect x="1118" y="600.5" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="600.5" width="4" height="172" rx="2" fill="#5A6B72"/>
+<text x="1133" y="622.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">15 1M-JOB SCALABILITY</text>
+<circle cx="1136" cy="637.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="641.5" font-size="12.2" font-weight="400" fill="#233">Health checks</text>
+<circle cx="1136" cy="655.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="659.0" font-size="12.2" font-weight="400" fill="#233">Metrics &amp; dashboards</text>
+<circle cx="1136" cy="672.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="676.5" font-size="12.2" font-weight="400" fill="#233">Alerting &amp; notifications</text>
+<circle cx="1136" cy="690.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="694.0" font-size="12.2" font-weight="400" fill="#233">Distributed tracing</text>
+<circle cx="1136" cy="707.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="711.5" font-size="12.2" font-weight="400" fill="#233">Log aggregation</text>
+<circle cx="1136" cy="725.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="729.0" font-size="12.2" font-weight="400" fill="#233">Usage analytics</text>
+<circle cx="1136" cy="742.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="746.5" font-size="12.2" font-weight="400" fill="#233">SLA / SLI monitoring</text>
+<rect x="1118" y="793.0" width="517" height="365" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="793.0" width="4" height="365" rx="2" fill="#02133C"/>
+<text x="1133" y="815.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">16 NON-NEGOTIABLE INVARIANTS</text>
+<text x="1133" y="834.0" font-size="12.2" font-weight="600" fill="#02133C">Integration principles, as printed:</text>
+<circle cx="1136" cy="847.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="851.5" font-size="12.2" font-weight="600" fill="#02133C">Standardized — use open standards and contracts</text>
+<circle cx="1136" cy="865.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="869.0" font-size="12.2" font-weight="600" fill="#02133C">Observable — monitor, log and trace</text>
+<circle cx="1136" cy="882.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="886.5" font-size="12.2" font-weight="600" fill="#02133C">Secure by Default — AuthN, AuthZ, encryption</text>
+<circle cx="1136" cy="900.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="904.0" font-size="12.2" font-weight="600" fill="#02133C">Governed — approved, versioned, audited</text>
+<circle cx="1136" cy="917.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="921.5" font-size="12.2" font-weight="600" fill="#02133C">Resilient &amp; Reliable — retries, timeouts, fallbacks</text>
+<circle cx="1136" cy="935.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="939.0" font-size="12.2" font-weight="600" fill="#02133C">Extensible — easy to plug and scale</text>
+<circle cx="1136" cy="952.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="956.5" font-size="12.2" font-weight="600" fill="#02133C">Loose Coupling — async first, event-driven</text>
+<circle cx="1136" cy="970.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="974.0" font-size="12.2" font-weight="600" fill="#02133C">Data Quality — validate, map, reconcile</text>
+<circle cx="1136" cy="987.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="991.5" font-size="12.2" font-weight="600" fill="#02133C">P5 writes immutable integration facts to P2</text>
+<text x="1133" y="1009.0" font-size="12.2" font-weight="600" fill="#02133C">Governance and lifecycle controls: contract versioning · change</text>
+<text x="1148" y="1026.5" font-size="12.2" font-weight="600" fill="#02133C">management ·</text>
+<text x="1133" y="1044.0" font-size="12.2" font-weight="600" fill="#02133C">deprecation policy · documentation · approval workflow · periodic review</text>
+<text x="1148" y="1061.5" font-size="12.2" font-weight="600" fill="#02133C">·</text>
+<text x="1133" y="1079.0" font-size="12.2" font-weight="600" fill="#02133C">retirement process</text>
+<text x="1133" y="1096.5" font-size="12.2" font-weight="600" fill="#02133C">Data mapping and transformation: field mapping · data type conversion ·</text>
+<text x="1133" y="1114.0" font-size="12.2" font-weight="600" fill="#02133C">normalization · validation and cleansing · enrichment · deduplication ·</text>
+<text x="1133" y="1131.5" font-size="12.2" font-weight="600" fill="#02133C">canonical alignment</text>
+<rect x="1118" y="1178.0" width="517" height="85" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="1178.0" width="4" height="85" rx="2" fill="#075A6B"/>
+<text x="1133" y="1200.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">17 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="1215.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1219.0" font-size="12.2" font-weight="400" fill="#233">(none — this board predates the golden-scenario template and carries</text>
+<text x="1148" y="1236.5" font-size="12.2" font-weight="400" fill="#233">no such section)</text>
+<rect y="1747" width="1680" height="64" fill="#02133C"/>
+<text x="44" y="1774" font-size="11.6" fill="#FFFFFF">Board regenerated from the corrected canonical set. Text is real SVG text — readable by script, not only by eye.</text>
+<text x="44" y="1792" font-size="10.4" fill="#13C7BC">Every consumed event on this board has exactly one producer, or is declared external. Open rulings are listed in the canonical file, not decided here.</text>
+<text x="1636" y="1783" text-anchor="end" font-size="11.6" font-weight="700" fill="#13C7BC">P5</text>
+</svg>

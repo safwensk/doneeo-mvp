@@ -1,0 +1,352 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1650" viewBox="0 0 1680 1650" font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1650" fill="#F6F9F9"/>
+<rect width="1680" height="168" fill="#02133C"/>
+<rect y="163" width="1680" height="5" fill="#079B9D"/>
+<text x="44" y="46" font-size="17" font-weight="700" fill="#FFFFFF" letter-spacing="3.6">DONEEO</text>
+<text x="162" y="46" font-size="12.5" fill="#13C7BC" letter-spacing="0.4">Intelligence to Get Work Done</text>
+<text x="44" y="92" font-size="31" font-weight="700" fill="#FFFFFF">L11 — OUTCOME, COMPLETION &amp; EVIDENCE ARCHITECTURE</text>
+<text x="44" y="118" font-size="13.4" fill="#C9D9DE">Establish authoritative physical outcome by verifying execution evidence against the approved CompletionSpecification and requirement/change versions.</text>
+<rect x="1306" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1357" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">LAYER</text>
+<text x="1357" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">L11</text>
+<rect x="1418" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1469" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">EDITION</text>
+<text x="1469" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">v3.0 clean</text>
+<rect x="1530" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1581" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">DATE</text>
+<text x="1581" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2026-08-23</text>
+<text x="1306" y="106" font-size="10.6" fill="#13C7BC">Numbering, naming and event linkage corrected.</text>
+<text x="1306" y="122" font-size="10.6" fill="#9FB6BE">Items marked FIXED changed in this edition.</text>
+<rect x="44" y="212" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="212" width="4" height="190" rx="2" fill="#02133C"/>
+<text x="59" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">01 OWNS</text>
+<circle cx="62" cy="249" r="2.4" fill="#02133C"/>
+<text x="74" y="253" font-size="12.2" font-weight="400" fill="#233">Completion submission validation</text>
+<circle cx="62" cy="266.5" r="2.4" fill="#02133C"/>
+<text x="74" y="270.5" font-size="12.2" font-weight="400" fill="#233">CompletionSpecification verification</text>
+<circle cx="62" cy="284.0" r="2.4" fill="#02133C"/>
+<text x="74" y="288.0" font-size="12.2" font-weight="400" fill="#233">Evidence integrity</text>
+<circle cx="62" cy="301.5" r="2.4" fill="#02133C"/>
+<text x="74" y="305.5" font-size="12.2" font-weight="400" fill="#233">TaskBlockCompletionDecision</text>
+<circle cx="62" cy="319.0" r="2.4" fill="#02133C"/>
+<text x="74" y="323.0" font-size="12.2" font-weight="400" fill="#233">JobOrderCompletionDecision</text>
+<circle cx="62" cy="336.5" r="2.4" fill="#02133C"/>
+<text x="74" y="340.5" font-size="12.2" font-weight="400" fill="#233">VerifiedActuals</text>
+<circle cx="62" cy="354.0" r="2.4" fill="#02133C"/>
+<text x="74" y="358.0" font-size="12.2" font-weight="400" fill="#233">OutcomeRecord</text>
+<circle cx="62" cy="371.5" r="2.4" fill="#02133C"/>
+<text x="74" y="375.5" font-size="12.2" font-weight="400" fill="#233">Actual-vs-estimate variance report</text>
+<rect x="44" y="422.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="422.0" width="4" height="120" rx="2" fill="#8A3B4A"/>
+<text x="59" y="444.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#8A3B4A">02 DOES NOT OWN</text>
+<circle cx="62" cy="459.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="463.0" font-size="12.2" font-weight="400" fill="#233">Customer charge/provider payable</text>
+<circle cx="62" cy="476.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="480.5" font-size="12.2" font-weight="400" fill="#233">Responsibility allocation</text>
+<circle cx="62" cy="494.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="498.0" font-size="12.2" font-weight="400" fill="#233">Claims adjudication</text>
+<circle cx="62" cy="511.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="515.5" font-size="12.2" font-weight="400" fill="#233">New planning except explicit remediation/reality callbacks</text>
+<rect x="44" y="562.0" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="562.0" width="4" height="190" rx="2" fill="#075A6B"/>
+<text x="59" y="584.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">03 KEY INPUTS</text>
+<circle cx="62" cy="599.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="603.0" font-size="12.2" font-weight="400" fill="#233">CompletionSubmission</text>
+<circle cx="62" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="620.5" font-size="12.2" font-weight="400" fill="#233">CompletionSpecification</text>
+<circle cx="62" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="638.0" font-size="12.2" font-weight="400" fill="#233">RequirementContract version</text>
+<circle cx="62" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="655.5" font-size="12.2" font-weight="400" fill="#233">Approved recovery/change versions</text>
+<circle cx="62" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="673.0" font-size="12.2" font-weight="400" fill="#233">ExecutionJournal</text>
+<circle cx="62" cy="686.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="690.5" font-size="12.2" font-weight="400" fill="#233">Evidence</text>
+<circle cx="62" cy="704.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="708.0" font-size="12.2" font-weight="400" fill="#233">Actual time/resources/materials</text>
+<circle cx="62" cy="721.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="725.5" font-size="12.2" font-weight="400" fill="#233">Customer/recipient acknowledgement</text>
+<rect x="44" y="772.0" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="772.0" width="4" height="172" rx="2" fill="#075A6B"/>
+<text x="59" y="794.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">04 AUTHORITATIVE OUTPUTS</text>
+<circle cx="62" cy="809.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="813.0" font-size="12.2" font-weight="400" fill="#233">TaskBlockCompletionDecision</text>
+<circle cx="62" cy="826.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="830.5" font-size="12.2" font-weight="400" fill="#233">JobOrderCompletionDecision</text>
+<circle cx="62" cy="844.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="848.0" font-size="12.2" font-weight="400" fill="#233">OutcomeRecord</text>
+<circle cx="62" cy="861.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="865.5" font-size="12.2" font-weight="400" fill="#233">VerifiedActuals</text>
+<circle cx="62" cy="879.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="883.0" font-size="12.2" font-weight="400" fill="#233">SettlementInput</text>
+<circle cx="62" cy="896.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="900.5" font-size="12.2" font-weight="400" fill="#233">OutcomeReport</text>
+<circle cx="62" cy="914.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="918.0" font-size="12.2" font-weight="400" fill="#233">RemediationRequest</text>
+<rect x="44" y="964.5" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="964.5" width="4" height="172" rx="2" fill="#079B9D"/>
+<text x="59" y="986.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">05 ENGINES / COMPONENTS</text>
+<circle cx="62" cy="1001.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1005.5" font-size="12.2" font-weight="400" fill="#233">Submission Validator</text>
+<circle cx="62" cy="1019.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1023.0" font-size="12.2" font-weight="400" fill="#233">CompletionSpecification Validator</text>
+<circle cx="62" cy="1036.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1040.5" font-size="12.2" font-weight="400" fill="#233">Evidence Validator</text>
+<circle cx="62" cy="1054.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1058.0" font-size="12.2" font-weight="400" fill="#233">Outcome Verifier</text>
+<circle cx="62" cy="1071.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1075.5" font-size="12.2" font-weight="400" fill="#233">Variance Reporter</text>
+<circle cx="62" cy="1089.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1093.0" font-size="12.2" font-weight="400" fill="#233">Customer Acknowledgement Engine</text>
+<circle cx="62" cy="1106.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1110.5" font-size="12.2" font-weight="400" fill="#233">Outcome Recording Engine</text>
+<rect x="44" y="1157.0" width="517" height="348" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="1157.0" width="4" height="348" rx="2" fill="#079B9D"/>
+<text x="59" y="1179.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">06 OPERATING &amp; DECISION PATH</text>
+<circle cx="62" cy="1194.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1198.0" font-size="12.2" font-weight="400" fill="#233">Receive submission from L10; 'Done' is only a submission signal.</text>
+<circle cx="62" cy="1211.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1215.5" font-size="12.2" font-weight="400" fill="#233">Validate required evidence and integrity.</text>
+<circle cx="62" cy="1229.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1233.0" font-size="12.2" font-weight="400" fill="#233">For each TaskBlock compare actuals to CompletionSpecification success</text>
+<text x="74" y="1250.5" font-size="12.2" font-weight="400" fill="#233">criteria/postconditions.</text>
+<circle cx="62" cy="1264.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1268.0" font-size="12.2" font-weight="400" fill="#233">Record TaskBlock completion: verified complete / partial /</text>
+<text x="74" y="1285.5" font-size="12.2" font-weight="400" fill="#233">verification failed / remediation required / disputed.</text>
+<circle cx="62" cy="1299.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1303.0" font-size="12.2" font-weight="400" fill="#233">Evaluate JobOrder completion eligibility across contracted scope and</text>
+<text x="74" y="1320.5" font-size="12.2" font-weight="400" fill="#233">approved changes.</text>
+<circle cx="62" cy="1334.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1338.0" font-size="12.2" font-weight="400" fill="#233">Customer acknowledgement is evidence; non-response cannot leave job</text>
+<text x="74" y="1355.5" font-size="12.2" font-weight="400" fill="#233">indefinitely open when objective evidence suffices.</text>
+<circle cx="62" cy="1369.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1373.0" font-size="12.2" font-weight="400" fill="#233">If new physical fact appears, call 09A.</text>
+<circle cx="62" cy="1386.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1390.5" font-size="12.2" font-weight="400" fill="#233">If economic responsibility issue exists, call 09B.</text>
+<circle cx="62" cy="1404.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1408.0" font-size="12.2" font-weight="400" fill="#233">If remediation/dispute required, call L13.</text>
+<circle cx="62" cy="1421.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1425.5" font-size="12.2" font-weight="400" fill="#233">Publish VerifiedActuals/SettlementInput directly to L12 for normal</text>
+<text x="74" y="1443.0" font-size="12.2" font-weight="400" fill="#233">completion.</text>
+<circle cx="62" cy="1456.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="74" y="1460.5" font-size="12.2" font-weight="400" fill="#233">Close JobOrder only when contracted scope + approved changes satisfy</text>
+<text x="74" y="1478.0" font-size="12.2" font-weight="400" fill="#233">closure policy; WorkCase may remain open for branches.</text>
+<rect x="581" y="212" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="212" width="4" height="138" rx="2" fill="#079B9D"/>
+<text x="596" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">07 DECISION GATES</text>
+<circle cx="599" cy="249" r="2.4" fill="#079B9D"/>
+<text x="611" y="253" font-size="12.2" font-weight="400" fill="#233">Required evidence present?</text>
+<circle cx="599" cy="266.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="270.5" font-size="12.2" font-weight="400" fill="#233">CompletionSpecification satisfied?</text>
+<circle cx="599" cy="284.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="288.0" font-size="12.2" font-weight="400" fill="#233">TaskBlock dependencies complete?</text>
+<circle cx="599" cy="301.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="305.5" font-size="12.2" font-weight="400" fill="#233">JobOrder completion eligible?</text>
+<circle cx="599" cy="319.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="323.0" font-size="12.2" font-weight="400" fill="#233">Dispute/remediation required?</text>
+<rect x="581" y="369.5" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="369.5" width="4" height="190" rx="2" fill="#075A6B"/>
+<text x="596" y="391.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">08 DATA / ARTIFACT OBJECTS</text>
+<circle cx="599" cy="406.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="410.5" font-size="12.2" font-weight="400" fill="#233">CompletionSubmission</text>
+<circle cx="599" cy="424.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="428.0" font-size="12.2" font-weight="400" fill="#233">TaskBlockCompletionDecision</text>
+<circle cx="599" cy="441.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="445.5" font-size="12.2" font-weight="400" fill="#233">JobOrderCompletionDecision</text>
+<circle cx="599" cy="459.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="463.0" font-size="12.2" font-weight="400" fill="#233">OutcomeRecord</text>
+<circle cx="599" cy="476.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="480.5" font-size="12.2" font-weight="400" fill="#233">EvidenceBundle</text>
+<circle cx="599" cy="494.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="498.0" font-size="12.2" font-weight="400" fill="#233">VerifiedActuals</text>
+<circle cx="599" cy="511.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="515.5" font-size="12.2" font-weight="400" fill="#233">VarianceRecord</text>
+<circle cx="599" cy="529.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="533.0" font-size="12.2" font-weight="400" fill="#233">SettlementInput</text>
+<rect x="581" y="579.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="579.5" width="4" height="138" rx="2" fill="#13C7BC"/>
+<text x="596" y="601.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">09 EVENTS EMITTED</text>
+<circle cx="599" cy="616.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="620.5" font-size="12.2" font-weight="400" fill="#233">Outcome.TaskBlockVerified</text>
+<circle cx="599" cy="634.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="638.0" font-size="12.2" font-weight="400" fill="#233">Outcome.JobOrderCompletionEligible</text>
+<circle cx="599" cy="651.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="655.5" font-size="12.2" font-weight="400" fill="#233">Outcome.RemediationRequired</text>
+<circle cx="599" cy="669.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="673.0" font-size="12.2" font-weight="400" fill="#233">Outcome.Disputed</text>
+<circle cx="599" cy="686.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="690.5" font-size="12.2" font-weight="400" fill="#233">SettlementInput.Ready</text>
+<rect x="581" y="737.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="737.0" width="4" height="120" rx="2" fill="#13C7BC"/>
+<text x="596" y="759.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">10 EVENTS CONSUMED</text>
+<circle cx="599" cy="774.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="778.0" font-size="12.2" font-weight="400" fill="#233">Completion.Submitted</text>
+<circle cx="599" cy="791.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="795.5" font-size="12.2" font-weight="400" fill="#233">RecoveryDecision.Approved</text>
+<circle cx="599" cy="809.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="813.0" font-size="12.2" font-weight="400" fill="#233">RequirementContract.Updated</text>
+<circle cx="599" cy="826.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="830.5" font-size="12.2" font-weight="400" fill="#233">Customer.Acknowledged</text>
+<rect x="581" y="877.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="877.0" width="4" height="120" rx="2" fill="#079B9D"/>
+<text x="596" y="899.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">11 INTEGRATIONS / CALLBACKS</text>
+<circle cx="599" cy="914.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="918.0" font-size="12.2" font-weight="400" fill="#233">L10 Execution</text>
+<circle cx="599" cy="931.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="935.5" font-size="12.2" font-weight="400" fill="#233">L12 Settlement</text>
+<circle cx="599" cy="949.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="953.0" font-size="12.2" font-weight="400" fill="#233">L13 Branch/Claims</text>
+<circle cx="599" cy="966.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="970.5" font-size="12.2" font-weight="400" fill="#233">P2 Evidence</text>
+<rect x="581" y="1017.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1017.0" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="596" y="1039.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">12 FAILURE &amp; RECOVERY</text>
+<circle cx="599" cy="1054.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1058.0" font-size="12.2" font-weight="400" fill="#233">Missing evidence → request specific evidence.</text>
+<circle cx="599" cy="1071.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1075.5" font-size="12.2" font-weight="400" fill="#233">Failed criterion → correction/remediation path.</text>
+<circle cx="599" cy="1089.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1093.0" font-size="12.2" font-weight="400" fill="#233">Customer unavailable → objective evidence/policy.</text>
+<circle cx="599" cy="1106.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1110.5" font-size="12.2" font-weight="400" fill="#233">Dispute → L13.</text>
+<rect x="581" y="1157.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1157.0" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="596" y="1179.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">13 HUMAN REVIEW</text>
+<circle cx="599" cy="1194.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1198.0" font-size="12.2" font-weight="400" fill="#233">High-value outcome</text>
+<circle cx="599" cy="1211.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1215.5" font-size="12.2" font-weight="400" fill="#233">Conflicting evidence</text>
+<circle cx="599" cy="1229.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1233.0" font-size="12.2" font-weight="400" fill="#233">Safety incident tied to completion</text>
+<circle cx="599" cy="1246.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1250.5" font-size="12.2" font-weight="400" fill="#233">Customer rejection with evidence conflict</text>
+<rect x="581" y="1297.0" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1297.0" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="596" y="1319.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">14 SECURITY / PRIVACY</text>
+<circle cx="599" cy="1334.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1338.0" font-size="12.2" font-weight="400" fill="#233">Evidence immutable after lock.</text>
+<circle cx="599" cy="1351.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1355.5" font-size="12.2" font-weight="400" fill="#233">Read-only customer/provider evidence views.</text>
+<circle cx="599" cy="1369.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1373.0" font-size="12.2" font-weight="400" fill="#233">Retention by evidence type.</text>
+<rect x="581" y="1419.5" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1419.5" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="596" y="1441.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">15 1M-JOB SCALABILITY</text>
+<circle cx="599" cy="1456.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1460.5" font-size="12.2" font-weight="400" fill="#233">Parallel TaskBlock verification</text>
+<circle cx="599" cy="1474.0" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1478.0" font-size="12.2" font-weight="400" fill="#233">Async media checks</text>
+<circle cx="599" cy="1491.5" r="2.4" fill="#5A6B72"/>
+<text x="611" y="1495.5" font-size="12.2" font-weight="400" fill="#233">No AI-only authority for hard completion criteria</text>
+<rect x="1118" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="212" width="4" height="172" rx="2" fill="#02133C"/>
+<text x="1133" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">16 NON-NEGOTIABLE INVARIANTS</text>
+<circle cx="1136" cy="249" r="2.4" fill="#02133C"/>
+<text x="1148" y="253" font-size="12.2" font-weight="600" fill="#02133C">CompletionSpecification is the central success authority.</text>
+<circle cx="1136" cy="266.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="270.5" font-size="12.2" font-weight="600" fill="#02133C">Customer acceptance is evidence, not sole authority.</text>
+<circle cx="1136" cy="284.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="288.0" font-size="12.2" font-weight="600" fill="#02133C">Done/Submit ≠ Completed.</text>
+<circle cx="1136" cy="301.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="305.5" font-size="12.2" font-weight="600" fill="#02133C">Blocked execution is not automatically a terminal outcome.</text>
+<circle cx="1136" cy="319.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="323.0" font-size="12.2" font-weight="600" fill="#02133C">Cancelled is final only when L7 finalizes cancellation.</text>
+<circle cx="1136" cy="336.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="340.5" font-size="12.2" font-weight="600" fill="#02133C">JobOrder closure ≠ WorkCase closure.</text>
+<circle cx="1136" cy="354.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="358.0" font-size="12.2" font-weight="600" fill="#02133C">Actual cost facts are not automatically customer charges.</text>
+<rect x="1118" y="404.5" width="517" height="592" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="404.5" width="4" height="592" rx="2" fill="#02133C"/>
+<text x="1133" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">17 OUTCOME STATE MACHINE</text>
+<text x="1133" y="445.5" font-size="12.2" font-weight="600" fill="#5A6B72">Recovered 2026-08-23 from "Layer 11 Outcome Truth Architecture.png" — a</text>
+<text x="1133" y="463.0" font-size="12.2" font-weight="600" fill="#5A6B72">version 1.2 board dated 2026-08-19 that appears in NEITHER the</text>
+<text x="1148" y="480.5" font-size="12.2" font-weight="600" fill="#02133C">FULL_DETAIL</text>
+<text x="1133" y="498.0" font-size="12.2" font-weight="600" fill="#5A6B72">package nor the v2.1 reconciliation evidence. It exists only in the figma</text>
+<text x="1133" y="515.5" font-size="12.2" font-weight="600" fill="#5A6B72">folder. No other document in the architecture carries this state machine.</text>
+<circle cx="1136" cy="529.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="533.0" font-size="12.2" font-weight="600" fill="#02133C">S0 RECEIVED — submission received from Layer 10</text>
+<circle cx="1136" cy="546.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="550.5" font-size="12.2" font-weight="600" fill="#02133C">S1 UNDER REVIEW (AUTO) — validation and reconciliation in progress</text>
+<circle cx="1136" cy="564.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="568.0" font-size="12.2" font-weight="600" fill="#02133C">S2 COMPLETE — all TaskBlocks completed successfully</text>
+<circle cx="1136" cy="581.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="585.5" font-size="12.2" font-weight="600" fill="#02133C">S3 PARTIAL — some completed, some not (defined)</text>
+<circle cx="1136" cy="599.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="603.0" font-size="12.2" font-weight="600" fill="#02133C">S4 BLOCKED (UNAVOIDABLE) — could not proceed further</text>
+<circle cx="1136" cy="616.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="620.5" font-size="12.2" font-weight="600" fill="#02133C">S5 CANCELLED (BY POLICY) — cancelled via Layer 07 decision</text>
+<circle cx="1136" cy="634.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="638.0" font-size="12.2" font-weight="600" fill="#02133C">S6 DISPUTED — outcome contested / needs review</text>
+<circle cx="1136" cy="651.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="655.5" font-size="12.2" font-weight="600" fill="#02133C">S7 FAILED — execution failure / no deliverable</text>
+<circle cx="1136" cy="669.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="673.0" font-size="12.2" font-weight="600" fill="#02133C">S8 LOCKED (FINAL) — outcome immutable and published</text>
+<text x="1133" y="690.5" font-size="12.2" font-weight="600" fill="#02133C">Transitions:</text>
+<circle cx="1136" cy="704.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="708.0" font-size="12.2" font-weight="600" fill="#02133C">S0 -&gt; S1 on valid submission</text>
+<circle cx="1136" cy="721.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="725.5" font-size="12.2" font-weight="600" fill="#02133C">S1 -&gt; S2/S3/S4/S6/S7 based on evaluation</text>
+<circle cx="1136" cy="739.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="743.0" font-size="12.2" font-weight="600" fill="#02133C">Any -&gt; S5 on cancellation from L07</text>
+<circle cx="1136" cy="756.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="760.5" font-size="12.2" font-weight="600" fill="#02133C">S1/S3/S4/S6 -&gt; S8 after acceptance / review</text>
+<circle cx="1136" cy="774.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="778.0" font-size="12.2" font-weight="600" fill="#02133C">S6 -&gt; S1 after dispute resolution</text>
+<circle cx="1136" cy="791.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="795.5" font-size="12.2" font-weight="600" fill="#02133C">S2/S3/S4/S7 -&gt; S6 if dispute raised</text>
+<text x="1133" y="813.0" font-size="12.2" font-weight="600" fill="#02133C">Any -&gt; S5 is the formal expression of L7's invariant that cancellation</text>
+<text x="1133" y="830.5" font-size="12.2" font-weight="600" fill="#02133C">remains requestable at every stage. It is the only place in the</text>
+<text x="1148" y="848.0" font-size="12.2" font-weight="600" fill="#02133C">architecture</text>
+<text x="1133" y="865.5" font-size="12.2" font-weight="600" fill="#02133C">where that invariant is made mechanical rather than stated in prose.</text>
+<text x="1133" y="883.0" font-size="12.2" font-weight="600" fill="#02133C">Outcome invariants, as printed:</text>
+<circle cx="1136" cy="896.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="900.5" font-size="12.2" font-weight="600" fill="#02133C">Outcome is based on facts, not opinions</text>
+<circle cx="1136" cy="914.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="918.0" font-size="12.2" font-weight="600" fill="#02133C">Evidence is immutable once locked</text>
+<circle cx="1136" cy="931.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="935.5" font-size="12.2" font-weight="600" fill="#02133C">Outcome cannot be edited, only appended</text>
+<circle cx="1136" cy="949.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="953.0" font-size="12.2" font-weight="600" fill="#02133C">Every outcome has OutcomeReason and timestamp</text>
+<circle cx="1136" cy="966.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="970.5" font-size="12.2" font-weight="600" fill="#02133C">All links and decisions are traceable</text>
+<rect x="1118" y="1017.0" width="517" height="330" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="1017.0" width="4" height="330" rx="2" fill="#02133C"/>
+<text x="1133" y="1039.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">18 OUTCOME RESPONSE TYPES</text>
+<circle cx="1136" cy="1054.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1058.0" font-size="12.2" font-weight="600" fill="#02133C">OR-COMPLETE — All Work Completed — all TaskBlocks done as planned —</text>
+<text x="1148" y="1075.5" font-size="12.2" font-weight="600" fill="#02133C">e.g. IKEA table delivered and old table removed</text>
+<circle cx="1136" cy="1089.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1093.0" font-size="12.2" font-weight="600" fill="#02133C">OR-PARTIAL — Partial Completion — some done, some pending — e.g. 12</text>
+<text x="1148" y="1110.5" font-size="12.2" font-weight="600" fill="#02133C">desks moved, 3 pending</text>
+<circle cx="1136" cy="1124.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1128.0" font-size="12.2" font-weight="600" fill="#02133C">OR-BLOCKED — Blocked / Unavoidable — could not proceed further — e.g.</text>
+<text x="1148" y="1145.5" font-size="12.2" font-weight="600" fill="#02133C">no elevator access available</text>
+<circle cx="1136" cy="1159.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1163.0" font-size="12.2" font-weight="600" fill="#02133C">OR-CANCELLED — Cancelled by Policy — cancelled via Layer 07 — e.g.</text>
+<text x="1148" y="1180.5" font-size="12.2" font-weight="600" fill="#02133C">customer cancelled with fee</text>
+<circle cx="1136" cy="1194.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1198.0" font-size="12.2" font-weight="600" fill="#02133C">OR-DISPUTED — Disputed — outcome contested — e.g. customer claims</text>
+<text x="1148" y="1215.5" font-size="12.2" font-weight="600" fill="#02133C">incomplete</text>
+<circle cx="1136" cy="1229.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1233.0" font-size="12.2" font-weight="600" fill="#02133C">OR-FAILED — Execution Failure — work could not be executed — e.g.</text>
+<text x="1148" y="1250.5" font-size="12.2" font-weight="600" fill="#02133C">provider could not complete</text>
+<circle cx="1136" cy="1264.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="1268.0" font-size="12.2" font-weight="600" fill="#02133C">OR-OTHER — Other — other defined reason — e.g. weather stopped work</text>
+<text x="1133" y="1285.5" font-size="12.2" font-weight="600" fill="#02133C">FactLedger linkage: OutcomeRecord (11) -&gt; ResponsibilityCase (09B) -&gt;</text>
+<text x="1133" y="1303.0" font-size="12.2" font-weight="600" fill="#02133C">LedgerInstruction (12), only after outcomes and responsibility are</text>
+<text x="1148" y="1320.5" font-size="12.2" font-weight="600" fill="#02133C">finalized.</text>
+<rect x="1118" y="1367.0" width="517" height="120" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="1367.0" width="4" height="120" rx="2" fill="#075A6B"/>
+<text x="1133" y="1389.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">19 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="1404.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1408.0" font-size="12.2" font-weight="400" fill="#233">L11-G1 · Completed installation fails completion criterion -&gt;</text>
+<text x="1148" y="1425.5" font-size="12.2" font-weight="400" fill="#233">remediation</text>
+<circle cx="1136" cy="1439.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1443.0" font-size="12.2" font-weight="400" fill="#233">L11-G2 · Customer unavailable but evidence proves completion</text>
+<circle cx="1136" cy="1456.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1460.5" font-size="12.2" font-weight="400" fill="#233">L11-G3 · Follow-up suggestion does not keep JobOrder open</text>
+<rect y="1586" width="1680" height="64" fill="#02133C"/>
+<text x="44" y="1613" font-size="11.6" fill="#FFFFFF">Board regenerated from the corrected canonical set. Text is real SVG text — readable by script, not only by eye.</text>
+<text x="44" y="1631" font-size="10.4" fill="#13C7BC">Every consumed event on this board has exactly one producer, or is declared external. Open rulings are listed in the canonical file, not decided here.</text>
+<text x="1636" y="1622" text-anchor="end" font-size="11.6" font-weight="700" fill="#13C7BC">L11</text>
+</svg>

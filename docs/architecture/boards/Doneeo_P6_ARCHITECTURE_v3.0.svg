@@ -1,0 +1,257 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1282" viewBox="0 0 1680 1282" font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1282" fill="#F6F9F9"/>
+<rect width="1680" height="168" fill="#02133C"/>
+<rect y="163" width="1680" height="5" fill="#079B9D"/>
+<text x="44" y="46" font-size="17" font-weight="700" fill="#FFFFFF" letter-spacing="3.6">DONEEO</text>
+<text x="162" y="46" font-size="12.5" fill="#13C7BC" letter-spacing="0.4">Intelligence to Get Work Done</text>
+<text x="44" y="92" font-size="31" font-weight="700" fill="#FFFFFF">P6 — EVENT BACKBONE, MODEL GATEWAY, OBSERVABILITY &amp; 1M-JOB SCALE ARCHITECTURE</text>
+<text x="44" y="118" font-size="13.4" fill="#C9D9DE">Provide reliable event transport, scalable worker execution, model routing and full observability while keeping AI off authoritative hard-rule/state decisions.</text>
+<rect x="1306" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1357" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">LAYER</text>
+<text x="1357" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">P6</text>
+<rect x="1418" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1469" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">EDITION</text>
+<text x="1469" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">v3.0 clean</text>
+<rect x="1530" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1581" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">DATE</text>
+<text x="1581" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2026-08-23</text>
+<text x="1306" y="106" font-size="10.6" fill="#13C7BC">Numbering, naming and event linkage corrected.</text>
+<text x="1306" y="122" font-size="10.6" fill="#9FB6BE">Items marked FIXED changed in this edition.</text>
+<rect x="44" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="212" width="4" height="172" rx="2" fill="#02133C"/>
+<text x="59" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">01 OWNS</text>
+<circle cx="62" cy="249" r="2.4" fill="#02133C"/>
+<text x="74" y="253" font-size="12.2" font-weight="400" fill="#233">Event/message backbone</text>
+<circle cx="62" cy="266.5" r="2.4" fill="#02133C"/>
+<text x="74" y="270.5" font-size="12.2" font-weight="400" fill="#233">Worker pools</text>
+<circle cx="62" cy="284.0" r="2.4" fill="#02133C"/>
+<text x="74" y="288.0" font-size="12.2" font-weight="400" fill="#233">Model Gateway</text>
+<circle cx="62" cy="301.5" r="2.4" fill="#02133C"/>
+<text x="74" y="305.5" font-size="12.2" font-weight="400" fill="#233">Telemetry/observability</text>
+<circle cx="62" cy="319.0" r="2.4" fill="#02133C"/>
+<text x="74" y="323.0" font-size="12.2" font-weight="400" fill="#233">Caches/read infrastructure</text>
+<circle cx="62" cy="336.5" r="2.4" fill="#02133C"/>
+<text x="74" y="340.5" font-size="12.2" font-weight="400" fill="#233">Reliability patterns</text>
+<circle cx="62" cy="354.0" r="2.4" fill="#02133C"/>
+<text x="74" y="358.0" font-size="12.2" font-weight="400" fill="#233">Regional scaling/deployment evolution</text>
+<rect x="44" y="404.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="404.5" width="4" height="138" rx="2" fill="#8A3B4A"/>
+<text x="59" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#8A3B4A">02 DOES NOT OWN</text>
+<circle cx="62" cy="441.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="445.5" font-size="12.2" font-weight="400" fill="#233">Business decisions</text>
+<circle cx="62" cy="459.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="463.0" font-size="12.2" font-weight="400" fill="#233">Rule authority</text>
+<circle cx="62" cy="476.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="480.5" font-size="12.2" font-weight="400" fill="#233">Primary domain storage</text>
+<circle cx="62" cy="494.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="498.0" font-size="12.2" font-weight="400" fill="#233">Identity/security policy</text>
+<circle cx="62" cy="511.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="515.5" font-size="12.2" font-weight="400" fill="#233">Final financial truth</text>
+<rect x="44" y="562.0" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="562.0" width="4" height="138" rx="2" fill="#075A6B"/>
+<text x="59" y="584.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">03 KEY INPUTS</text>
+<circle cx="62" cy="599.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="603.0" font-size="12.2" font-weight="400" fill="#233">Domain outbox events</text>
+<circle cx="62" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="620.5" font-size="12.2" font-weight="400" fill="#233">Commands/queues</text>
+<circle cx="62" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="638.0" font-size="12.2" font-weight="400" fill="#233">Model requests</text>
+<circle cx="62" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="655.5" font-size="12.2" font-weight="400" fill="#233">Metrics/logs/traces</text>
+<circle cx="62" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="673.0" font-size="12.2" font-weight="400" fill="#233">Regional config</text>
+<rect x="44" y="719.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="719.5" width="4" height="138" rx="2" fill="#075A6B"/>
+<text x="59" y="741.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">04 AUTHORITATIVE OUTPUTS</text>
+<circle cx="62" cy="756.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="760.5" font-size="12.2" font-weight="400" fill="#233">Event streams</text>
+<circle cx="62" cy="774.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="778.0" font-size="12.2" font-weight="400" fill="#233">Worker queues</text>
+<circle cx="62" cy="791.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="795.5" font-size="12.2" font-weight="400" fill="#233">ModelInvocationRef</text>
+<circle cx="62" cy="809.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="813.0" font-size="12.2" font-weight="400" fill="#233">Metrics/traces/alerts</text>
+<circle cx="62" cy="826.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="830.5" font-size="12.2" font-weight="400" fill="#233">DLQ/retry state</text>
+<rect x="44" y="877.0" width="517" height="260" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="877.0" width="4" height="260" rx="2" fill="#079B9D"/>
+<text x="59" y="899.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">05 ENGINES / COMPONENTS</text>
+<circle cx="62" cy="914.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="918.0" font-size="12.2" font-weight="400" fill="#233">Event Backbone</text>
+<circle cx="62" cy="931.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="935.5" font-size="12.2" font-weight="400" fill="#233">Schema Registry</text>
+<circle cx="62" cy="949.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="953.0" font-size="12.2" font-weight="400" fill="#233">Planning Workers</text>
+<circle cx="62" cy="966.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="970.5" font-size="12.2" font-weight="400" fill="#233">Rules Workers</text>
+<circle cx="62" cy="984.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="988.0" font-size="12.2" font-weight="400" fill="#233">Fulfillment Workers</text>
+<circle cx="62" cy="1001.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1005.5" font-size="12.2" font-weight="400" fill="#233">Execution/Reality Workers</text>
+<circle cx="62" cy="1019.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1023.0" font-size="12.2" font-weight="400" fill="#233">Commercial/Finance Workers</text>
+<circle cx="62" cy="1036.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1040.5" font-size="12.2" font-weight="400" fill="#233">Outcome Workers</text>
+<circle cx="62" cy="1054.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1058.0" font-size="12.2" font-weight="400" fill="#233">Model Gateway</text>
+<circle cx="62" cy="1071.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1075.5" font-size="12.2" font-weight="400" fill="#233">Observability Stack</text>
+<circle cx="62" cy="1089.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1093.0" font-size="12.2" font-weight="400" fill="#233">Cache/Read Infrastructure</text>
+<circle cx="62" cy="1106.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1110.5" font-size="12.2" font-weight="400" fill="#233">Regional Config Service</text>
+<rect x="581" y="212" width="517" height="208" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="212" width="4" height="208" rx="2" fill="#079B9D"/>
+<text x="596" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">06 OPERATING &amp; DECISION PATH</text>
+<circle cx="599" cy="249" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="253" font-size="12.2" font-weight="400" fill="#233">P1/domain writes transactional outbox.</text>
+<circle cx="599" cy="266.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="270.5" font-size="12.2" font-weight="400" fill="#233">P6 transports at-least-once events to idempotent consumers.</text>
+<circle cx="599" cy="284.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="288.0" font-size="12.2" font-weight="400" fill="#233">Worker pools scale independently by domain load.</text>
+<circle cx="599" cy="301.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="305.5" font-size="12.2" font-weight="400" fill="#233">Model Gateway selects provider/model based on capability, risk,</text>
+<text x="611" y="323.0" font-size="12.2" font-weight="400" fill="#233">latency and cost; outputs advice/structured reasoning refs.</text>
+<circle cx="599" cy="336.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="340.5" font-size="12.2" font-weight="400" fill="#233">Deterministic domain validates model outputs before authority.</text>
+<circle cx="599" cy="354.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="358.0" font-size="12.2" font-weight="400" fill="#233">Observability tracks SLOs and cross-layer traces.</text>
+<circle cx="599" cy="371.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="375.5" font-size="12.2" font-weight="400" fill="#233">Bulkhead Execution/Payment from AI/Analytics.</text>
+<circle cx="599" cy="389.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="393.0" font-size="12.2" font-weight="400" fill="#233">Scale physically only when measured load justifies separation.</text>
+<rect x="581" y="439.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="439.5" width="4" height="138" rx="2" fill="#079B9D"/>
+<text x="596" y="461.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">07 DECISION GATES</text>
+<circle cx="599" cy="476.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="480.5" font-size="12.2" font-weight="400" fill="#233">AI required on critical path? minimize/avoid where deterministic path</text>
+<text x="611" y="498.0" font-size="12.2" font-weight="400" fill="#233">exists.</text>
+<circle cx="599" cy="511.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="515.5" font-size="12.2" font-weight="400" fill="#233">Queue saturation? autoscale/bulkhead.</text>
+<circle cx="599" cy="529.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="533.0" font-size="12.2" font-weight="400" fill="#233">Model provider failure? fallback/defer noncritical reasoning.</text>
+<circle cx="599" cy="546.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="550.5" font-size="12.2" font-weight="400" fill="#233">Regional failure? failover policy.</text>
+<rect x="581" y="597.0" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="597.0" width="4" height="190" rx="2" fill="#075A6B"/>
+<text x="596" y="619.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">08 DATA / ARTIFACT OBJECTS</text>
+<circle cx="599" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="638.0" font-size="12.2" font-weight="400" fill="#233">EventEnvelope</text>
+<circle cx="599" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="655.5" font-size="12.2" font-weight="400" fill="#233">QueueMessage</text>
+<circle cx="599" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="673.0" font-size="12.2" font-weight="400" fill="#233">ModelInvocationRef</text>
+<circle cx="599" cy="686.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="690.5" font-size="12.2" font-weight="400" fill="#233">Metric</text>
+<circle cx="599" cy="704.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="708.0" font-size="12.2" font-weight="400" fill="#233">Trace</text>
+<circle cx="599" cy="721.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="725.5" font-size="12.2" font-weight="400" fill="#233">Alert</text>
+<circle cx="599" cy="739.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="743.0" font-size="12.2" font-weight="400" fill="#233">DLQItem</text>
+<circle cx="599" cy="756.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="760.5" font-size="12.2" font-weight="400" fill="#233">RegionalConfig</text>
+<rect x="581" y="807.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="807.0" width="4" height="120" rx="2" fill="#13C7BC"/>
+<text x="596" y="829.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">09 EVENTS EMITTED</text>
+<circle cx="599" cy="844.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="848.0" font-size="12.2" font-weight="400" fill="#233">Event.Delivered</text>
+<circle cx="599" cy="861.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="865.5" font-size="12.2" font-weight="400" fill="#233">ModelInvocation.Completed</text>
+<circle cx="599" cy="879.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="883.0" font-size="12.2" font-weight="400" fill="#233">Operational.AlertRaised</text>
+<circle cx="599" cy="896.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="900.5" font-size="12.2" font-weight="400" fill="#233">DLQ.ItemCreated</text>
+<rect x="581" y="947.0" width="517" height="85" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="947.0" width="4" height="85" rx="2" fill="#13C7BC"/>
+<text x="596" y="969.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">10 EVENTS CONSUMED</text>
+<circle cx="599" cy="984.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="988.0" font-size="12.2" font-weight="400" fill="#233">Domain.OutboxReady</text>
+<circle cx="599" cy="1001.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1005.5" font-size="12.2" font-weight="400" fill="#233">All operational telemetry</text>
+<rect x="581" y="1052.0" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1052.0" width="4" height="102" rx="2" fill="#079B9D"/>
+<text x="596" y="1074.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">11 INTEGRATIONS / CALLBACKS</text>
+<circle cx="599" cy="1089.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1093.0" font-size="12.2" font-weight="400" fill="#233">P1 Orchestrator</text>
+<circle cx="599" cy="1106.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="1110.5" font-size="12.2" font-weight="400" fill="#233">P2 Data</text>
+<circle cx="599" cy="1124.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1128.0" font-size="12.2" font-weight="400" fill="#233">All layers</text>
+<rect x="1118" y="212" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="212" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">12 FAILURE &amp; RECOVERY</text>
+<circle cx="1136" cy="249" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="253" font-size="12.2" font-weight="400" fill="#233">Duplicate delivery → idempotent consumer.</text>
+<circle cx="1136" cy="266.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="270.5" font-size="12.2" font-weight="400" fill="#233">Poison event → DLQ.</text>
+<circle cx="1136" cy="284.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="288.0" font-size="12.2" font-weight="400" fill="#233">AI outage → deterministic core continues where possible.</text>
+<circle cx="1136" cy="301.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="305.5" font-size="12.2" font-weight="400" fill="#233">Search/read outage → slower authoritative path.</text>
+<rect x="1118" y="352.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="352.0" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="374.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">13 HUMAN REVIEW</text>
+<circle cx="1136" cy="389.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="393.0" font-size="12.2" font-weight="400" fill="#233">Regional failover</text>
+<circle cx="1136" cy="406.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="410.5" font-size="12.2" font-weight="400" fill="#233">SLO breach</text>
+<circle cx="1136" cy="424.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="428.0" font-size="12.2" font-weight="400" fill="#233">Model outage affecting material workflow</text>
+<circle cx="1136" cy="441.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="445.5" font-size="12.2" font-weight="400" fill="#233">Security incident</text>
+<rect x="1118" y="492.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="492.0" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="514.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">14 SECURITY / PRIVACY</text>
+<circle cx="1136" cy="529.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="533.0" font-size="12.2" font-weight="400" fill="#233">PII-safe telemetry</text>
+<circle cx="1136" cy="546.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="550.5" font-size="12.2" font-weight="400" fill="#233">Service identity</text>
+<circle cx="1136" cy="564.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="568.0" font-size="12.2" font-weight="400" fill="#233">Secrets isolation</text>
+<circle cx="1136" cy="581.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="585.5" font-size="12.2" font-weight="400" fill="#233">Regional data policy</text>
+<rect x="1118" y="632.0" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="632.0" width="4" height="172" rx="2" fill="#5A6B72"/>
+<text x="1133" y="654.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">15 1M-JOB SCALABILITY</text>
+<circle cx="1136" cy="669.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="673.0" font-size="12.2" font-weight="400" fill="#233">Stage 1: modular monolith + relational DB + background workers.</text>
+<circle cx="1136" cy="686.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="690.5" font-size="12.2" font-weight="400" fill="#233">Stage 2: horizontal workers/event backbone/read models.</text>
+<circle cx="1136" cy="704.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="708.0" font-size="12.2" font-weight="400" fill="#233">Stage 3: selected service extraction from measured hotspots.</text>
+<circle cx="1136" cy="721.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="725.5" font-size="12.2" font-weight="400" fill="#233">Stage 4: multi-region partitioning/domain stores for sustained high</text>
+<text x="1148" y="743.0" font-size="12.2" font-weight="400" fill="#233">load.</text>
+<circle cx="1136" cy="756.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="760.5" font-size="12.2" font-weight="400" fill="#233">Target is 1M+ jobs/month logical architecture, not a promise of 1M</text>
+<text x="1148" y="778.0" font-size="12.2" font-weight="400" fill="#233">concurrent jobs.</text>
+<rect x="1118" y="824.5" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="824.5" width="4" height="172" rx="2" fill="#02133C"/>
+<text x="1133" y="846.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">16 NON-NEGOTIABLE INVARIANTS</text>
+<circle cx="1136" cy="861.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="865.5" font-size="12.2" font-weight="600" fill="#02133C">AI reasons/recommends; deterministic code/rules/state/versioning are</text>
+<text x="1148" y="883.0" font-size="12.2" font-weight="600" fill="#02133C">authority.</text>
+<circle cx="1136" cy="896.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="900.5" font-size="12.2" font-weight="600" fill="#02133C">No mandatory multi-model consensus.</text>
+<circle cx="1136" cy="914.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="918.0" font-size="12.2" font-weight="600" fill="#02133C">Learning may propose, never auto-publish compliance rules.</text>
+<circle cx="1136" cy="931.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="935.5" font-size="12.2" font-weight="600" fill="#02133C">Scale changes HOW, not WHAT.</text>
+<circle cx="1136" cy="949.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="953.0" font-size="12.2" font-weight="600" fill="#02133C">Million-job logical architecture now; million-job physical</text>
+<text x="1148" y="970.5" font-size="12.2" font-weight="600" fill="#02133C">infrastructure when load requires it.</text>
+<rect x="1118" y="1017.0" width="517" height="102" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="1017.0" width="4" height="102" rx="2" fill="#075A6B"/>
+<text x="1133" y="1039.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">17 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="1054.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1058.0" font-size="12.2" font-weight="400" fill="#233">P6-G1 · Model provider outage during execution</text>
+<circle cx="1136" cy="1071.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1075.5" font-size="12.2" font-weight="400" fill="#233">P6-G2 · 1M/mo matching uses derived index + authoritative recheck</text>
+<circle cx="1136" cy="1089.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1093.0" font-size="12.2" font-weight="400" fill="#233">P6-G3 · Lost callback replay remains idempotent</text>
+<rect y="1218" width="1680" height="64" fill="#02133C"/>
+<text x="44" y="1245" font-size="11.6" fill="#FFFFFF">Board regenerated from the corrected canonical set. Text is real SVG text — readable by script, not only by eye.</text>
+<text x="44" y="1263" font-size="10.4" fill="#13C7BC">Every consumed event on this board has exactly one producer, or is declared external. Open rulings are listed in the canonical file, not decided here.</text>
+<text x="1636" y="1254" text-anchor="end" font-size="11.6" font-weight="700" fill="#13C7BC">P6</text>
+</svg>

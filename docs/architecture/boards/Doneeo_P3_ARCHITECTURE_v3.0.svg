@@ -1,0 +1,250 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1282" viewBox="0 0 1680 1282" font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1282" fill="#F6F9F9"/>
+<rect width="1680" height="168" fill="#02133C"/>
+<rect y="163" width="1680" height="5" fill="#079B9D"/>
+<text x="44" y="46" font-size="17" font-weight="700" fill="#FFFFFF" letter-spacing="3.6">DONEEO</text>
+<text x="162" y="46" font-size="12.5" fill="#13C7BC" letter-spacing="0.4">Intelligence to Get Work Done</text>
+<text x="44" y="92" font-size="31" font-weight="700" fill="#FFFFFF">P3 — IDENTITY, CONSENT &amp; ACCESS</text>
+<text x="44" y="118" font-size="13.4" fill="#C9D9DE">Own logical identity, organization, role, permission, consent and privacy policy for customers, executors, recipients, operators and external partners.</text>
+<rect x="1306" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1357" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">LAYER</text>
+<text x="1357" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">P3</text>
+<rect x="1418" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1469" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">EDITION</text>
+<text x="1469" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">v3.0 clean</text>
+<rect x="1530" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1581" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">DATE</text>
+<text x="1581" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2026-08-23</text>
+<text x="1306" y="106" font-size="10.6" fill="#13C7BC">Numbering, naming and event linkage corrected.</text>
+<text x="1306" y="122" font-size="10.6" fill="#9FB6BE">Items marked FIXED changed in this edition.</text>
+<rect x="44" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="212" width="4" height="172" rx="2" fill="#02133C"/>
+<text x="59" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">01 OWNS</text>
+<circle cx="62" cy="249" r="2.4" fill="#02133C"/>
+<text x="74" y="253" font-size="12.2" font-weight="400" fill="#233">Customer/executor identities</text>
+<circle cx="62" cy="266.5" r="2.4" fill="#02133C"/>
+<text x="74" y="270.5" font-size="12.2" font-weight="400" fill="#233">Organizations</text>
+<circle cx="62" cy="284.0" r="2.4" fill="#02133C"/>
+<text x="74" y="288.0" font-size="12.2" font-weight="400" fill="#233">Roles/permissions</text>
+<circle cx="62" cy="301.5" r="2.4" fill="#02133C"/>
+<text x="74" y="305.5" font-size="12.2" font-weight="400" fill="#233">Third-party recipient authorization</text>
+<circle cx="62" cy="319.0" r="2.4" fill="#02133C"/>
+<text x="74" y="323.0" font-size="12.2" font-weight="400" fill="#233">Consent records</text>
+<circle cx="62" cy="336.5" r="2.4" fill="#02133C"/>
+<text x="74" y="340.5" font-size="12.2" font-weight="400" fill="#233">Session/security context</text>
+<circle cx="62" cy="354.0" r="2.4" fill="#02133C"/>
+<text x="74" y="358.0" font-size="12.2" font-weight="400" fill="#233">Visibility/privacy policies</text>
+<rect x="44" y="404.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="404.5" width="4" height="138" rx="2" fill="#8A3B4A"/>
+<text x="59" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#8A3B4A">02 DOES NOT OWN</text>
+<circle cx="62" cy="441.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="445.5" font-size="12.2" font-weight="400" fill="#233">Job planning</text>
+<circle cx="62" cy="459.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="463.0" font-size="12.2" font-weight="400" fill="#233">Provider eligibility</text>
+<circle cx="62" cy="476.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="480.5" font-size="12.2" font-weight="400" fill="#233">Pricing</text>
+<circle cx="62" cy="494.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="498.0" font-size="12.2" font-weight="400" fill="#233">Claims truth</text>
+<circle cx="62" cy="511.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="515.5" font-size="12.2" font-weight="400" fill="#233">Financial settlement</text>
+<rect x="44" y="562.0" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="562.0" width="4" height="138" rx="2" fill="#075A6B"/>
+<text x="59" y="584.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">03 KEY INPUTS</text>
+<circle cx="62" cy="599.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="603.0" font-size="12.2" font-weight="400" fill="#233">Authentication assertions</text>
+<circle cx="62" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="620.5" font-size="12.2" font-weight="400" fill="#233">User/org profiles</text>
+<circle cx="62" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="638.0" font-size="12.2" font-weight="400" fill="#233">Policy rules</text>
+<circle cx="62" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="655.5" font-size="12.2" font-weight="400" fill="#233">WorkCase/JobOrder role relationships</text>
+<circle cx="62" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="673.0" font-size="12.2" font-weight="400" fill="#233">Consent requests</text>
+<rect x="44" y="719.5" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="719.5" width="4" height="172" rx="2" fill="#075A6B"/>
+<text x="59" y="741.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">04 AUTHORITATIVE OUTPUTS</text>
+<circle cx="62" cy="756.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="760.5" font-size="12.2" font-weight="400" fill="#233">IdentityContext</text>
+<circle cx="62" cy="774.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="778.0" font-size="12.2" font-weight="400" fill="#233">RoleAssignment</text>
+<circle cx="62" cy="791.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="795.5" font-size="12.2" font-weight="400" fill="#233">PermissionDecision</text>
+<circle cx="62" cy="809.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="813.0" font-size="12.2" font-weight="400" fill="#233">ConsentRecord</text>
+<circle cx="62" cy="826.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="830.5" font-size="12.2" font-weight="400" fill="#233">RecipientAccessGrant</text>
+<circle cx="62" cy="844.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="848.0" font-size="12.2" font-weight="400" fill="#233">SessionContext</text>
+<circle cx="62" cy="861.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="865.5" font-size="12.2" font-weight="400" fill="#233">AuditAccessEvent</text>
+<rect x="44" y="912.0" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="912.0" width="4" height="172" rx="2" fill="#079B9D"/>
+<text x="59" y="934.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">05 ENGINES / COMPONENTS</text>
+<circle cx="62" cy="949.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="953.0" font-size="12.2" font-weight="400" fill="#233">Identity Resolver</text>
+<circle cx="62" cy="966.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="970.5" font-size="12.2" font-weight="400" fill="#233">Org/Role Manager</text>
+<circle cx="62" cy="984.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="988.0" font-size="12.2" font-weight="400" fill="#233">Authorization Policy Engine</text>
+<circle cx="62" cy="1001.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1005.5" font-size="12.2" font-weight="400" fill="#233">Consent Manager</text>
+<circle cx="62" cy="1019.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1023.0" font-size="12.2" font-weight="400" fill="#233">Recipient Access Controller</text>
+<circle cx="62" cy="1036.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1040.5" font-size="12.2" font-weight="400" fill="#233">Session Security Service</text>
+<circle cx="62" cy="1054.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="1058.0" font-size="12.2" font-weight="400" fill="#233">Privacy Policy Engine</text>
+<rect x="581" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="212" width="4" height="172" rx="2" fill="#079B9D"/>
+<text x="596" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">06 OPERATING &amp; DECISION PATH</text>
+<circle cx="599" cy="249" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="253" font-size="12.2" font-weight="400" fill="#233">Authenticate</text>
+<circle cx="599" cy="266.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="270.5" font-size="12.2" font-weight="400" fill="#233">Resolve identity/org/role</text>
+<circle cx="599" cy="284.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="288.0" font-size="12.2" font-weight="400" fill="#233">Evaluate requested action/resource</text>
+<circle cx="599" cy="301.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="305.5" font-size="12.2" font-weight="400" fill="#233">Check consent/recipient grant</text>
+<circle cx="599" cy="319.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="323.0" font-size="12.2" font-weight="400" fill="#233">Issue scoped access context</text>
+<circle cx="599" cy="336.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="340.5" font-size="12.2" font-weight="400" fill="#233">Audit sensitive access</text>
+<circle cx="599" cy="354.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="358.0" font-size="12.2" font-weight="400" fill="#233">Revoke/expire when needed</text>
+<rect x="581" y="404.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="404.5" width="4" height="120" rx="2" fill="#079B9D"/>
+<text x="596" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">07 DECISION GATES</text>
+<circle cx="599" cy="441.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="445.5" font-size="12.2" font-weight="400" fill="#233">Identity verified?</text>
+<circle cx="599" cy="459.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="463.0" font-size="12.2" font-weight="400" fill="#233">Role permits action?</text>
+<circle cx="599" cy="476.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="480.5" font-size="12.2" font-weight="400" fill="#233">Consent valid?</text>
+<circle cx="599" cy="494.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="498.0" font-size="12.2" font-weight="400" fill="#233">Recipient access scoped to relevant stop/info?</text>
+<rect x="581" y="544.5" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="544.5" width="4" height="190" rx="2" fill="#075A6B"/>
+<text x="596" y="566.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">08 DATA / ARTIFACT OBJECTS</text>
+<circle cx="599" cy="581.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="585.5" font-size="12.2" font-weight="400" fill="#233">Identity</text>
+<circle cx="599" cy="599.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="603.0" font-size="12.2" font-weight="400" fill="#233">Organization</text>
+<circle cx="599" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="620.5" font-size="12.2" font-weight="400" fill="#233">Role</text>
+<circle cx="599" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="638.0" font-size="12.2" font-weight="400" fill="#233">Permission</text>
+<circle cx="599" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="655.5" font-size="12.2" font-weight="400" fill="#233">Consent</text>
+<circle cx="599" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="673.0" font-size="12.2" font-weight="400" fill="#233">AccessGrant</text>
+<circle cx="599" cy="686.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="690.5" font-size="12.2" font-weight="400" fill="#233">Session</text>
+<circle cx="599" cy="704.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="708.0" font-size="12.2" font-weight="400" fill="#233">AccessAudit</text>
+<rect x="581" y="754.5" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="754.5" width="4" height="138" rx="2" fill="#13C7BC"/>
+<text x="596" y="776.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">09 EVENTS EMITTED</text>
+<circle cx="599" cy="791.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="795.5" font-size="12.2" font-weight="400" fill="#233">Consent.Granted</text>
+<circle cx="599" cy="809.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="813.0" font-size="12.2" font-weight="400" fill="#233">Consent.Revoked</text>
+<circle cx="599" cy="826.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="830.5" font-size="12.2" font-weight="400" fill="#233">Access.Denied</text>
+<circle cx="599" cy="844.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="848.0" font-size="12.2" font-weight="400" fill="#233">Role.Changed</text>
+<circle cx="599" cy="861.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="865.5" font-size="12.2" font-weight="400" fill="#233">RecipientGrant.Issued</text>
+<rect x="581" y="912.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="912.0" width="4" height="120" rx="2" fill="#13C7BC"/>
+<text x="596" y="934.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">10 EVENTS CONSUMED</text>
+<circle cx="599" cy="949.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="953.0" font-size="12.2" font-weight="400" fill="#233">WorkCase.Created</text>
+<circle cx="599" cy="966.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="970.5" font-size="12.2" font-weight="400" fill="#233">Provider.Assigned</text>
+<circle cx="599" cy="984.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="988.0" font-size="12.2" font-weight="400" fill="#233">Recipient.Linked</text>
+<circle cx="599" cy="1001.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1005.5" font-size="12.2" font-weight="400" fill="#233">Claim.Opened</text>
+<rect x="581" y="1052.0" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1052.0" width="4" height="102" rx="2" fill="#079B9D"/>
+<text x="596" y="1074.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">11 INTEGRATIONS / CALLBACKS</text>
+<circle cx="599" cy="1089.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1093.0" font-size="12.2" font-weight="400" fill="#233">All layers</text>
+<circle cx="599" cy="1106.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="1110.5" font-size="12.2" font-weight="400" fill="#233">P2 data access</text>
+<circle cx="599" cy="1124.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="1128.0" font-size="12.2" font-weight="400" fill="#233">P1 command authorization</text>
+<rect x="1118" y="212" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="212" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="1133" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">12 FAILURE &amp; RECOVERY</text>
+<circle cx="1136" cy="249" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="253" font-size="12.2" font-weight="400" fill="#233">Ambiguous recipient identity -&gt; no broad disclosure</text>
+<circle cx="1136" cy="266.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="270.5" font-size="12.2" font-weight="400" fill="#233">Revoked consent -&gt; remove future access</text>
+<circle cx="1136" cy="284.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="288.0" font-size="12.2" font-weight="400" fill="#233">Account compromise -&gt; session revoke/security hold</text>
+<rect x="1118" y="334.5" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="334.5" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="1133" y="356.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">13 HUMAN REVIEW</text>
+<circle cx="1136" cy="371.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="375.5" font-size="12.2" font-weight="400" fill="#233">Privilege escalation</text>
+<circle cx="1136" cy="389.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="393.0" font-size="12.2" font-weight="400" fill="#233">Organization ownership dispute</text>
+<circle cx="1136" cy="406.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="410.5" font-size="12.2" font-weight="400" fill="#233">High-sensitivity data request</text>
+<rect x="1118" y="457.0" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="457.0" width="4" height="138" rx="2" fill="#5A6B72"/>
+<text x="1133" y="479.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">14 SECURITY / PRIVACY</text>
+<circle cx="1136" cy="494.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="498.0" font-size="12.2" font-weight="400" fill="#233">Least privilege</text>
+<circle cx="1136" cy="511.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="515.5" font-size="12.2" font-weight="400" fill="#233">Purpose limitation</text>
+<circle cx="1136" cy="529.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="533.0" font-size="12.2" font-weight="400" fill="#233">Data minimization</text>
+<circle cx="1136" cy="546.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="550.5" font-size="12.2" font-weight="400" fill="#233">Consent provenance</text>
+<circle cx="1136" cy="564.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="568.0" font-size="12.2" font-weight="400" fill="#233">Session/device security</text>
+<rect x="1118" y="614.5" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="614.5" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="1133" y="636.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">15 1M-JOB SCALABILITY</text>
+<circle cx="1136" cy="651.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="655.5" font-size="12.2" font-weight="400" fill="#233">Central logical policy with regional enforcement</text>
+<circle cx="1136" cy="669.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="673.0" font-size="12.2" font-weight="400" fill="#233">Cache safe authorization data with short TTL</text>
+<circle cx="1136" cy="686.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="690.5" font-size="12.2" font-weight="400" fill="#233">No auth call should require AI</text>
+<rect x="1118" y="737.0" width="517" height="138" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="737.0" width="4" height="138" rx="2" fill="#02133C"/>
+<text x="1133" y="759.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">16 NON-NEGOTIABLE INVARIANTS</text>
+<circle cx="1136" cy="774.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="778.0" font-size="12.2" font-weight="600" fill="#02133C">Third-party recipients see only relevant information unless explicitly</text>
+<text x="1148" y="795.5" font-size="12.2" font-weight="600" fill="#02133C">granted more</text>
+<circle cx="1136" cy="809.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="813.0" font-size="12.2" font-weight="600" fill="#02133C">Internal operators use role-scoped access</text>
+<circle cx="1136" cy="826.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="830.5" font-size="12.2" font-weight="600" fill="#02133C">Advertisers/partners never receive conversation/workcase data outside</text>
+<text x="1148" y="848.0" font-size="12.2" font-weight="600" fill="#02133C">authorized service purpose</text>
+<rect x="1118" y="894.5" width="517" height="102" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="894.5" width="4" height="102" rx="2" fill="#075A6B"/>
+<text x="1133" y="916.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">17 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="931.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="935.5" font-size="12.2" font-weight="400" fill="#233">Receiver gets stop-specific instructions only</text>
+<circle cx="1136" cy="949.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="953.0" font-size="12.2" font-weight="400" fill="#233">Provider cannot view unrelated customer history</text>
+<circle cx="1136" cy="966.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="970.5" font-size="12.2" font-weight="400" fill="#233">Revoked recipient grant takes effect before next read</text>
+<rect x="1118" y="1017.0" width="517" height="102" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="1017.0" width="4" height="102" rx="2" fill="#075A6B"/>
+<text x="1133" y="1039.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">18 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="1054.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1058.0" font-size="12.2" font-weight="400" fill="#233">P3-G1 · Receiver gets stop-specific instructions only</text>
+<circle cx="1136" cy="1071.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1075.5" font-size="12.2" font-weight="400" fill="#233">P3-G2 · Provider cannot view unrelated customer history</text>
+<circle cx="1136" cy="1089.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1093.0" font-size="12.2" font-weight="400" fill="#233">P3-G3 · Revoked recipient grant takes effect before next read</text>
+<rect y="1218" width="1680" height="64" fill="#02133C"/>
+<text x="44" y="1245" font-size="11.6" fill="#FFFFFF">Board regenerated from the corrected canonical set. Text is real SVG text — readable by script, not only by eye.</text>
+<text x="44" y="1263" font-size="10.4" fill="#13C7BC">Every consumed event on this board has exactly one producer, or is declared external. Open rulings are listed in the canonical file, not decided here.</text>
+<text x="1636" y="1254" text-anchor="end" font-size="11.6" font-weight="700" fill="#13C7BC">P3</text>
+</svg>

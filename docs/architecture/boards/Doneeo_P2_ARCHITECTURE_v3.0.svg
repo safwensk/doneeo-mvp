@@ -1,0 +1,255 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1300" viewBox="0 0 1680 1300" font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1300" fill="#F6F9F9"/>
+<rect width="1680" height="168" fill="#02133C"/>
+<rect y="163" width="1680" height="5" fill="#079B9D"/>
+<text x="44" y="46" font-size="17" font-weight="700" fill="#FFFFFF" letter-spacing="3.6">DONEEO</text>
+<text x="162" y="46" font-size="12.5" fill="#13C7BC" letter-spacing="0.4">Intelligence to Get Work Done</text>
+<text x="44" y="92" font-size="31" font-weight="700" fill="#FFFFFF">P2 — DATA, FACT LEDGER, EVIDENCE &amp; DECISIONTRACE ARCHITECTURE</text>
+<text x="44" y="118" font-size="13.4" fill="#C9D9DE">Make every material fact, evidence object, artifact version and decision reconstructable while keeping domain ownership explicit and derived data subordinate.</text>
+<rect x="1306" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1357" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">LAYER</text>
+<text x="1357" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">P2</text>
+<rect x="1418" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1469" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">EDITION</text>
+<text x="1469" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">v3.0 clean</text>
+<rect x="1530" y="30" width="102" height="50" rx="7" fill="#0B2350" stroke="#079B9D" stroke-opacity="0.45"/>
+<text x="1581" y="49" text-anchor="middle" font-size="8.6" fill="#13C7BC" letter-spacing="1.3">DATE</text>
+<text x="1581" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2026-08-23</text>
+<text x="1306" y="106" font-size="10.6" fill="#13C7BC">Numbering, naming and event linkage corrected.</text>
+<text x="1306" y="122" font-size="10.6" fill="#9FB6BE">Items marked FIXED changed in this edition.</text>
+<rect x="44" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="212" width="4" height="172" rx="2" fill="#02133C"/>
+<text x="59" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">01 OWNS</text>
+<circle cx="62" cy="249" r="2.4" fill="#02133C"/>
+<text x="74" y="253" font-size="12.2" font-weight="400" fill="#233">Logical data ownership map</text>
+<circle cx="62" cy="266.5" r="2.4" fill="#02133C"/>
+<text x="74" y="270.5" font-size="12.2" font-weight="400" fill="#233">FactLedger provenance</text>
+<circle cx="62" cy="284.0" r="2.4" fill="#02133C"/>
+<text x="74" y="288.0" font-size="12.2" font-weight="400" fill="#233">Evidence/object references</text>
+<circle cx="62" cy="301.5" r="2.4" fill="#02133C"/>
+<text x="74" y="305.5" font-size="12.2" font-weight="400" fill="#233">DecisionTrace</text>
+<circle cx="62" cy="319.0" r="2.4" fill="#02133C"/>
+<text x="74" y="323.0" font-size="12.2" font-weight="400" fill="#233">Validity/expiry metadata</text>
+<circle cx="62" cy="336.5" r="2.4" fill="#02133C"/>
+<text x="74" y="340.5" font-size="12.2" font-weight="400" fill="#233">Transactional inbox/outbox/event log persistence</text>
+<circle cx="62" cy="354.0" r="2.4" fill="#02133C"/>
+<text x="74" y="358.0" font-size="12.2" font-weight="400" fill="#233">Derived read/search/warehouse projections</text>
+<rect x="44" y="404.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="404.5" width="4" height="120" rx="2" fill="#8A3B4A"/>
+<text x="59" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#8A3B4A">02 DOES NOT OWN</text>
+<circle cx="62" cy="441.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="445.5" font-size="12.2" font-weight="400" fill="#233">Business decisions</text>
+<circle cx="62" cy="459.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="463.0" font-size="12.2" font-weight="400" fill="#233">Event transport/backbone (P6)</text>
+<circle cx="62" cy="476.5" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="480.5" font-size="12.2" font-weight="400" fill="#233">One giant cross-domain mutable record</text>
+<circle cx="62" cy="494.0" r="2.4" fill="#8A3B4A"/>
+<text x="74" y="498.0" font-size="12.2" font-weight="400" fill="#233">External-system truth</text>
+<rect x="44" y="544.5" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="544.5" width="4" height="102" rx="2" fill="#075A6B"/>
+<text x="59" y="566.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">03 KEY INPUTS</text>
+<circle cx="62" cy="581.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="585.5" font-size="12.2" font-weight="400" fill="#233">All domain writes/events</text>
+<circle cx="62" cy="599.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="603.0" font-size="12.2" font-weight="400" fill="#233">Evidence files</text>
+<circle cx="62" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="620.5" font-size="12.2" font-weight="400" fill="#233">Rule/model/solver refs</text>
+<rect x="44" y="667.0" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="667.0" width="4" height="155" rx="2" fill="#075A6B"/>
+<text x="59" y="689.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">04 AUTHORITATIVE OUTPUTS</text>
+<circle cx="62" cy="704.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="708.0" font-size="12.2" font-weight="400" fill="#233">Authoritative domain records</text>
+<circle cx="62" cy="721.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="725.5" font-size="12.2" font-weight="400" fill="#233">Fact lineage</text>
+<circle cx="62" cy="739.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="743.0" font-size="12.2" font-weight="400" fill="#233">DecisionTrace</text>
+<circle cx="62" cy="756.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="760.5" font-size="12.2" font-weight="400" fill="#233">EvidenceRefs</text>
+<circle cx="62" cy="774.0" r="2.4" fill="#075A6B"/>
+<text x="74" y="778.0" font-size="12.2" font-weight="400" fill="#233">Derived read/search models</text>
+<circle cx="62" cy="791.5" r="2.4" fill="#075A6B"/>
+<text x="74" y="795.5" font-size="12.2" font-weight="400" fill="#233">Warehouse exports</text>
+<rect x="44" y="842.0" width="517" height="190" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="44" y="842.0" width="4" height="190" rx="2" fill="#079B9D"/>
+<text x="59" y="864.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">05 ENGINES / COMPONENTS</text>
+<circle cx="62" cy="879.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="883.0" font-size="12.2" font-weight="400" fill="#233">FactLedger Service</text>
+<circle cx="62" cy="896.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="900.5" font-size="12.2" font-weight="400" fill="#233">DecisionTrace Service</text>
+<circle cx="62" cy="914.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="918.0" font-size="12.2" font-weight="400" fill="#233">Domain Store Adapters</text>
+<circle cx="62" cy="931.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="935.5" font-size="12.2" font-weight="400" fill="#233">Inbox/Outbox Store</text>
+<circle cx="62" cy="949.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="953.0" font-size="12.2" font-weight="400" fill="#233">Read Model Projectors</text>
+<circle cx="62" cy="966.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="970.5" font-size="12.2" font-weight="400" fill="#233">Search Indexer</text>
+<circle cx="62" cy="984.0" r="2.4" fill="#079B9D"/>
+<text x="74" y="988.0" font-size="12.2" font-weight="400" fill="#233">Warehouse Exporter</text>
+<circle cx="62" cy="1001.5" r="2.4" fill="#079B9D"/>
+<text x="74" y="1005.5" font-size="12.2" font-weight="400" fill="#233">Object Store Gateway</text>
+<rect x="581" y="212" width="517" height="172" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="212" width="4" height="172" rx="2" fill="#079B9D"/>
+<text x="596" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">06 OPERATING &amp; DECISION PATH</text>
+<circle cx="599" cy="249" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="253" font-size="12.2" font-weight="400" fill="#233">Domain owner writes authoritative record.</text>
+<circle cx="599" cy="266.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="270.5" font-size="12.2" font-weight="400" fill="#233">Append provenance and transactional outbox atomically.</text>
+<circle cx="599" cy="284.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="288.0" font-size="12.2" font-weight="400" fill="#233">DecisionTrace links input artifact versions, facts, rule release,</text>
+<text x="611" y="305.5" font-size="12.2" font-weight="400" fill="#233">model/solver refs, reasons/confidence, validity and supersession.</text>
+<circle cx="599" cy="319.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="323.0" font-size="12.2" font-weight="400" fill="#233">P6 transports events; P2 persists source/event lineage where required.</text>
+<circle cx="599" cy="336.5" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="340.5" font-size="12.2" font-weight="400" fill="#233">Project READ/SEARCH/WAREHOUSE asynchronously.</text>
+<circle cx="599" cy="354.0" r="5.5" fill="#079B9D" opacity="0.16"/>
+<text x="611" y="358.0" font-size="12.2" font-weight="400" fill="#233">Revalidation triggers fire on expiry/material updates.</text>
+<rect x="581" y="404.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="404.5" width="4" height="120" rx="2" fill="#079B9D"/>
+<text x="596" y="426.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">07 DECISION GATES</text>
+<circle cx="599" cy="441.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="445.5" font-size="12.2" font-weight="400" fill="#233">Authoritative owner known?</text>
+<circle cx="599" cy="459.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="463.0" font-size="12.2" font-weight="400" fill="#233">Expected version valid?</text>
+<circle cx="599" cy="476.5" r="2.4" fill="#079B9D"/>
+<text x="611" y="480.5" font-size="12.2" font-weight="400" fill="#233">Evidence provenance present?</text>
+<circle cx="599" cy="494.0" r="2.4" fill="#079B9D"/>
+<text x="611" y="498.0" font-size="12.2" font-weight="400" fill="#233">Derived data clearly marked non-authoritative?</text>
+<rect x="581" y="544.5" width="517" height="382" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="544.5" width="4" height="382" rx="2" fill="#075A6B"/>
+<text x="596" y="566.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">08 DATA / ARTIFACT OBJECTS</text>
+<circle cx="599" cy="581.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="585.5" font-size="12.2" font-weight="400" fill="#233">DB-A WorkCase</text>
+<circle cx="599" cy="599.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="603.0" font-size="12.2" font-weight="400" fill="#233">DB-B FactLedger</text>
+<circle cx="599" cy="616.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="620.5" font-size="12.2" font-weight="400" fill="#233">DB-C Job Architecture</text>
+<circle cx="599" cy="634.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="638.0" font-size="12.2" font-weight="400" fill="#233">DB-D Rules &amp; Trust</text>
+<circle cx="599" cy="651.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="655.5" font-size="12.2" font-weight="400" fill="#233">DB-E Provider Capability</text>
+<circle cx="599" cy="669.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="673.0" font-size="12.2" font-weight="400" fill="#233">DB-F Resources &amp; Partners</text>
+<circle cx="599" cy="686.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="690.5" font-size="12.2" font-weight="400" fill="#233">DB-G Fulfillment</text>
+<circle cx="599" cy="704.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="708.0" font-size="12.2" font-weight="400" fill="#233">DB-H Commercial/Finance</text>
+<circle cx="599" cy="721.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="725.5" font-size="12.2" font-weight="400" fill="#233">DB-I Execution</text>
+<circle cx="599" cy="739.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="743.0" font-size="12.2" font-weight="400" fill="#233">DB-J Outcome/Evidence</text>
+<circle cx="599" cy="756.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="760.5" font-size="12.2" font-weight="400" fill="#233">DB-K Learning/Analytics</text>
+<circle cx="599" cy="774.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="778.0" font-size="12.2" font-weight="400" fill="#233">ID</text>
+<circle cx="599" cy="791.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="795.5" font-size="12.2" font-weight="400" fill="#233">OPS</text>
+<circle cx="599" cy="809.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="813.0" font-size="12.2" font-weight="400" fill="#233">EVENT</text>
+<circle cx="599" cy="826.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="830.5" font-size="12.2" font-weight="400" fill="#233">SEARCH</text>
+<circle cx="599" cy="844.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="848.0" font-size="12.2" font-weight="400" fill="#233">READ</text>
+<circle cx="599" cy="861.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="865.5" font-size="12.2" font-weight="400" fill="#233">WAREHOUSE</text>
+<circle cx="599" cy="879.0" r="2.4" fill="#075A6B"/>
+<text x="611" y="883.0" font-size="12.2" font-weight="400" fill="#233">OBJECT</text>
+<circle cx="599" cy="896.5" r="2.4" fill="#075A6B"/>
+<text x="611" y="900.5" font-size="12.2" font-weight="400" fill="#233">DecisionTrace</text>
+<rect x="581" y="947.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="947.0" width="4" height="120" rx="2" fill="#13C7BC"/>
+<text x="596" y="969.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">09 EVENTS EMITTED</text>
+<circle cx="599" cy="984.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="988.0" font-size="12.2" font-weight="400" fill="#233">Fact.Appended</text>
+<circle cx="599" cy="1001.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1005.5" font-size="12.2" font-weight="400" fill="#233">DecisionTrace.Created</text>
+<circle cx="599" cy="1019.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1023.0" font-size="12.2" font-weight="400" fill="#233">Artifact.Versioned</text>
+<circle cx="599" cy="1036.5" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1040.5" font-size="12.2" font-weight="400" fill="#233">Projection.Updated</text>
+<rect x="581" y="1087.0" width="517" height="68" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="581" y="1087.0" width="4" height="68" rx="2" fill="#13C7BC"/>
+<text x="596" y="1109.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#13C7BC">10 EVENTS CONSUMED</text>
+<circle cx="599" cy="1124.0" r="2.4" fill="#13C7BC"/>
+<text x="611" y="1128.0" font-size="12.2" font-weight="400" fill="#233">All domain events</text>
+<rect x="1118" y="212" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="212" width="4" height="120" rx="2" fill="#079B9D"/>
+<text x="1133" y="234" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#079B9D">11 INTEGRATIONS / CALLBACKS</text>
+<circle cx="1136" cy="249" r="2.4" fill="#079B9D"/>
+<text x="1148" y="253" font-size="12.2" font-weight="400" fill="#233">All domain layers</text>
+<circle cx="1136" cy="266.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="270.5" font-size="12.2" font-weight="400" fill="#233">P1 Orchestrator</text>
+<circle cx="1136" cy="284.0" r="2.4" fill="#079B9D"/>
+<text x="1148" y="288.0" font-size="12.2" font-weight="400" fill="#233">P3 access policy</text>
+<circle cx="1136" cy="301.5" r="2.4" fill="#079B9D"/>
+<text x="1148" y="305.5" font-size="12.2" font-weight="400" fill="#233">P4 observability/analytics</text>
+<rect x="1118" y="352.0" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="352.0" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="374.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">12 FAILURE &amp; RECOVERY</text>
+<circle cx="1136" cy="389.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="393.0" font-size="12.2" font-weight="400" fill="#233">Projection lag → source remains authoritative.</text>
+<circle cx="1136" cy="406.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="410.5" font-size="12.2" font-weight="400" fill="#233">Index inconsistency → rebuild.</text>
+<circle cx="1136" cy="424.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="428.0" font-size="12.2" font-weight="400" fill="#233">Object missing → preserve reference/status.</text>
+<circle cx="1136" cy="441.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="445.5" font-size="12.2" font-weight="400" fill="#233">Schema migration → versioned compatibility.</text>
+<rect x="1118" y="492.0" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="492.0" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="1133" y="514.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">13 HUMAN REVIEW</text>
+<circle cx="1136" cy="529.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="533.0" font-size="12.2" font-weight="400" fill="#233">Source-data correction</text>
+<circle cx="1136" cy="546.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="550.5" font-size="12.2" font-weight="400" fill="#233">Evidence legal hold</text>
+<circle cx="1136" cy="564.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="568.0" font-size="12.2" font-weight="400" fill="#233">Privacy deletion exception</text>
+<rect x="1118" y="614.5" width="517" height="120" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="614.5" width="4" height="120" rx="2" fill="#5A6B72"/>
+<text x="1133" y="636.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">14 SECURITY / PRIVACY</text>
+<circle cx="1136" cy="651.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="655.5" font-size="12.2" font-weight="400" fill="#233">Encryption</text>
+<circle cx="1136" cy="669.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="673.0" font-size="12.2" font-weight="400" fill="#233">Retention/legal hold</text>
+<circle cx="1136" cy="686.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="690.5" font-size="12.2" font-weight="400" fill="#233">Access audit</text>
+<circle cx="1136" cy="704.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="708.0" font-size="12.2" font-weight="400" fill="#233">Purpose limitation</text>
+<rect x="1118" y="754.5" width="517" height="102" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="754.5" width="4" height="102" rx="2" fill="#5A6B72"/>
+<text x="1133" y="776.5" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#5A6B72">15 1M-JOB SCALABILITY</text>
+<circle cx="1136" cy="791.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="795.5" font-size="12.2" font-weight="400" fill="#233">Partition by domain/WorkCase/region as needed</text>
+<circle cx="1136" cy="809.0" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="813.0" font-size="12.2" font-weight="400" fill="#233">CQRS projections</text>
+<circle cx="1136" cy="826.5" r="2.4" fill="#5A6B72"/>
+<text x="1148" y="830.5" font-size="12.2" font-weight="400" fill="#233">Derived indexes rebuilt from source/event history</text>
+<rect x="1118" y="877.0" width="517" height="155" rx="9" fill="#FFFFFF" stroke="#DCE7E7"/>
+<rect x="1118" y="877.0" width="4" height="155" rx="2" fill="#02133C"/>
+<text x="1133" y="899.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#02133C">16 NON-NEGOTIABLE INVARIANTS</text>
+<circle cx="1136" cy="914.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="918.0" font-size="12.2" font-weight="600" fill="#02133C">No giant JobOrder JSON.</text>
+<circle cx="1136" cy="931.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="935.5" font-size="12.2" font-weight="600" fill="#02133C">FactLedger does not mean all domain tables collapse into one store.</text>
+<circle cx="1136" cy="949.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="953.0" font-size="12.2" font-weight="600" fill="#02133C">Derived read/search/warehouse never outranks source.</text>
+<circle cx="1136" cy="966.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="970.5" font-size="12.2" font-weight="600" fill="#02133C">DecisionTrace is first-class.</text>
+<circle cx="1136" cy="984.0" r="2.4" fill="#02133C"/>
+<text x="1148" y="988.0" font-size="12.2" font-weight="600" fill="#02133C">Validity/expiry is first-class.</text>
+<circle cx="1136" cy="1001.5" r="2.4" fill="#02133C"/>
+<text x="1148" y="1005.5" font-size="12.2" font-weight="600" fill="#02133C">P6 owns event transport, not P2.</text>
+<rect x="1118" y="1052.0" width="517" height="120" rx="9" fill="#EAF9F6" stroke="#DCE7E7"/>
+<rect x="1118" y="1052.0" width="4" height="120" rx="2" fill="#075A6B"/>
+<text x="1133" y="1074.0" font-size="12.5" font-weight="700" letter-spacing="0.7" fill="#075A6B">17 GOLDEN REGRESSION SCENARIOS</text>
+<circle cx="1136" cy="1089.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1093.0" font-size="12.2" font-weight="400" fill="#233">P2-G1 · Provider license expiry triggers revalidation</text>
+<circle cx="1136" cy="1106.5" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1110.5" font-size="12.2" font-weight="400" fill="#233">P2-G2 · Fact update preserves superseded value</text>
+<circle cx="1136" cy="1124.0" r="2.4" fill="#075A6B"/>
+<text x="1148" y="1128.0" font-size="12.2" font-weight="400" fill="#233">P2-G3 · Search index stale but authoritative eligibility recheck</text>
+<text x="1148" y="1145.5" font-size="12.2" font-weight="400" fill="#233">prevents bad match</text>
+<rect y="1236" width="1680" height="64" fill="#02133C"/>
+<text x="44" y="1263" font-size="11.6" fill="#FFFFFF">Board regenerated from the corrected canonical set. Text is real SVG text — readable by script, not only by eye.</text>
+<text x="44" y="1281" font-size="10.4" fill="#13C7BC">Every consumed event on this board has exactly one producer, or is declared external. Open rulings are listed in the canonical file, not decided here.</text>
+<text x="1636" y="1272" text-anchor="end" font-size="11.6" font-weight="700" fill="#13C7BC">P2</text>
+</svg>
