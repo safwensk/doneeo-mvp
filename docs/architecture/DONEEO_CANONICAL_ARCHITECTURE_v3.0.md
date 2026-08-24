@@ -38,8 +38,8 @@ executable at `tests/architecture-scenarios.test.ts`.
 | Cross-reference rewrites applied | **21** |
 | Artifact-name normalisations | **31** |
 | Consumed events corrected to their producer | **15** |
-| Missing emissions granted to their owner | **26** |
-| Boundary events declared as external | **14** |
+| Missing emissions granted to their owner | **25** |
+| Boundary events declared as external | **15** |
 | Events still without a producer | **0** |
 | Artifacts owned by two layers | **0** |
 | Open rulings carried, not guessed | **7** |
@@ -179,7 +179,7 @@ every owner now exists.
 
 ## 5 · Event catalog
 
-**136 events emitted · 66 consumed · 0 without a producer.**
+**135 events emitted · 66 consumed · 0 without a producer.**
 
 Before the rulings, 52 of 73 consumed events had no producer at all. Every
 correction is recorded in §0 and visible inline in §8, marked
@@ -265,10 +265,9 @@ correction is recorded in §0 and visible inline in §8, marked
 | `Preflight.Passed` | L8 | *(no declared consumer)* |
 | `Preflight.Started` | L8 | L3, L5 |
 | `PriceOption.Selected` | L6 | *(no declared consumer)* |
-| `PriorWorkCase.Linked` | L1 | L1 |
+| `PriorWorkCase.Linked` | L13 | L1 |
 | `Privacy.PolicyUpdated` | P8 | *(no declared consumer)* |
 | `Projection.Updated` | P2 | *(no declared consumer)* |
-| `Promotion.Updated` | L6 | L6 |
 | `Provider.Accepted` | L7 | L3, L8, P3 |
 | `Provider.Declined` | L4 | L7 |
 | `Provider.EnRoute` | L8 | *(no declared consumer)* |
@@ -284,7 +283,7 @@ correction is recorded in §0 and visible inline in §8, marked
 | `RealityCase.Created` | L09A | L3, L5 |
 | `RealityCase.Requested` | L10 | *(no declared consumer)* |
 | `RealityCase.Unrecoverable` | L09A | L7 |
-| `Recipient.Linked` | P3 | P3 |
+| `Recipient.Linked` | L1 | P3 |
 | `RecipientGrant.Issued` | P3 | *(no declared consumer)* |
 | `Reconciliation.Completed` | L12 | *(no declared consumer)* |
 | `RecoveryCredit.Applied` | L09B | *(no declared consumer)* |
@@ -343,6 +342,7 @@ These arrive from outside Doneeo. They correctly have no internal producer.
 | `Integration.ContractUpdated` | operations |
 | `Message.AbuseReport` | user report, via P7 |
 | `PSP.CallbackReceived` | payment service provider, via P9 |
+| `Promotion.Updated` | operations or marketing, via P5 |
 | `ProviderProfile.Updated` | provider |
 | `ResourceAvailability.Changed` | partner or supplier, via P5 |
 | `Telemetry.Anomaly` | infrastructure, via P6 |
@@ -596,7 +596,7 @@ Capture the customer's messy real-world problem, context and initial evidence in
 - Evidence.Uploaded
 - Context.Updated
 - PlanningRequested
-- PriorWorkCase.Linked  *(added by ruling: L1 owns WorkCase identity and continuity)*
+- Recipient.Linked  *(added by ruling: the recipient is captured at intake; P3 consumes it to scope access)*
 
 ### Events consumed
 
@@ -1402,14 +1402,13 @@ Create customer-facing price/scenario offers and an immutable ScopeContract from
 - ScopeContract.Created
 - CommercialOffer.Selected  *(added by ruling: offer lifecycle belongs to L6; L7 cannot commit to an unselected offer)*
 - CommercialDelta.Priced  *(added by ruling: L09B consumes it and only L6 may price)*
-- Promotion.Updated  *(added by ruling: L6 owns pricing inputs)*
 
 ### Events consumed
 
 - FulfillmentOption.Generated
 - Resource.CostUpdated
 - Rules.Updated
-- Promotion.Updated
+- Promotion.Updated  *(external: operations or marketing, via P5)*
 
 ### Failure / recovery
 
@@ -2769,6 +2768,7 @@ Preserve WorkCase continuity through linked JobOrders and resolve claims/support
 - Claim.Resolved
 - Dispute.Decided
 - Remedy.Issued
+- PriorWorkCase.Linked  *(added by ruling: L13 owns WorkCase continuity across JobOrders; L1 consumes the link)*
 
 ### Events consumed
 
@@ -3260,7 +3260,6 @@ Own logical identity, organization, role, permission, consent and privacy policy
 - Consent.ContextUpdated  *(added by ruling: P3 owns consent grants)*
 - Identity.Event  *(added by ruling: P3 owns identity)*
 - Identity.ContextResolved  *(added by ruling: L1 cannot open a WorkCase without it)*
-- Recipient.Linked  *(added by ruling: recipient scoping is P3's)*
 
 ### Events consumed
 
