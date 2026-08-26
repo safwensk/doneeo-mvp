@@ -206,8 +206,12 @@ export const LAYERS: Record<LayerId, Layer> = {
     id: "L6",
     title: "CommercialOffer & Pricing",
     kind: "domain",
-    status: "PLANNED",
-    modules: [],
+    status: "PARTIAL",
+    modules: [
+      "lib/layers/l6/pricing.ts",
+      "lib/layers/l6/offer.ts",
+      "lib/application/offer-service.ts",
+    ],
     owns: [
       "Pricing strategy/policy",
       "Cost composition",

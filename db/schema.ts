@@ -459,3 +459,41 @@ export const adjustmentInstructions = sqliteTable("adjustment_instructions", {
   externalCostRefsJson: text("external_cost_refs_json").notNull().default("[]"),
   issuedAt: text("issued_at").notNull(),
 });
+
+// ===========================================================================
+// L6 — CommercialOffer & Pricing
+//
+// The first tables in the system that hold money. Amounts are integer minor
+// units with an explicit currency column and never a REAL — SQLite would
+// happily store 125.5 and hand back something that is not 125.5, and a
+// rounding drift in a price is a customer complaint nobody can reproduce.
+// ===========================================================================
+
+export const commercialOffers = sqliteTable("commercial_offers", {
+  offerId: text("offer_id").primaryKey(),
+  workCaseId: text("work_case_id").references(() => workCases.workCaseId),
+  requirementContractRef: text("requirement_contract_ref").notNull(),
+  /** The version priced against. If the contract moves, the price is void. */
+  requirementContractVersion: integer("requirement_contract_version").notNull(),
+  /** Priced options. Each names a distinct fulfillment configuration. */
+  optionsJson: text("options_json").notNull().default("[]"),
+  scopeContractJson: text("scope_contract_json").notNull().default("{}"),
+  paymentTopology: text("payment_topology").notNull(),
+  pricingPolicyName: text("pricing_policy_name").notNull(),
+  taxDecisionRef: text("tax_decision_ref"),
+  validFrom: text("valid_from").notNull(),
+  validUntil: text("valid_until").notNull(),
+  requiresHumanReview: integer("requires_human_review", { mode: "boolean" }).notNull().default(false),
+  reviewReason: text("review_reason"),
+  createdAt: text("created_at").notNull(),
+});
+
+export const offerSelections = sqliteTable("offer_selections", {
+  offerId: text("offer_id").primaryKey().references(() => commercialOffers.offerId),
+  band: text("band", { enum: ["BUDGET", "RECOMMENDED", "FULL_SERVICE"] }).notNull(),
+  fulfillmentOptionRef: text("fulfillment_option_ref").notNull(),
+  /** Integer minor units. Never a REAL, never a decimal string. */
+  totalMinorUnits: integer("total_minor_units").notNull(),
+  currency: text("currency").notNull().default("CAD"),
+  selectedAt: text("selected_at").notNull(),
+});

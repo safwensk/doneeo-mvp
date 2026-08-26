@@ -20,6 +20,10 @@ import type {
   ImpactClassifier, ImpactClass, ImpactClassification,
 } from "../layers/l09a/reality";
 import type { ReviewPolicy, Cause } from "../layers/l09b/responsibility";
+import {
+  money, type PricingPolicy, type PriceBand, type TaxDetermination,
+} from "../layers/l6/pricing";
+import type { PaymentTopologyPolicy } from "../layers/l6/offer";
 
 // ---------------------------------------------------------------------------
 // Every number in the system, in one place
@@ -247,6 +251,104 @@ export const MONTREAL_PILOT_IMPACT_CLASSIFIER: ImpactClassifier = Object.freeze(
   },
 });
 
+
+// ---------------------------------------------------------------------------
+// L6 — pilot pricing, tax and payment topology
+// ---------------------------------------------------------------------------
+
+/** Margin over composed cost, by band. Commercial decision, not architecture. */
+const MARGIN_BY_BAND: Readonly<Record<PriceBand, number>> = Object.freeze({
+  BUDGET: 1.18,
+  RECOMMENDED: 1.30,
+  FULL_SERVICE: 1.42,
+});
+
+/** Prices are shown to the nearest dollar. Rounding is explicit, never implicit. */
+const ROUND_TO_MINOR_UNITS = 100;
+
+/** Above this, a person looks at the offer before a customer sees it. */
+export const PRICING_REVIEW_THRESHOLD_MINOR_UNITS = 250_000; // $2,500 CAD
+
+export const MONTREAL_PILOT_PRICING_POLICY: PricingPolicy = Object.freeze({
+  applyMargin({ cost, band, riskProfile }) {
+    const margin = MARGIN_BY_BAND[band];
+    // Higher-risk work carries a wider margin, because the variance it absorbs
+    // is real. This is a commercial judgement and belongs here, not in a layer.
+    const risk = riskProfile === "elevated" ? 1.08 : 1;
+    return money(Math.round(cost.minorUnits * margin * risk), cost.currency);
+  },
+
+  checkFloorAndCap({ price, cost }) {
+    if (price.minorUnits < cost.minorUnits) {
+      return { ok: false, reason: "price is below composed cost" };
+    }
+    // A price far above cost is more likely a unit error than a margin.
+    if (price.minorUnits > cost.minorUnits * 3) {
+      return { ok: false, reason: "price exceeds three times cost; check for a unit error" };
+    }
+    return { ok: true };
+  },
+
+  round(price) {
+    return money(Math.round(price.minorUnits / ROUND_TO_MINOR_UNITS) * ROUND_TO_MINOR_UNITS, price.currency);
+  },
+
+  requiresHumanReview({ price, provisionalComponents, jurisdiction }) {
+    if (jurisdiction !== "QC") {
+      return { required: true, reason: `${jurisdiction} is outside the pilot's tax jurisdiction` };
+    }
+    if (provisionalComponents > 0) {
+      return { required: true, reason: "the offer rests on estimates rather than firm quotes" };
+    }
+    if (price.minorUnits > PRICING_REVIEW_THRESHOLD_MINOR_UNITS) {
+      return { required: true, reason: "above the pilot's automatic-offer ceiling" };
+    }
+    return { required: false, reason: null };
+  },
+});
+
+/**
+ * Québec sales tax, as published rates.
+ *
+ * Rates are referenced rather than reasoned about: Doneeo is not a tax
+ * authority, and a jurisdiction it has not been configured for must fail rather
+ * than fall back to a default that happens to be wrong.
+ */
+const QC_GST = 0.05;
+const QC_QST = 0.09975;
+
+export const MONTREAL_PILOT_TAX: TaxDetermination = Object.freeze({
+  determine({ taxableBase, jurisdiction }) {
+    if (jurisdiction !== "QC") {
+      return { resolved: false, reason: `no configured rates for ${jurisdiction}` };
+    }
+    return {
+      resolved: true,
+      taxDecisionRef: `QC-GST-QST-${QC_GST}-${QC_QST}`,
+      taxes: Object.freeze([
+        { label: "GST", amount: money(Math.round(taxableBase.minorUnits * QC_GST), taxableBase.currency), rateRef: "CA-GST-5.0" },
+        { label: "QST", amount: money(Math.round(taxableBase.minorUnits * QC_QST), taxableBase.currency), rateRef: "QC-QST-9.975" },
+      ]),
+    };
+  },
+});
+
+/** Topology follows who is paying, never how much. Canon's L6-G3. */
+export const MONTREAL_PILOT_PAYMENT_TOPOLOGY: PaymentTopologyPolicy = Object.freeze({
+  select({ profile }) {
+    if (profile.payerType === "THIRD_PARTY") return "THIRD_PARTY_PAYER";
+    if (profile.payerType === "INSTITUTIONAL") return "INVOICED_NET_TERMS";
+    if (profile.payerType === "BUSINESS") {
+      return profile.hasApprovedCredit ? "INVOICED_NET_TERMS" : "SPLIT_DEPOSIT_BALANCE";
+    }
+    // Households pay when the work is done. During the pilot, nobody prepays
+    // for physical work that has not happened.
+    return "CUSTOMER_ON_COMPLETION";
+  },
+});
+
+// ---------------------------------------------------------------------------
+
 /** The pilot configuration, as one object. */
 export const MONTREAL_PILOT = Object.freeze({
   name: "montreal-pilot",
@@ -255,4 +357,7 @@ export const MONTREAL_PILOT = Object.freeze({
   classifier: MONTREAL_PILOT_IMPACT_CLASSIFIER,
   capacityLockLeadMinutes: CAPACITY_LOCK_LEAD_MINUTES,
   reviewThresholdNetLostMinutes: REVIEW_THRESHOLD_NET_LOST_MINUTES,
+  pricing: MONTREAL_PILOT_PRICING_POLICY,
+  tax: MONTREAL_PILOT_TAX,
+  topology: MONTREAL_PILOT_PAYMENT_TOPOLOGY,
 });
