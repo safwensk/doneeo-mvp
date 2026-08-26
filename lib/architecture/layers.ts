@@ -176,8 +176,10 @@ export const LAYERS: Record<LayerId, Layer> = {
     id: "L5",
     title: "Resources, Rentals, Logistics & Partners",
     kind: "domain",
-    status: "PLANNED",
-    modules: [],
+    status: "PARTIAL",
+    modules: [
+      "lib/application/capacity-recovery.ts",
+    ],
     owns: [
       "Resource inventory/compatibility",
       "True-gap calculation",

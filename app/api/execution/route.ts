@@ -8,6 +8,10 @@
  * owns the decision and returns the layer's own frozen output, including its
  * reasoning — a caller can always see why, not just what. Thresholds come from
  * the pilot policy; none appear here.
+ *
+ * Backfill is NOT accepted from the request body. It decides how much money
+ * moves between the provider and the customer, so it is read from real
+ * reservations and accepted assignments — see lib/application/capacity-recovery.
  */
 
 import { CommitmentService, CommitmentServiceError } from "../../../lib/application/commitment-service";
@@ -17,6 +21,7 @@ import { D1CommitmentStore } from "../../../lib/application/d1-commitment-store"
 import { D1RealityStore } from "../../../lib/application/d1-reality-store";
 import type { D1DatabaseLike } from "../../../lib/application/d1-requirement-contract-store";
 import { MONTREAL_PILOT } from "../../../lib/policy/montreal-pilot";
+import { loadCapacityRecovery } from "../../../lib/application/capacity-recovery";
 import { CommitmentInvariantError } from "../../../lib/layers/l7/commitment";
 import { RealityInvariantError } from "../../../lib/layers/l09a/reality";
 import { FairnessInvariantError } from "../../../lib/layers/l09b/responsibility";
@@ -52,12 +57,12 @@ function wire() {
 }
 
 /**
- * Recovery options offered by the caller.
+ * Which recovery options the caller reports as available.
  *
- * The search is a port because viability depends on live roster and resource
- * data. Until L5 is wired, the caller states what is available and the layer
- * decides which to take — the hierarchy order is still enforced inside L09A,
- * so a caller cannot promote a full replan over a viable local fix.
+ * Unlike backfill, this is safe to take from the caller: it can only ever
+ * narrow what the search may choose, and L09A still enforces the hierarchy
+ * order — so a caller cannot promote a full replan over a viable local fix,
+ * and cannot reach a last-resort option while a preserving one is viable.
  */
 function searchFrom(viable: readonly string[]): RecoverySearch {
   const allowed = new Set(viable as RecoveryOptionKind[]);
@@ -170,12 +175,14 @@ export async function POST(request: Request) {
             requestedBy: asRequester(body.requestedBy),
             disputed: body.disputed === true,
           },
-          // Until L5 is wired these come from the caller. The layer still
-          // enforces backfill-before-measurement and the step order.
-          ports: {
-            rescheduleOptions: () => [],
-            attemptBackfill: () => asBackfill(body.backfill),
-          },
+          // Read from real reservations and accepted assignments, never from
+          // the request body. Backfill decides how much money moves, so a
+          // caller must not be able to state it.
+          ports: await loadCapacityRecovery({
+            db: getDatabase(),
+            jobOrderId: String(body.jobOrderId),
+            candidateSlots: asStrings(body.candidateSlots),
+          }),
           correlationId, now,
         });
         return Response.json({
@@ -332,14 +339,6 @@ function asStrings(v: unknown): string[] {
 function asRequester(v: unknown): "CUSTOMER" | "PROVIDER" | "DONEEO" | "SYSTEM" {
   const s = String(v ?? "").toUpperCase();
   return s === "CUSTOMER" || s === "PROVIDER" || s === "DONEEO" ? s : "SYSTEM";
-}
-function asBackfill(v: unknown): { reservationId: string; minutes: number }[] {
-  return Array.isArray(v)
-    ? v.map(x => ({
-        reservationId: String((x as Record<string, unknown>).reservationId),
-        minutes: Number((x as Record<string, unknown>).minutes),
-      }))
-    : [];
 }
 function asFacts(v: unknown, now: string) {
   return Array.isArray(v)
