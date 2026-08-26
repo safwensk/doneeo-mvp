@@ -195,12 +195,33 @@ export function netLostByRole(reservations: readonly CapacityReservation[]): Rec
 
 export type CommitmentState = {
   readonly jobOrderId: string;
+  /**
+   * The stage as of `updatedAt`. Convenience only — always prefer
+   * currentStage(), which recomputes against the clock. Never read this to
+   * decide anything time-dependent.
+   */
   readonly stage: CommitmentStage;
   readonly reservations: readonly CapacityReservation[];
   readonly preparation: readonly PreparationRecord[];
+  /**
+   * When work actually began, or null.
+   *
+   * This is a recorded fact, not a derived one, and it has to be: mobilisation
+   * can be inferred from preparation records carrying travel minutes, but
+   * nothing about a reservation says whether anyone has picked up a tool.
+   * Deriving it from `stage` — as this module briefly did — is circular, since
+   * the only writer of `stage` reads workStarted back from it, making
+   * WORK_STARTED unreachable.
+   */
+  readonly workStartedAt: string | null;
   readonly frozen: boolean;
   readonly updatedAt: string;
 };
+
+/** Whether work has begun, from the recorded fact rather than from the stage. */
+function hasStarted(state: CommitmentState): boolean {
+  return state.workStartedAt !== null;
+}
 
 export function beginCommitment(input: { jobOrderId: string; now: string }): CommitmentState {
   if (!input.jobOrderId.trim()) throw new CommitmentInvariantError("JOB_ORDER_ID", "jobOrderId is required");
@@ -209,6 +230,7 @@ export function beginCommitment(input: { jobOrderId: string; now: string }): Com
     stage: "FREE_OR_LOW" as const,
     reservations: Object.freeze([]),
     preparation: Object.freeze([]),
+    workStartedAt: null,
     frozen: false,
     updatedAt: input.now,
   });
@@ -233,7 +255,7 @@ export function withReservations(
     providerAccepted: true,
     capacityHeld: true,
     mobilizationStarted: state.preparation.some(p => p.mobilizationMinutes > 0),
-    workStarted: state.stage === "WORK_STARTED",
+    workStarted: hasStarted(state),
   });
   return Object.freeze({ ...state, reservations: Object.freeze(all), stage, updatedAt: now });
 }
@@ -254,7 +276,7 @@ export function recordPreparation(
     providerAccepted: true,
     capacityHeld: true,
     mobilizationStarted: preparation.some(p => p.mobilizationMinutes > 0),
-    workStarted: state.stage === "WORK_STARTED",
+    workStarted: hasStarted(state),
   });
   return Object.freeze({ ...state, preparation: Object.freeze(preparation), stage, updatedAt: now });
 }
@@ -274,7 +296,41 @@ export function currentStage(state: CommitmentState, policy: CommitmentPolicy, n
     providerAccepted: state.reservations.length > 0,
     capacityHeld: state.reservations.some(r => r.status === "HELD"),
     mobilizationStarted: state.preparation.some(p => p.mobilizationMinutes > 0),
-    workStarted: state.stage === "WORK_STARTED",
+    workStarted: hasStarted(state),
+  });
+}
+
+/**
+ * Record that work actually began.
+ *
+ * Separate from mobilisation, which is inferred from preparation records
+ * carrying travel minutes. Nothing about a reservation reveals whether anyone
+ * has started, so this has to be told to us — and until it is, WORK_STARTED is
+ * not reachable, which was the defect this function fixes.
+ *
+ * Recording it twice is not an error; the first moment stands. Reality gets
+ * reported late and more than once, and re-reporting a start must not move it.
+ */
+export function markWorkStarted(
+  state: CommitmentState,
+  policy: CommitmentPolicy,
+  now: string,
+): CommitmentState {
+  if (state.reservations.length === 0) {
+    throw new CommitmentInvariantError("NO_RESERVATIONS", "work cannot start against a commitment holding no capacity");
+  }
+  if (state.workStartedAt !== null) return state;
+  const next = Object.freeze({ ...state, workStartedAt: now, updatedAt: now });
+  return Object.freeze({
+    ...next,
+    stage: policy.stageOf({
+      now,
+      startsAt: next.reservations[0]!.startsAt,
+      providerAccepted: true,
+      capacityHeld: next.reservations.some(r => r.status === "HELD"),
+      mobilizationStarted: next.preparation.some(p => p.mobilizationMinutes > 0),
+      workStarted: true,
+    }),
   });
 }
 
