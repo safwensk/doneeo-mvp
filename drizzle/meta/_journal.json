@@ -71,6 +71,13 @@
       "when": 1787782974173,
       "tag": "0009_overconfident_skin",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1787784386585,
+      "tag": "0010_busy_yellow_claw",
+      "breakpoints": true
     }
   ]
 }

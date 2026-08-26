@@ -24,6 +24,7 @@ import {
   money, type PricingPolicy, type PriceBand, type TaxDetermination,
 } from "../layers/l6/pricing";
 import type { PaymentTopologyPolicy } from "../layers/l6/offer";
+import type { RateCard } from "../layers/l12/settlement";
 
 // ---------------------------------------------------------------------------
 // Every number in the system, in one place
@@ -348,6 +349,42 @@ export const MONTREAL_PILOT_PAYMENT_TOPOLOGY: PaymentTopologyPolicy = Object.fre
 });
 
 // ---------------------------------------------------------------------------
+// L12 — what a minute is worth on each side
+// ---------------------------------------------------------------------------
+
+/**
+ * Provider and customer rates, per role, per minute.
+ *
+ * Two separate rate functions on purpose. A single rate with a markup would
+ * make the customer charge and the provider payable arithmetically linked, and
+ * L12's whole invariant is that they are not — a provider can be made whole on
+ * a job the customer is charged nothing for.
+ *
+ * An unknown role falls back to the general rate rather than throwing: a role
+ * nobody priced is a configuration gap, and refusing to settle a completed job
+ * over it would punish the provider for our omission.
+ */
+const PROVIDER_RATE_PER_MINUTE: Readonly<Record<string, number>> = Object.freeze({
+  lead: 95,       // $0.95/min ≈ $57/h
+  helper: 70,     // $0.70/min ≈ $42/h
+  specialist: 140,
+});
+const CUSTOMER_RATE_PER_MINUTE: Readonly<Record<string, number>> = Object.freeze({
+  lead: 140,      // $1.40/min ≈ $84/h
+  helper: 100,
+  specialist: 205,
+});
+const GENERAL_PROVIDER_RATE = 80;
+const GENERAL_CUSTOMER_RATE = 115;
+
+export const MONTREAL_PILOT_RATES: RateCard = Object.freeze({
+  providerRatePerMinute: (role: string) =>
+    money(PROVIDER_RATE_PER_MINUTE[role] ?? GENERAL_PROVIDER_RATE),
+  customerRatePerMinute: (role: string) =>
+    money(CUSTOMER_RATE_PER_MINUTE[role] ?? GENERAL_CUSTOMER_RATE),
+});
+
+// ---------------------------------------------------------------------------
 
 /** The pilot configuration, as one object. */
 export const MONTREAL_PILOT = Object.freeze({
@@ -360,4 +397,5 @@ export const MONTREAL_PILOT = Object.freeze({
   pricing: MONTREAL_PILOT_PRICING_POLICY,
   tax: MONTREAL_PILOT_TAX,
   topology: MONTREAL_PILOT_PAYMENT_TOPOLOGY,
+  rates: MONTREAL_PILOT_RATES,
 });

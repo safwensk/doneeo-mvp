@@ -497,3 +497,71 @@ export const offerSelections = sqliteTable("offer_selections", {
   currency: text("currency").notNull().default("CAD"),
   selectedAt: text("selected_at").notNull(),
 });
+
+// ===========================================================================
+// L12 — Settlement, Ledger, Reconciliation & FinanceOps
+//
+// transaction_id is the PRIMARY KEY and it is derived from the payment
+// provider's own event id. That is not a convenience: it is the mechanism that
+// makes L12-G3 true. Two deliveries of one PSP callback produce the same
+// transaction_id, so the second INSERT collides and moves no money — even if
+// both arrive at once and both pass an application-level "have we seen this"
+// check. Deduplication lives at the point of record, not the point of decision.
+//
+// There is no balance column anywhere below, and no UPDATE path for a posted
+// entry. Balances are folded from entries; corrections are reversing entries.
+// ===========================================================================
+
+export const ledgerTransactions = sqliteTable("ledger_transactions", {
+  transactionId: text("transaction_id").primaryKey(),
+  jobOrderId: text("job_order_id").notNull(),
+  kind: text("kind", {
+    enum: ["SETTLEMENT", "CAPTURE", "REFUND", "PAYOUT", "AUTHORIZATION_RELEASE", "REVERSAL", "ADJUSTMENT"],
+  }).notNull(),
+  /** Names the transaction this one mirrors. Set only on a REVERSAL. */
+  reverses: text("reverses"),
+  sourceRef: text("source_ref").notNull(),
+  postedAt: text("posted_at").notNull(),
+});
+
+export const ledgerEntries = sqliteTable("ledger_entries", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  transactionId: text("transaction_id").notNull().references(() => ledgerTransactions.transactionId),
+  account: text("account", {
+    enum: ["CUSTOMER_RECEIVABLE", "PROVIDER_PAYABLE", "DONEEO_REVENUE",
+           "DONEEO_ABSORPTION", "RECOVERY_CREDIT", "TAX_PAYABLE", "PSP_CLEARING"],
+  }).notNull(),
+  direction: text("direction", { enum: ["DEBIT", "CREDIT"] }).notNull(),
+  /** Integer minor units. A REAL here would drift and nobody would notice. */
+  amountMinorUnits: integer("amount_minor_units").notNull(),
+  currency: text("currency").notNull().default("CAD"),
+  narrative: text("narrative").notNull(),
+});
+
+export const paymentAuthorizations = sqliteTable("payment_authorizations", {
+  authorizationId: text("authorization_id").primaryKey(),
+  jobOrderId: text("job_order_id").notNull(),
+  authorizedMinorUnits: integer("authorized_minor_units").notNull(),
+  capturedMinorUnits: integer("captured_minor_units").notNull().default(0),
+  releasedMinorUnits: integer("released_minor_units").notNull().default(0),
+  currency: text("currency").notNull().default("CAD"),
+  status: text("status", { enum: ["OPEN", "PARTIALLY_CAPTURED", "CLOSED"] }).notNull().default("OPEN"),
+  /** The provider's reference. Idempotency keys are derived from PSP events. */
+  pspRef: text("psp_ref").notNull(),
+  authorizedAt: text("authorized_at").notNull(),
+});
+
+export const settlements = sqliteTable("settlements", {
+  jobOrderId: text("job_order_id").primaryKey(),
+  transactionId: text("transaction_id").references(() => ledgerTransactions.transactionId),
+  /** Computed independently of each other. Canon: customer charge != payable. */
+  customerTotalMinorUnits: integer("customer_total_minor_units").notNull().default(0),
+  providerTotalMinorUnits: integer("provider_total_minor_units").notNull().default(0),
+  /** Signed: positive is Doneeo margin, negative is Doneeo absorbing cost. */
+  doneeoPositionMinorUnits: integer("doneeo_position_minor_units").notNull().default(0),
+  currency: text("currency").notNull().default("CAD"),
+  /** True when nobody owed anybody anything — a real outcome, not an error. */
+  nothingOwed: integer("nothing_owed", { mode: "boolean" }).notNull().default(false),
+  ratePolicyName: text("rate_policy_name").notNull(),
+  calculatedAt: text("calculated_at").notNull(),
+});

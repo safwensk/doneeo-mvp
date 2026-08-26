@@ -443,8 +443,13 @@ export const LAYERS: Record<LayerId, Layer> = {
     id: "L12",
     title: "Settlement, Ledger, Reconciliation & FinanceOps",
     kind: "domain",
-    status: "PLANNED",
-    modules: [],
+    status: "PARTIAL",
+    modules: [
+      "lib/layers/l12/ledger.ts",
+      "lib/layers/l12/settlement.ts",
+      "lib/layers/l12/payments.ts",
+      "lib/application/ledger-service.ts",
+    ],
     owns: [
       "Final settlement calculation",
       "Payment capture/release/refund coordination",
