@@ -78,7 +78,6 @@ const architecting: WorkCaseControlState = {
 };
 
 const task: TaskIdentity = {
-  workCaseId: "WC-1",
   taskId: "T-1",
   semanticKey: "transport handling::carry couch",
   ordinal: 1,
@@ -150,9 +149,9 @@ function analysis(): PlannerAnalysis {
     tasks: ["Carry couch"],
     stops: ["Home"],
     routeNodes: [{ location: "Home", actions: ["Carry couch"] }],
-    scheduleWindow: { dateLabel: "Tomorrow" },
+    scheduleWindow: { dateLabel: "Tomorrow", arrivalTime: "10:00 AM", arrivalLabel: "Tomorrow at 10:00 AM" },
     items: ["couch"],
-    customerCanHelp: false,
+    customerCanHelp: false, preparation: [],
     equipment: [],
     recurrence: { recurring: false, frequency: "One-time" },
     recommendedTeamSize: 2,

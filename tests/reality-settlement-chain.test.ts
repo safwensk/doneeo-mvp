@@ -387,8 +387,9 @@ test("END TO END · commit → disrupt → recover → cancel → settle", async
   const cancelled = await s.commitment.cancel({
     commandKey: "e-cancel", jobOrderId: "JOB-1", expectedVersion: started.commitment.stateVersion,
     request: {
+      requestId: "CR-1",
       jobOrderId: "JOB-1", cause: "FIELD_REALITY_UNRECOVERABLE",
-      requestedAt: ON_SITE, requestedBy: "system", disputed: false,
+      requestedAt: ON_SITE, requestedBy: "SYSTEM", disputed: false,
     },
     ports: {
       rescheduleOptions: () => [],

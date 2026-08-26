@@ -188,8 +188,9 @@ test("cancellation runs the canonical sequence and is not re-runnable", async ()
   const { outcome } = await service.cancel({
     commandKey: "cmd-cancel", jobOrderId: "JOB-1", expectedVersion: commitment.stateVersion,
     request: {
+      requestId: "CR-1",
       jobOrderId: "JOB-1", cause: "CUSTOMER_VOLUNTARY", requestedAt: NEAR,
-      requestedBy: "customer", disputed: false,
+      requestedBy: "CUSTOMER", disputed: false,
     },
     ports: {
       rescheduleOptions: () => [],
@@ -209,8 +210,9 @@ test("cancellation runs the canonical sequence and is not re-runnable", async ()
   await assert.rejects(() => service.cancel({
     commandKey: "cmd-cancel", jobOrderId: "JOB-1", expectedVersion: 2,
     request: {
+      requestId: "CR-1",
       jobOrderId: "JOB-1", cause: "CUSTOMER_VOLUNTARY", requestedAt: NEAR,
-      requestedBy: "customer", disputed: false,
+      requestedBy: "CUSTOMER", disputed: false,
     },
     ports: { rescheduleOptions: () => [], attemptBackfill: () => [] },
     correlationId: "corr-1", now: NEAR,
@@ -229,8 +231,9 @@ test("cancellation is reachable from WORK_STARTED", async () => {
   const { outcome } = await service.cancel({
     commandKey: "cmd-cancel", jobOrderId: "JOB-1", expectedVersion: started.commitment.stateVersion,
     request: {
+      requestId: "CR-1",
       jobOrderId: "JOB-1", cause: "SAFETY_OR_REGULATORY", requestedAt: NEAR,
-      requestedBy: "executor", disputed: false,
+      requestedBy: "PROVIDER", disputed: false,
     },
     ports: { rescheduleOptions: () => [], attemptBackfill: () => [] },
     correlationId: "corr-1", now: NEAR,
