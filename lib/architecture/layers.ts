@@ -237,6 +237,9 @@ export const LAYERS: Record<LayerId, Layer> = {
     modules: [
       "lib/layers/l7/commitment.ts",
       "lib/layers/l7/cancellation.ts",
+      "lib/application/commitment-service.ts",
+      "lib/application/commitment-store.ts",
+      "lib/application/d1-commitment-store.ts",
     ],
     owns: [
       "Customer commitment state",
@@ -303,6 +306,9 @@ export const LAYERS: Record<LayerId, Layer> = {
     modules: [
       "lib/layers/l09a/reality.ts",
       "lib/layers/l09a/recovery.ts",
+      "lib/application/reality-service.ts",
+      "lib/application/reality-store.ts",
+      "lib/application/d1-reality-store.ts",
     ],
     owns: [
       "RealityCase",
@@ -337,6 +343,7 @@ export const LAYERS: Record<LayerId, Layer> = {
     modules: [
       "lib/layers/l09b/responsibility.ts",
       "lib/layers/l09b/allocation.ts",
+      "lib/application/settlement-service.ts",
     ],
     owns: [
       "Causality classification",
@@ -491,7 +498,7 @@ export const LAYERS: Record<LayerId, Layer> = {
     kind: "platform",
     status: "PARTIAL",
     modules: [
-      "lib/application/intelligence-control-service.ts",
+      "lib/application/d1-intelligence-control-service.ts",
     ],
     owns: [
       "Workflow coordination",

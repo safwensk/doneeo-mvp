@@ -202,6 +202,64 @@ test("the layers backed by real code are the ones the MVP actually has", () => {
     "a layer gained or lost code; confirm its contract against the canonical spec, then update this list");
 });
 
+/**
+ * BUILT is not LIVE.
+ *
+ * For a stretch, L7, L09A and L09B were finished libraries with passing tests
+ * and zero imports from app/ — correct code that nothing executed. Nothing in
+ * the suite noticed, because "has modules" and "the product can reach it" are
+ * different claims and only the first was ever checked.
+ *
+ * This test checks the second. A layer is LIVE when some file under app/
+ * transitively imports one of its modules.
+ */
+test("every layer with code is reachable from the running product", async () => {
+  const { readdirSync, readFileSync, statSync } = await import("node:fs");
+  const root = new URL("../", import.meta.url).pathname;
+
+  const walk = (dir: string): string[] => {
+    const out: string[] = [];
+    for (const entry of readdirSync(`${root}${dir}`)) {
+      if (entry === "node_modules" || entry.startsWith(".")) continue;
+      const rel = `${dir}/${entry}`;
+      if (statSync(`${root}${rel}`).isDirectory()) out.push(...walk(rel));
+      else if (/\.(ts|tsx)$/.test(entry)) out.push(rel);
+    }
+    return out;
+  };
+
+  // Follow imports out of app/ until the set stops growing. A service reached
+  // through a route counts, which is the whole point — layers are wired
+  // through application code, not imported into pages directly.
+  const reached = new Set<string>();
+  const queue = walk("app");
+  while (queue.length > 0) {
+    const file = queue.pop()!;
+    if (reached.has(file)) continue;
+    reached.add(file);
+    let src: string;
+    try { src = readFileSync(`${root}${file}`, "utf-8"); } catch { continue; }
+    for (const m of src.matchAll(/from\s+"([^"]+)"/g)) {
+      const spec = m[1]!;
+      if (!spec.startsWith(".")) continue;
+      const base = new URL(spec, `file://${root}${file}`).pathname.slice(root.length);
+      for (const candidate of [`${base}.ts`, `${base}.tsx`, `${base}/index.ts`]) {
+        try {
+          if (statSync(`${root}${candidate}`).isFile()) { queue.push(candidate); break; }
+        } catch { /* not this extension */ }
+      }
+    }
+  }
+
+  const dead = LAYER_IDS
+    .filter(id => LAYERS[id].modules.length > 0)
+    .filter(id => !LAYERS[id].modules.some(m => reached.has(m)));
+
+  assert.deepEqual(dead, [],
+    `these layers have code that the product cannot reach: ${dead.join(", ")}. ` +
+    "Built is not Live — wire it to a route or remove the modules claim.");
+});
+
 test("the contract boundary sits where the architecture says", () => {
   // "Plan before supply" and "RequirementContract is provider-neutral" are
   // global invariants. L2 owns the contract; L4 must not.
