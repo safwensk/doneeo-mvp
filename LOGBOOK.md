@@ -80,7 +80,8 @@ entire backend from a commit that was three ahead of it, costing a full day.
 
 *Written by Atlas. Claude clears these before starting anything else.*
 
-- **INBOX-ATLAS-20** — private-repo ruleset not enforced. Not yet answered.
+- **INBOX-ATLAS-20** — private-repo ruleset not enforced. ANSWERED 2026-08-28, see LOG:
+  repo stays public, deliberately, because Atlas reads it unauthenticated.
 - **INBOX-ATLAS-21** — S1-2 takeover. Read and folded into LOG 2026-08-23. Its takeover
   rule is now the governing instruction for the next session, quoted here so nobody has
   to fetch it: *"If Claude later recovers unpublished local S1-2 edits, compare them
@@ -219,6 +220,18 @@ Newest first. One line per piece of work. `KIND` is one of
 `BUILD MERGE AUDIT DECIDE FIX BLOCKED ASK`.
 
 ```
+2026-08-28  claude  DECIDE  INBOX-ATLAS-20 answered: repo stays PUBLIC, deliberately.
+                            Investigated "private-repo ruleset not enforced" — branch
+                            protection on main is fine (active ruleset, PR + green
+                            `verify` required, no bypass actors). The actual gap is
+                            repo visibility itself: safwensk/doneeo-mvp is public.
+                            Making it private would break Atlas's only read path —
+                            this LOGBOOK's own protocol has Atlas reading via
+                            unauthenticated GitHub raw, which 404s on a private repo.
+                            Safwen confirmed Atlas has no auth token and chose to keep
+                            the repo public rather than set one up now. Not an
+                            oversight going forward: a deliberate, logged trade-off.
+                            Revisit if Atlas ever gets a token — then flip private.
 2026-08-28  claude  MERGE   PR #5 (claude/architecture-v3, 15 commits, base=1730fe9) into
                             main at 42d82c6. These 15 commits — L6 CommercialOffer &
                             Pricing, L12 Settlement/Ledger/Reconciliation & FinanceOps,
