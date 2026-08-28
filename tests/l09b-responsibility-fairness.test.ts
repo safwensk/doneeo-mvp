@@ -198,12 +198,39 @@ test("provider protection follows performance, not cause", () => {
   assert.equal(out.doneeoAbsorption.minutes, 330);
 });
 
+test("provider protection on the instruction is not structurally always zero", () => {
+  // It was. PROVIDER_PROTECTED was a member of Bearer that bearerFor() never
+  // returned, so summing allocations by it gave 0 for every case that has ever
+  // existed. The unit tests missed it because they asserted the standalone
+  // protectedProviderPayable() instead, and it only surfaced when a live run
+  // paid a provider nothing for a job they had performed correctly.
+  const out = allocate({ assessment: assess(), eligibleCosts: twoRoleCosts });
+  assert.ok(out.protectedProviderPayable.minutes > 0,
+    "a performing provider must be protected on the instruction, not only via the helper");
+  assert.deepEqual(out.protectedProviderPayable.byRole, { lead: 45, helper: 285 });
+
+  // And it must agree with the independent calculation, since they answer the
+  // same question over the same costs.
+  const standalone = protectedProviderPayable({ assessment: assess(), eligibleCosts: twoRoleCosts });
+  assert.deepEqual(out.protectedProviderPayable.byRole, standalone.byRole);
+  assert.equal(out.protectedProviderPayable.minutes, standalone.minutes);
+});
+
+test("a provider who did not perform is protected for nothing", () => {
+  const a = assess({ providerTest: { ...providerPerformed, executedAsAgreed: false } });
+  const out = allocate({ assessment: a, eligibleCosts: twoRoleCosts });
+  assert.equal(out.protectedProviderPayable.minutes, 0, "protection follows performance");
+  assert.equal(out.customerRealityAdjustment.minutes, 0, "and is never billed onward");
+});
+
 test("every allocation records why", () => {
   const out = allocate({ assessment: assess(), eligibleCosts: twoRoleCosts });
   assert.equal(out.allocations.length, twoRoleCosts.length);
   for (const a of out.allocations) {
     assert.ok(a.because.trim().length > 10, "an allocation without a reason is not auditable");
-    assert.ok(["PROVIDER_PROTECTED", "CUSTOMER", "DONEEO_ABSORBED"].includes(a.bearer));
+    // A provider is not a bearer: bearing is who pays, and a performing
+    // provider is owed, not charged.
+    assert.ok(["CUSTOMER", "DONEEO_ABSORBED"].includes(a.bearer));
   }
 });
 

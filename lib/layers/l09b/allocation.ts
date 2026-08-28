@@ -20,8 +20,21 @@ import {
   type ResponsibilityAssessment, FairnessInvariantError,
 } from "./responsibility";
 
-/** Who carries a component. Exactly one per component — never a split weight. */
-export type Bearer = "PROVIDER_PROTECTED" | "CUSTOMER" | "DONEEO_ABSORBED";
+/**
+ * Who CARRIES a component. Exactly one per component — never a split weight.
+ *
+ * A provider is deliberately not a bearer. Bearing is about who pays a cost,
+ * and a performing provider never pays — they are owed. Protection is a
+ * separate axis, computed by protectedProviderPayable() from performance
+ * rather than from fault.
+ *
+ * This union used to include PROVIDER_PROTECTED, and the result was a field on
+ * AdjustmentInstruction that no code path could ever make non-zero: bearerFor()
+ * never returned it, so summing allocations by it always gave 0. Nothing caught
+ * that until a provider who had done everything right was paid nothing in a
+ * live run.
+ */
+export type Bearer = "CUSTOMER" | "DONEEO_ABSORBED";
 
 export type AllocatedComponent = {
   readonly component: EligibleCost;
@@ -158,8 +171,12 @@ export function allocate(input: {
     realityCaseId: a.realityCaseId,
     cause: a.cause,
     allocations: Object.freeze(allocations),
-    // Each computed from its own components. None derived from the others.
-    protectedProviderPayable: total(allocations, "PROVIDER_PROTECTED"),
+    // Each computed from its own components. None derived from the others —
+    // and protection specifically is NOT a bearer sum, because the provider is
+    // not a bearer. It answers a different question over the same costs.
+    protectedProviderPayable: protectedProviderPayable({
+      assessment: a, eligibleCosts: input.eligibleCosts,
+    }),
     customerRealityAdjustment: customer,
     doneeoAbsorption: total(allocations, "DONEEO_ABSORBED"),
     recoveryCredit: credit,
@@ -182,8 +199,16 @@ export function protectedProviderPayable(input: {
 }): PartyTotal {
   if (!input.assessment.provider.established) return emptyTotal();
   const protectedKinds = new Set(["PREPARATION", "MOBILIZATION", "ACTUAL_WORK", "NET_LOST_CAPACITY", "EXTERNAL"]);
-  const components = input.eligibleCosts
-    .filter(c => protectedKinds.has(c.kind))
-    .map(component => Object.freeze({ component, bearer: "PROVIDER_PROTECTED" as const, because: "provider protection established" }));
-  return total(components, "PROVIDER_PROTECTED");
+  const byRole: Record<string, number> = {};
+  const refs: string[] = [];
+  let minutes = 0;
+  for (const c of input.eligibleCosts) {
+    if (!protectedKinds.has(c.kind)) continue;
+    if (c.minutes !== undefined) {
+      minutes += c.minutes;
+      byRole[c.role] = (byRole[c.role] ?? 0) + c.minutes;
+    }
+    if (c.externalCostRef) refs.push(c.externalCostRef);
+  }
+  return Object.freeze({ minutes, externalCostRefs: Object.freeze(refs), byRole: Object.freeze(byRole) });
 }

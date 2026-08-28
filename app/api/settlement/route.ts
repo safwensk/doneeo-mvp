@@ -152,7 +152,8 @@ export async function POST(request: Request) {
         });
 
         return Response.json({
-          transactionId: effect.transaction.transactionId,
+          // Null for a release: recorded on the authorization, not posted.
+          transactionId: effect.transaction?.transactionId ?? null,
           amount: effect.command.amount,
           authorization: {
             captured: effect.authorization.captured,

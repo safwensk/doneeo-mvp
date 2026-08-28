@@ -155,13 +155,14 @@ export class LedgerService {
     const next = effect.authorization;
     try {
       await this.run([
-        ...this.writeTransaction(effect.transaction),
+        // A release posts nothing — an authorization is a memo, not an asset.
+        ...(effect.transaction ? this.writeTransaction(effect.transaction) : []),
         this.db.prepare(
           `UPDATE payment_authorizations
            SET captured_minor_units = ?, released_minor_units = ?, status = ?
            WHERE authorization_id = ?`,
         ).bind(next.captured.minorUnits, next.released.minorUnits, next.status, next.authorizationId),
-      ], effect.transaction.transactionId);
+      ], effect.transaction?.transactionId ?? `RELEASE-${input.idempotencyKey}`);
       return { effect, replayed: false };
     } catch (e) {
       if (e instanceof AlreadyAppliedError) {

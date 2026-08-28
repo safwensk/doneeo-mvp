@@ -143,9 +143,17 @@ export class OfferService {
     const offer = await this.read(input.offerId);
     if (!offer) throw new OfferServiceError("NO_OFFER", `no offer ${input.offerId}`);
 
+    // A RequirementContract reference is `contractId@version`; the stored key
+    // is the contractId alone. Only PUBLISHED versions count — a draft is not
+    // a plan anyone agreed to, and pricing against one would be pricing against
+    // a guess.
+    const at = offer.requirementContractRef.lastIndexOf("@");
+    const contractId = at === -1 ? offer.requirementContractRef : offer.requirementContractRef.slice(0, at);
     const current = await this.db.prepare(
-      `SELECT version FROM requirement_contracts WHERE reference = ? ORDER BY version DESC LIMIT 1`,
-    ).bind(offer.requirementContractRef).first<{ version: number }>();
+      `SELECT version FROM requirement_contracts
+       WHERE contract_id = ? AND status = 'PUBLISHED'
+       ORDER BY version DESC LIMIT 1`,
+    ).bind(contractId).first<{ version: number }>();
 
     const selected = selectOption({
       offer,

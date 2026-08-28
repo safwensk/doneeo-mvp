@@ -106,7 +106,14 @@ export type PaymentCommand = {
 export type PaymentEffect = {
   readonly command: PaymentCommand;
   readonly authorization: PaymentAuthorization;
-  readonly transaction: LedgerTransaction;
+  /**
+   * Null when the effect moves no recognised money.
+   *
+   * Releasing an unused hold is the case: an authorization is a memo, not an
+   * asset. Nothing was recognised when it was placed, so there is nothing to
+   * reverse when it lapses — see releaseUnused.
+   */
+  readonly transaction: LedgerTransaction | null;
 };
 
 /**
@@ -170,10 +177,16 @@ export function capture(input: {
 /**
  * Give back what was authorized but not needed — canon's L12-G2.
  *
- * A release is not a refund. Nothing was taken, so nothing comes back; the
- * customer's card simply stops having a hold on it. The ledger still records it
- * because "we stopped being entitled to this" is a real event, and a customer
- * asking why their available balance changed deserves an answer.
+ * A release is not a refund, and it is not a journal entry either.
+ *
+ * An authorization is a memo: a hold on someone's card, not an asset we own and
+ * not revenue we have recognised. Posting a reversal for it was wrong, and a
+ * live run showed exactly how wrong — releasing an unused hold on a job that
+ * settled to zero produced a negative receivable and negative revenue out of
+ * nothing. You cannot reverse what was never recognised.
+ *
+ * So this records the release on the authorization and posts nothing. The event
+ * is real and worth storing; it is simply not an accounting event.
  */
 export function releaseUnused(input: {
   authorization: PaymentAuthorization;
@@ -203,19 +216,7 @@ export function releaseUnused(input: {
       jobOrderId: auth.jobOrderId, amount, pspRef: input.pspRef,
     }),
     authorization: next,
-    transaction: postTransaction({
-      transactionId: `TXN-${input.idempotencyKey}`,
-      jobOrderId: auth.jobOrderId,
-      kind: "AUTHORIZATION_RELEASE",
-      entries: [
-        // The hold is given up: we no longer expect this money, and we were
-        // never holding it.
-        credit("CUSTOMER_RECEIVABLE", amount, "unused authorisation released"),
-        debit("DONEEO_REVENUE", amount, "reversal of expected margin on unperformed work"),
-      ],
-      postedAt: input.now,
-      sourceRef: input.pspRef,
-    }),
+    transaction: null,
   });
 }
 

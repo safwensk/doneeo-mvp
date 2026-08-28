@@ -176,6 +176,11 @@ test("L12-G2 · unused authorization is released after a partial close", () => {
   });
   assert.equal(released.command.amount.minorUnits, 20000);
   assert.equal(released.authorization.status, "CLOSED");
+  // A hold is a memo, not an asset. Releasing it recognises nothing and
+  // therefore reverses nothing — posting an entry here invented a negative
+  // receivable and negative revenue in a live run.
+  assert.equal(released.transaction, null,
+    "releasing an unused authorisation must not post to the ledger");
   assert.equal(availableToCapture(released.authorization).minorUnits, 0);
 
   assert.throws(() => releaseUnused({
@@ -200,11 +205,11 @@ test("L12-G3 · a replayed callback causes no duplicate financial effect", () =>
 
   // Both produce the SAME transaction id, so the store's uniqueness constraint
   // makes the second a no-op rather than a second movement of money.
-  assert.equal(first.transaction.transactionId, replay.transaction.transactionId);
-  assert.equal(alreadyApplied([first.transaction], key2), true);
+  assert.equal(first.transaction!.transactionId, replay.transaction!.transactionId);
+  assert.equal(alreadyApplied([first.transaction!], key2), true);
 
   // The ledger as recorded holds one capture, not two.
-  const posted = [first.transaction];
+  const posted = [first.transaction!];
   assert.equal(balanceOf(posted, "PSP_CLEARING").minorUnits, 20000);
 });
 
@@ -348,7 +353,7 @@ test("a full lifecycle leaves a ledger that balances", () => {
   });
 
   assert.ok(s.transaction);
-  const all: LedgerTransaction[] = [s.transaction!, cap.transaction, pay];
+  const all: LedgerTransaction[] = [s.transaction!, cap.transaction!, pay];
   assert.ok(ledgerBalances(all), "the whole ledger must balance, not just each posting");
   assert.equal(balanceOf(all, "CUSTOMER_RECEIVABLE").minorUnits, 0, "the customer paid in full");
   assert.equal(balanceOf(all, "PROVIDER_PAYABLE").minorUnits, 0, "the provider was paid in full");
