@@ -457,7 +457,7 @@ const onePropertyRelevanceScenarios = [
 for (const scenario of onePropertyRelevanceScenarios) {
   test(`${scenario.name} keeps only relevant one-property questions`, () => {
     const result = plan(scenario.request);
-    assert.ok(result.intelligence?.domains.some(domain => domain.id === scenario.domain));
+    assert.ok(result.intelligence?.domains?.some(domain => domain.id === scenario.domain));
     assert.equal(result.intelligence?.estimate.routeMinutes, 0);
     assert.equal(result.recurrence.recurring, false);
     assert.doesNotMatch(questionConcepts(result), scenario.forbidden);
@@ -474,7 +474,7 @@ test("explicit recurring cleaning remains recurring and keeps supply verificatio
   const result = plan("Clean my three-bedroom house with two bathrooms and a kitchen every Friday at 25 Pine Street. I have a vacuum but no cleaning products.");
   assert.equal(result.recurrence.recurring, true);
   assert.match(result.recurrence.frequency.toLowerCase(), /every friday|recurr/);
-  assert.ok(result.intelligence?.domains.some(domain => domain.id === "cleaning"));
+  assert.ok(result.intelligence?.domains?.some(domain => domain.id === "cleaning"));
   assert.ok(result.intelligence?.resources.some(resource => resource.kind === "consumable"));
   assert.equal(result.intelligence?.estimate.routeMinutes, 0);
 });
@@ -482,8 +482,8 @@ test("explicit recurring cleaning remains recurring and keeps supply verificatio
 test("explicit recurring elder support remains recurring without becoming moving", () => {
   const result = plan("Twice a week, buy groceries, deliver them to my 84-year-old father at 25 Pine Street, spend one hour with him and send me a visit update. He walks independently and needs no medication or personal care.");
   assert.equal(result.recurrence.recurring, true);
-  assert.ok(result.intelligence?.domains.some(domain => domain.id === "elder_support"));
-  assert.ok(!result.intelligence?.domains.some(domain => domain.id === "transport_handling"));
+  assert.ok(result.intelligence?.domains?.some(domain => domain.id === "elder_support"));
+  assert.ok(!result.intelligence?.domains?.some(domain => domain.id === "transport_handling"));
 });
 
 test("regulated work cannot be matched to a general helper", () => {

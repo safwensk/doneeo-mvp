@@ -323,3 +323,48 @@ h1,h2{font-family:var(--font-geist-sans),Arial,sans-serif;font-weight:800;color:
 .preparation-step strong{display:block;font-size:11.5px}
 .preparation-step small{display:block;margin-top:2px;color:#586560;font-size:9.5px}
 .preparation-block>p{margin:10px 0 0;font-size:9.5px;color:var(--muted)}
+
+/* Execution console — the operator view of L6 through L12. Deliberately plainer
+   than the customer screens: this is for reading decisions, not for selling. */
+.console{width:100%;max-width:1080px;min-height:100vh;margin:0 auto;padding:0 0 70px;background:#f7f9f7;box-shadow:0 0 50px #17352b16}
+.console>header{display:flex;justify-content:space-between;align-items:flex-end;gap:26px;padding:40px 5% 30px;color:#fff;background:linear-gradient(135deg,#153e34,#1c6b50)}
+.console>header small{display:block;font-size:9px;font-weight:900;letter-spacing:.13em}
+.console>header h1{margin:8px 0 10px;font-size:clamp(30px,5vw,48px)}
+.console>header p{margin:0;max-width:60ch;color:#d8eee5;font-size:12.5px;line-height:1.55}
+.console-actions{display:flex;flex-direction:column;align-items:flex-end;gap:9px;flex:none}
+.console-actions button{padding:14px 20px;border:0;border-radius:12px;background:#fff;color:var(--green);font-size:12px;font-weight:900;cursor:pointer}
+.console-actions button:disabled{opacity:.6;cursor:default}
+.tally{font-size:10px;font-weight:800}.tally.good{color:#bdeed6}.tally.bad{color:#ffc9bd}
+.console-note{margin:18px 5% 0;padding:11px 14px;border-radius:11px;background:#e7f5ed;color:var(--green);font-size:11px;font-weight:700}
+
+.steps{list-style:none;margin:16px 5% 0;padding:0;display:grid;gap:10px}
+.step{border:1px solid var(--line);border-left:3px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
+.step.ok{border-left-color:var(--green)}
+.step.error{border-left-color:#c0503f}
+.step.running{border-left-color:var(--orange)}
+.step-head{display:grid;grid-template-columns:52px 1fr auto;gap:13px;align-items:center;padding:14px 16px}
+.step-head .layer{padding:6px 0;border-radius:7px;background:#eef4f1;color:var(--green);font-family:ui-monospace,Menlo,monospace;font-size:10px;font-weight:900;text-align:center}
+.step-title strong{display:block;font-size:13px}
+.step-title small{display:block;margin-top:3px;color:var(--muted);font-size:10.5px;line-height:1.45}
+.badge{min-width:38px;padding:6px 9px;border-radius:99px;background:#eef2f0;color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:10px;font-weight:900;text-align:center}
+.badge.ok{background:#e2f4ea;color:var(--green)}
+.badge.error{background:#fbe7e3;color:#a53a2a}
+.badge.running{background:#fdeee4;color:#a8551f}
+
+.step-body{padding:0 16px 15px 81px;border-top:1px solid #eef2f0}
+.step-body dl{display:grid;gap:0;margin:12px 0 0}
+.step-body dl>div{display:grid;grid-template-columns:170px 1fr;gap:12px;padding:7px 0;border-bottom:1px solid #f0f4f2}
+.step-body dt{color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.step-body dd{margin:0;font-family:ui-monospace,Menlo,monospace;font-size:11px;line-height:1.5;word-break:break-word}
+.refusal{margin:11px 0 0;padding:10px 12px;border-radius:9px;background:#fbe7e3;color:#8f3123;font-size:11px;line-height:1.5}
+.refusal strong{font-family:ui-monospace,Menlo,monospace}
+.step-body button.raw{margin-top:11px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--muted);font-size:10px;font-weight:800;cursor:pointer}
+.step-body pre{margin:10px 0 0;padding:13px;max-height:340px;overflow:auto;border-radius:10px;background:#12211d;color:#cfe6db;font-size:10.5px;line-height:1.5}
+
+@media(max-width:760px){
+  .console>header{flex-direction:column;align-items:flex-start}
+  .console-actions{align-items:flex-start}
+  .step-head{grid-template-columns:44px 1fr auto}
+  .step-body{padding-left:16px}
+  .step-body dl>div{grid-template-columns:1fr}
+}

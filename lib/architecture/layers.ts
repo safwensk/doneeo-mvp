@@ -176,8 +176,10 @@ export const LAYERS: Record<LayerId, Layer> = {
     id: "L5",
     title: "Resources, Rentals, Logistics & Partners",
     kind: "domain",
-    status: "PLANNED",
-    modules: [],
+    status: "PARTIAL",
+    modules: [
+      "lib/application/capacity-recovery.ts",
+    ],
     owns: [
       "Resource inventory/compatibility",
       "True-gap calculation",
@@ -204,8 +206,12 @@ export const LAYERS: Record<LayerId, Layer> = {
     id: "L6",
     title: "CommercialOffer & Pricing",
     kind: "domain",
-    status: "PLANNED",
-    modules: [],
+    status: "PARTIAL",
+    modules: [
+      "lib/layers/l6/pricing.ts",
+      "lib/layers/l6/offer.ts",
+      "lib/application/offer-service.ts",
+    ],
     owns: [
       "Pricing strategy/policy",
       "Cost composition",
@@ -237,6 +243,9 @@ export const LAYERS: Record<LayerId, Layer> = {
     modules: [
       "lib/layers/l7/commitment.ts",
       "lib/layers/l7/cancellation.ts",
+      "lib/application/commitment-service.ts",
+      "lib/application/commitment-store.ts",
+      "lib/application/d1-commitment-store.ts",
     ],
     owns: [
       "Customer commitment state",
@@ -299,8 +308,14 @@ export const LAYERS: Record<LayerId, Layer> = {
     id: "L09A",
     title: "Reality & Recovery Decision Architecture",
     kind: "domain",
-    status: "PLANNED",
-    modules: [],
+    status: "PARTIAL",
+    modules: [
+      "lib/layers/l09a/reality.ts",
+      "lib/layers/l09a/recovery.ts",
+      "lib/application/reality-service.ts",
+      "lib/application/reality-store.ts",
+      "lib/application/d1-reality-store.ts",
+    ],
     owns: [
       "RealityCase",
       "Field evidence + Field MSI",
@@ -330,8 +345,12 @@ export const LAYERS: Record<LayerId, Layer> = {
     id: "L09B",
     title: "Responsibility & Fairness Economic Architecture",
     kind: "domain",
-    status: "PLANNED",
-    modules: [],
+    status: "PARTIAL",
+    modules: [
+      "lib/layers/l09b/responsibility.ts",
+      "lib/layers/l09b/allocation.ts",
+      "lib/application/settlement-service.ts",
+    ],
     owns: [
       "Causality classification",
       "Customer/provider/Doneeo/external responsibility tests",
@@ -424,8 +443,13 @@ export const LAYERS: Record<LayerId, Layer> = {
     id: "L12",
     title: "Settlement, Ledger, Reconciliation & FinanceOps",
     kind: "domain",
-    status: "PLANNED",
-    modules: [],
+    status: "PARTIAL",
+    modules: [
+      "lib/layers/l12/ledger.ts",
+      "lib/layers/l12/settlement.ts",
+      "lib/layers/l12/payments.ts",
+      "lib/application/ledger-service.ts",
+    ],
     owns: [
       "Final settlement calculation",
       "Payment capture/release/refund coordination",
@@ -485,7 +509,7 @@ export const LAYERS: Record<LayerId, Layer> = {
     kind: "platform",
     status: "PARTIAL",
     modules: [
-      "lib/application/intelligence-control-service.ts",
+      "lib/application/d1-intelligence-control-service.ts",
     ],
     owns: [
       "Workflow coordination",

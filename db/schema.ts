@@ -300,3 +300,268 @@ export const intelligenceTaskIdentities = sqliteTable("intelligence_task_identit
     .on(table.workCaseId, table.semanticKey)
     .where(sql`${table.status} = 'ACTIVE'`),
 ]);
+
+// ===========================================================================
+// L7 — Commitment, Capacity & Cancellation
+//
+// The commitment ladder is NOT stored as a stage. Stage is recomputed from
+// these facts plus the governing policy every time it is asked for, because a
+// stored stage goes stale the moment the clock moves past a threshold — a bug
+// the L7 suite caught once already.
+// ===========================================================================
+
+export const commitments = sqliteTable("commitments", {
+  jobOrderId: text("job_order_id").primaryKey(),
+  workCaseId: text("work_case_id").references(() => workCases.workCaseId),
+  /** Which policy governed this commitment. A later policy must not silently
+   *  re-interpret a commitment made under the terms the customer was shown. */
+  policyName: text("policy_name").notNull(),
+  providerAccepted: integer("provider_accepted", { mode: "boolean" }).notNull().default(false),
+  mobilizationStartedAt: text("mobilization_started_at"),
+  workStartedAt: text("work_started_at"),
+  /** Set when cancellation froze the commitment. Nothing may change after. */
+  frozenAt: text("frozen_at"),
+  stateVersion: integer("state_version").notNull().default(1),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});
+
+export const capacityReservations = sqliteTable("capacity_reservations", {
+  reservationId: text("reservation_id").primaryKey(),
+  jobOrderId: text("job_order_id").notNull().references(() => commitments.jobOrderId),
+  role: text("role").notNull(),
+  assigneeRef: text("assignee_ref").notNull(),
+  minutesReserved: integer("minutes_reserved").notNull(),
+  /** Minutes successfully given to other work. Net lost = reserved − this. */
+  minutesReallocated: integer("minutes_reallocated").notNull().default(0),
+  startsAt: text("starts_at").notNull(),
+  status: text("status", { enum: ["HELD", "RELEASED", "REALLOCATED", "CONSUMED"] }).notNull().default("HELD"),
+});
+
+export const preparationRecords = sqliteTable("preparation_records", {
+  reservationId: text("reservation_id").primaryKey().references(() => capacityReservations.reservationId),
+  /** Preparation actually performed and evidenced. Never an estimate. */
+  preparationMinutes: integer("preparation_minutes").notNull().default(0),
+  mobilizationMinutes: integer("mobilization_minutes").notNull().default(0),
+  externalCostRefsJson: text("external_cost_refs_json").notNull().default("[]"),
+  recordedAt: text("recorded_at").notNull(),
+});
+
+// ===========================================================================
+// L09A — Reality & Recovery
+//
+// Observations, changed facts and classifications are separate append-only
+// tables rather than a JSON blob on the case. P2 requires provenance that
+// survives: a dispute six weeks later has to see what was believed at planning
+// time, and a superseded value that was overwritten cannot show that.
+// ===========================================================================
+
+export const realityCases = sqliteTable("reality_cases", {
+  realityCaseId: text("reality_case_id").primaryKey(),
+  workCaseId: text("work_case_id").notNull().references(() => workCases.workCaseId),
+  jobOrderId: text("job_order_id").notNull(),
+  openedAt: text("opened_at").notNull(),
+  status: text("status", { enum: ["OPEN", "RECOVERING", "RESOLVED", "UNRECOVERABLE"] }).notNull().default("OPEN"),
+  /** TaskBlocks held pending resolution. Everything else keeps running. */
+  heldTaskIdsJson: text("held_task_ids_json").notNull().default("[]"),
+  stateVersion: integer("state_version").notNull().default(1),
+  updatedAt: text("updated_at").notNull(),
+});
+
+export const fieldObservations = sqliteTable("field_observations", {
+  observationId: text("observation_id").primaryKey(),
+  realityCaseId: text("reality_case_id").notNull().references(() => realityCases.realityCaseId),
+  taskId: text("task_id").notNull(),
+  observedAt: text("observed_at").notNull(),
+  observedBy: text("observed_by").notNull(),
+  /** What was seen. Never a cost, a fault or a proposed scope. */
+  statement: text("statement").notNull(),
+  evidenceRefsJson: text("evidence_refs_json").notNull().default("[]"),
+});
+
+export const changedFacts = sqliteTable("changed_facts", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  realityCaseId: text("reality_case_id").notNull().references(() => realityCases.realityCaseId),
+  factKey: text("fact_key").notNull(),
+  /** Kept, never overwritten. This column is the whole reason for this table. */
+  supersededValue: text("superseded_value"),
+  newValue: text("new_value").notNull(),
+  source: text("source", { enum: ["FIELD_OBSERVATION", "CUSTOMER_FIELD_UPDATE"] }).notNull(),
+  evidenceRefsJson: text("evidence_refs_json").notNull().default("[]"),
+  changedAt: text("changed_at").notNull(),
+});
+
+export const impactClassifications = sqliteTable("impact_classifications", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  realityCaseId: text("reality_case_id").notNull().references(() => realityCases.realityCaseId),
+  taskId: text("task_id").notNull(),
+  /** R0-R5. A semantic class, not a severity — never sort or compare these. */
+  impact: text("impact", { enum: ["R0", "R1", "R2", "R3", "R4", "R5"] }).notNull(),
+  rationale: text("rationale").notNull(),
+  needsHumanReview: integer("needs_human_review", { mode: "boolean" }).notNull().default(false),
+  /** Which classifier decided. OR-1 is open; the answer may change. */
+  classifierName: text("classifier_name").notNull(),
+  classifiedAt: text("classified_at").notNull(),
+});
+
+export const recoveryDecisions = sqliteTable("recovery_decisions", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  realityCaseId: text("reality_case_id").notNull().references(() => realityCases.realityCaseId),
+  selectedKind: text("selected_kind"),
+  /** Every option walked, in hierarchy order, with why each was rejected. */
+  consideredJson: text("considered_json").notNull().default("[]"),
+  routeToJson: text("route_to_json").notNull().default("[]"),
+  continuingTaskIdsJson: text("continuing_task_ids_json").notNull().default("[]"),
+  unrecoverable: integer("unrecoverable", { mode: "boolean" }).notNull().default(false),
+  needsCustomerApproval: integer("needs_customer_approval", { mode: "boolean" }).notNull().default(false),
+  decidedAt: text("decided_at").notNull(),
+});
+
+// ===========================================================================
+// L09B — Responsibility & Fairness
+//
+// Three totals are stored as three columns computed independently. There is
+// deliberately no "total" column: they are three answers to three questions,
+// not three shares of one number, and a column summing them would invite
+// exactly the weighted blame engine canon forbids.
+// ===========================================================================
+
+export const responsibilityAssessments = sqliteTable("responsibility_assessments", {
+  assessmentId: text("assessment_id").primaryKey(),
+  realityCaseId: text("reality_case_id").references(() => realityCases.realityCaseId),
+  jobOrderId: text("job_order_id").notNull(),
+  cause: text("cause").notNull(),
+  customerEstablished: integer("customer_established", { mode: "boolean" }).notNull(),
+  providerEstablished: integer("provider_established", { mode: "boolean" }).notNull(),
+  doneeoEstablished: integer("doneeo_established", { mode: "boolean" }).notNull(),
+  /** Which condition or defeater decided each. Feeds DecisionTrace. */
+  reasoningJson: text("reasoning_json").notNull().default("{}"),
+  requiresReview: integer("requires_review", { mode: "boolean" }).notNull().default(false),
+  reviewReason: text("review_reason"),
+  evidenceRefsJson: text("evidence_refs_json").notNull().default("[]"),
+  policyName: text("policy_name").notNull(),
+  assessedAt: text("assessed_at").notNull(),
+});
+
+export const adjustmentInstructions = sqliteTable("adjustment_instructions", {
+  instructionId: text("instruction_id").primaryKey(),
+  assessmentId: text("assessment_id").notNull().references(() => responsibilityAssessments.assessmentId),
+  jobOrderId: text("job_order_id").notNull(),
+  /** Minutes, per party, each summed from its own components. Never derived
+   *  from the others, and never priced here — L6 prices, L12 posts. */
+  protectedProviderMinutes: integer("protected_provider_minutes").notNull().default(0),
+  customerAdjustmentMinutes: integer("customer_adjustment_minutes").notNull().default(0),
+  doneeoAbsorptionMinutes: integer("doneeo_absorption_minutes").notNull().default(0),
+  recoveryCreditMinutes: integer("recovery_credit_minutes").notNull().default(0),
+  byRoleJson: text("by_role_json").notNull().default("{}"),
+  /** One bearer per component, with why. A bare allocation is not auditable. */
+  allocationsJson: text("allocations_json").notNull().default("[]"),
+  externalCostRefsJson: text("external_cost_refs_json").notNull().default("[]"),
+  issuedAt: text("issued_at").notNull(),
+});
+
+// ===========================================================================
+// L6 — CommercialOffer & Pricing
+//
+// The first tables in the system that hold money. Amounts are integer minor
+// units with an explicit currency column and never a REAL — SQLite would
+// happily store 125.5 and hand back something that is not 125.5, and a
+// rounding drift in a price is a customer complaint nobody can reproduce.
+// ===========================================================================
+
+export const commercialOffers = sqliteTable("commercial_offers", {
+  offerId: text("offer_id").primaryKey(),
+  workCaseId: text("work_case_id").references(() => workCases.workCaseId),
+  requirementContractRef: text("requirement_contract_ref").notNull(),
+  /** The version priced against. If the contract moves, the price is void. */
+  requirementContractVersion: integer("requirement_contract_version").notNull(),
+  /** Priced options. Each names a distinct fulfillment configuration. */
+  optionsJson: text("options_json").notNull().default("[]"),
+  scopeContractJson: text("scope_contract_json").notNull().default("{}"),
+  paymentTopology: text("payment_topology").notNull(),
+  pricingPolicyName: text("pricing_policy_name").notNull(),
+  taxDecisionRef: text("tax_decision_ref"),
+  validFrom: text("valid_from").notNull(),
+  validUntil: text("valid_until").notNull(),
+  requiresHumanReview: integer("requires_human_review", { mode: "boolean" }).notNull().default(false),
+  reviewReason: text("review_reason"),
+  createdAt: text("created_at").notNull(),
+});
+
+export const offerSelections = sqliteTable("offer_selections", {
+  offerId: text("offer_id").primaryKey().references(() => commercialOffers.offerId),
+  band: text("band", { enum: ["BUDGET", "RECOMMENDED", "FULL_SERVICE"] }).notNull(),
+  fulfillmentOptionRef: text("fulfillment_option_ref").notNull(),
+  /** Integer minor units. Never a REAL, never a decimal string. */
+  totalMinorUnits: integer("total_minor_units").notNull(),
+  currency: text("currency").notNull().default("CAD"),
+  selectedAt: text("selected_at").notNull(),
+});
+
+// ===========================================================================
+// L12 — Settlement, Ledger, Reconciliation & FinanceOps
+//
+// transaction_id is the PRIMARY KEY and it is derived from the payment
+// provider's own event id. That is not a convenience: it is the mechanism that
+// makes L12-G3 true. Two deliveries of one PSP callback produce the same
+// transaction_id, so the second INSERT collides and moves no money — even if
+// both arrive at once and both pass an application-level "have we seen this"
+// check. Deduplication lives at the point of record, not the point of decision.
+//
+// There is no balance column anywhere below, and no UPDATE path for a posted
+// entry. Balances are folded from entries; corrections are reversing entries.
+// ===========================================================================
+
+export const ledgerTransactions = sqliteTable("ledger_transactions", {
+  transactionId: text("transaction_id").primaryKey(),
+  jobOrderId: text("job_order_id").notNull(),
+  kind: text("kind", {
+    enum: ["SETTLEMENT", "CAPTURE", "REFUND", "PAYOUT", "AUTHORIZATION_RELEASE", "REVERSAL", "ADJUSTMENT"],
+  }).notNull(),
+  /** Names the transaction this one mirrors. Set only on a REVERSAL. */
+  reverses: text("reverses"),
+  sourceRef: text("source_ref").notNull(),
+  postedAt: text("posted_at").notNull(),
+});
+
+export const ledgerEntries = sqliteTable("ledger_entries", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  transactionId: text("transaction_id").notNull().references(() => ledgerTransactions.transactionId),
+  account: text("account", {
+    enum: ["CUSTOMER_RECEIVABLE", "PROVIDER_PAYABLE", "DONEEO_REVENUE",
+           "DONEEO_ABSORPTION", "RECOVERY_CREDIT", "TAX_PAYABLE", "PSP_CLEARING"],
+  }).notNull(),
+  direction: text("direction", { enum: ["DEBIT", "CREDIT"] }).notNull(),
+  /** Integer minor units. A REAL here would drift and nobody would notice. */
+  amountMinorUnits: integer("amount_minor_units").notNull(),
+  currency: text("currency").notNull().default("CAD"),
+  narrative: text("narrative").notNull(),
+});
+
+export const paymentAuthorizations = sqliteTable("payment_authorizations", {
+  authorizationId: text("authorization_id").primaryKey(),
+  jobOrderId: text("job_order_id").notNull(),
+  authorizedMinorUnits: integer("authorized_minor_units").notNull(),
+  capturedMinorUnits: integer("captured_minor_units").notNull().default(0),
+  releasedMinorUnits: integer("released_minor_units").notNull().default(0),
+  currency: text("currency").notNull().default("CAD"),
+  status: text("status", { enum: ["OPEN", "PARTIALLY_CAPTURED", "CLOSED"] }).notNull().default("OPEN"),
+  /** The provider's reference. Idempotency keys are derived from PSP events. */
+  pspRef: text("psp_ref").notNull(),
+  authorizedAt: text("authorized_at").notNull(),
+});
+
+export const settlements = sqliteTable("settlements", {
+  jobOrderId: text("job_order_id").primaryKey(),
+  transactionId: text("transaction_id").references(() => ledgerTransactions.transactionId),
+  /** Computed independently of each other. Canon: customer charge != payable. */
+  customerTotalMinorUnits: integer("customer_total_minor_units").notNull().default(0),
+  providerTotalMinorUnits: integer("provider_total_minor_units").notNull().default(0),
+  /** Signed: positive is Doneeo margin, negative is Doneeo absorbing cost. */
+  doneeoPositionMinorUnits: integer("doneeo_position_minor_units").notNull().default(0),
+  currency: text("currency").notNull().default("CAD"),
+  /** True when nobody owed anybody anything — a real outcome, not an error. */
+  nothingOwed: integer("nothing_owed", { mode: "boolean" }).notNull().default(false),
+  ratePolicyName: text("rate_policy_name").notNull(),
+  calculatedAt: text("calculated_at").notNull(),
+});

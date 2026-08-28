@@ -325,6 +325,86 @@ export async function POST(request: Request) {
       else await db.prepare("INSERT INTO executor_equipment (executor_id,equipment_id,quantity,verified) VALUES (?,?,1,1)").bind(body.executorId,body.equipmentId).run();
       return Response.json({ ok: true, equipped: !existing });
     }
+    /**
+     * Seed the one job the execution console walks.
+     *
+     * Kept here with the other test controls rather than in the console page:
+     * a screen should not be able to write fixtures into a database. It clears
+     * the console's own rows first so the walkthrough is repeatable, and it
+     * touches nothing else.
+     */
+    if (body.action === "seed_console_demo") {
+      const now = "2026-09-10T08:00:00.000Z";
+      await db.batch([
+        // Order matters — children before parents.
+        db.prepare("DELETE FROM ledger_entries"),
+        db.prepare("DELETE FROM ledger_transactions"),
+        db.prepare("DELETE FROM settlements"),
+        db.prepare("DELETE FROM payment_authorizations"),
+        db.prepare("DELETE FROM adjustment_instructions"),
+        db.prepare("DELETE FROM responsibility_assessments"),
+        db.prepare("DELETE FROM recovery_decisions"),
+        db.prepare("DELETE FROM impact_classifications"),
+        db.prepare("DELETE FROM changed_facts"),
+        db.prepare("DELETE FROM field_observations"),
+        db.prepare("DELETE FROM reality_cases"),
+        db.prepare("DELETE FROM preparation_records"),
+        db.prepare("DELETE FROM capacity_reservations"),
+        db.prepare("DELETE FROM commitments"),
+        db.prepare("DELETE FROM offer_selections"),
+        db.prepare("DELETE FROM commercial_offers"),
+        db.prepare("DELETE FROM command_log"),
+        db.prepare("DELETE FROM assignments WHERE work_order_id IN (SELECT id FROM work_orders WHERE job_order_id = 'JOB-1')"),
+        db.prepare("DELETE FROM work_order_events WHERE work_order_id IN (SELECT id FROM work_orders WHERE job_order_id = 'JOB-1')"),
+        db.prepare("DELETE FROM work_orders WHERE job_order_id = 'JOB-1'"),
+        db.prepare("DELETE FROM requirement_contracts WHERE contract_id = 'RC-1'"),
+        db.prepare("DELETE FROM work_cases WHERE work_case_id = 'WC-1'"),
+      ]);
+
+      await db.batch([
+        db.prepare(
+          `INSERT INTO work_cases (work_case_id, job_order_id, state, current_layer_id, state_version, created_at, updated_at)
+           VALUES ('WC-1','JOB-1','REQUIREMENT_READY','L06',3,?,?)`,
+        ).bind(now, now),
+        db.prepare(
+          `INSERT INTO requirement_contracts (contract_id, version, status, content, content_hash, published_at, correlation_id, created_at)
+           VALUES ('RC-1',3,'PUBLISHED','{}','hash-3',?, 'console-demo', ?)`,
+        ).bind(now, now),
+        db.prepare(
+          `INSERT OR IGNORE INTO executors (id,name,profile_type,status,rating,completed_jobs,location,service_radius_km,team_size,lead_eligible,vehicle,hourly_rate)
+           VALUES ('ex-lead','Amélie Trottier','solo','available',4.9,120,'Montréal',20,1,1,'van',5700)`,
+        ),
+        db.prepare(
+          `INSERT OR IGNORE INTO executors (id,name,profile_type,status,rating,completed_jobs,location,service_radius_km,team_size,lead_eligible,vehicle,hourly_rate)
+           VALUES ('ex-helper','Youssef Benali','solo','available',4.7,64,'Montréal',20,1,0,'none',4200)`,
+        ),
+        db.prepare(
+          `INSERT INTO work_orders (public_reference,work_case_id,job_order_id,request_text,category,city,required_team_size,price,status,created_at)
+           VALUES ('WO-CONSOLE','WC-1','JOB-1','Move a couch to the third floor','moving','Montréal',2,0,'ready',?)`,
+        ).bind(now),
+      ]);
+
+      const order = await db.prepare("SELECT id FROM work_orders WHERE job_order_id = 'JOB-1'").first<{ id: number }>();
+      await db.batch([
+        // Capacity is held against people who ACCEPTED, so the fixture must
+        // reflect that rather than leaving them offered.
+        db.prepare(
+          `INSERT INTO assignments (work_order_id,executor_id,role,is_lead,status,offered_at,responded_at)
+           VALUES (?, 'ex-lead','lead',1,'accepted',?,?)`,
+        ).bind(order?.id ?? 0, now, now),
+        db.prepare(
+          `INSERT INTO assignments (work_order_id,executor_id,role,is_lead,status,offered_at,responded_at)
+           VALUES (?, 'ex-helper','helper',0,'accepted',?,?)`,
+        ).bind(order?.id ?? 0, now, now),
+      ]);
+
+      return Response.json({
+        ok: true, jobOrderId: "JOB-1", workCaseId: "WC-1",
+        crew: ["ex-lead (lead)", "ex-helper (helper)"],
+        note: "Two accepted assignments, one published RequirementContract at v3.",
+      }, { status: 201 });
+    }
+
     if (body.action === "reset_test_data") {
       await db.batch([
         db.prepare("DELETE FROM equipment_responses"),
