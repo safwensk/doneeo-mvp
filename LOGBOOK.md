@@ -48,22 +48,26 @@ repo_source:  origin/main — QUERY LIVE before every code start. Never cached h
               git ls-remote https://github.com/safwensk/doneeo-mvp refs/heads/main
               A cached SHA is a second copy of the truth and it drifts; LOG lines
               record the exact base SHA per piece of work, which is where history belongs.
-ci:           main green at a87c68a (PRs #1 S1-2, #2 architecture spine, #3 intake continuity).
-              Claude's 11 commits merge in on top; re-run CI after the merge.
+ci:           main green at 42d82c6 (PR #5 merged 2026-08-28: L6, L12, execution
+              console, live walkthrough, local-dev fix — the 15 commits this file
+              previously listed as blocked_on). CI 'verify' passed pre-merge on the
+              PR; re-run the full suite against 42d82c6 to confirm the merge itself
+              didn't regress anything.
 drive_docs:   21 + INBOX-ATLAS-19/20/21      highest numbered doc in DONEEO_SHARED_BRAIN
 lane_claude:  lib/ · tests/ · db/ · drizzle/
 lane_atlas:   docs/ · Drive canon · acceptance criteria
-next:         IDENTITY RECONCILE — two architecture models now sit on main.
-              lib/canonical-architecture.ts uses L01-L13/P01-P09 with a single L09.
-              lib/architecture/* uses L1-L13/P1-P9 with L09A and L09B split.
-              Canon has NO standalone Layer 9. One identity set must win; see LOG.
-              Atlas's file, Atlas's call — but it cannot stay ambiguous.
-              Then continue the layer build in dependency order. Built so far:
-              P1 L1 L2 L3 L4 L7 L09A L09B. Natural next is L11 (nine-state outcome
-              machine, `Any -> S5 on cancellation from L07`) then L12 (ledger —
-              the only layer permitted to turn L09B's minutes into money).
-blocked_on:   Safwen merging PR claude/architecture-v3 (15 commits). Atlas reads
-              GitHub raw only, so none of the above is visible to him until it lands.
+next:         IDENTITY RECONCILE still open. tests/layer-model-reconciliation.test.ts
+              now pins the exact disagreement (spine L09 Execution & Change Control
+              vs canon L09A/L09B, and L10's meaning swapped between the two files)
+              so either file changing alone fails it. Canon has NO standalone Layer 9.
+              One identity set must win; see LOG. Atlas's file, Atlas's call — but it
+              cannot stay ambiguous.
+              Layer build since the last HEAD update: L6 (CommercialOffer & Pricing)
+              and L12 (Settlement, Ledger, Reconciliation & FinanceOps) landed, ahead
+              of L11 in the originally stated dependency order. L11 (nine-state
+              outcome machine, `Any -> S5 on cancellation from L07`) is still unbuilt.
+blocked_on:   nothing. PR #5 (claude/architecture-v3, 15 commits) merged 2026-08-28 —
+              Atlas can now see everything above via GitHub raw.
 ```
 
 **Before any code work, run the `verify` command above.** If it disagrees with
@@ -215,6 +219,16 @@ Newest first. One line per piece of work. `KIND` is one of
 `BUILD MERGE AUDIT DECIDE FIX BLOCKED ASK`.
 
 ```
+2026-08-28  claude  MERGE   PR #5 (claude/architecture-v3, 15 commits, base=1730fe9) into
+                            main at 42d82c6. These 15 commits — L6 CommercialOffer &
+                            Pricing, L12 Settlement/Ledger/Reconciliation & FinanceOps,
+                            execution console UI, a live walkthrough against the built
+                            worker, a local-dev fix (`npm run db:local`) — had never
+                            been opened as a PR: PR #4 closed earlier in the branch's
+                            history, and everything pushed to claude/architecture-v3
+                            afterward sat with no CI run and no path to main. Opened
+                            #5, confirmed CI 'verify' green, merged on Safwen's
+                            go-ahead. This was blocked_on above; cleared.
 2026-08-24  claude  BUILD   L09B Responsibility & Fairness Economic. Three independent findings
                             (customer material-fact test with both defeaters, provider performance
                             test, Doneeo control test), then exactly one bearer per eligible cost
