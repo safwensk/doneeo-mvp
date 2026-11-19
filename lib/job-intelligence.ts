@@ -124,6 +124,7 @@ export function applyCustomerAnswers(analysis: PlannerAnalysis, answers: Record<
   const questions = analysis.questions.filter(question => {
     const value = merged[question.id];
     if (typeof value === "boolean" || (typeof value === "string" && value.trim())) return false;
+    if (question.id === "packaging_destination" && merged.packaging_removal === false) return false;
     const elevator = question.id.match(/^(stop_\d+)_elevator$/);
     if (elevator && /ground/i.test(floorByStop.get(elevator[1]) || "")) return false;
     return true;

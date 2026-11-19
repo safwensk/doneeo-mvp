@@ -467,7 +467,25 @@ assumes exists, and 4 is partly a consequence of it. Then 4, then 2, then 8.
 
 ---
 
+### 2026-11-19 · Customer application publication prepared (Codex)
+
+Base checked live: `main` at `0516ca35c3d9e8a29efd10141fe241bb92511d02`;
+customer UI baseline `frontend/redesign-main-flow` at
+`03925c28ca7c0d7580ea04cb93a51ea741d8e0d8`. Safwen requested publishing the
+completed local advancement. The React/Spring Boot customer app is added under
+`customer-app/`, preserving the root planner and original design. Login opens the
+full-page saved conversation, then the original planning/approval/demo-progress
+flow. Shared engine changes preserve saved-plan continuity during provider outages
+and skip a packaging destination question after removal is declined. Setup is
+portable, private runtime/data/keys are excluded, and separate frontend/backend CI
+jobs accompany the existing engine gate. See `docs/customer-app-progress.md` for
+the boundaries, provenance, tests and demo caveats. Customer frontend build and
+both backend integration tests passed from the publication checkout. Full GitHub
+CI is pending; this entry is a publication record, not a claim that the engine's
+remote Definition of Done or the open identity reconcile is complete.
+
 ## DO NOT REPEAT
+
 
 Each line is something that actually happened here, with its cause.
 

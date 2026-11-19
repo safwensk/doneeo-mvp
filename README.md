@@ -4,6 +4,14 @@ Doneeo is the intelligence layer between a customer's problem and the successful
 
 The full order is the product. Planning does not end at booking.
 
+## Customer application preview
+
+The integrated React + Spring Boot customer application is in [`customer-app/`](customer-app/README.md). It preserves the landing-page visuals and opens the full-page Doneeo conversation after login, followed by the existing planning options, resource approvals and demo progress flow. The TypeScript engine in this repository remains authoritative for planning and work control.
+
+For Windows, configure Java 21 and Maven, then run `customer-app/START_DONEEO_WINDOWS.bat` and open http://localhost:5173/. See the [portable setup guide](customer-app/README.md) and [progress/handoff record](docs/customer-app-progress.md). This is a local preview; dispatch, payments and tracking remain demo-only.
+
+The instructions below continue to apply to the canonical planner itself.
+
 ## Requirements
 
 - Node.js `>=22.13.0`

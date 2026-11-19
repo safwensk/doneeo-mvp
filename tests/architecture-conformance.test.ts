@@ -215,7 +215,8 @@ test("the layers backed by real code are the ones the MVP actually has", () => {
  */
 test("every layer with code is reachable from the running product", async () => {
   const { readdirSync, readFileSync, statSync } = await import("node:fs");
-  const root = new URL("../", import.meta.url).pathname;
+  const rootUrl = new URL("../", import.meta.url);
+  const root = fileURLToPath(rootUrl);
 
   const walk = (dir: string): string[] => {
     const out: string[] = [];
@@ -242,7 +243,7 @@ test("every layer with code is reachable from the running product", async () => 
     for (const m of src.matchAll(/from\s+"([^"]+)"/g)) {
       const spec = m[1]!;
       if (!spec.startsWith(".")) continue;
-      const base = new URL(spec, `file://${root}${file}`).pathname.slice(root.length);
+      const base = fileURLToPath(new URL(spec, new URL(file, rootUrl))).slice(root.length).replaceAll("\\", "/");
       for (const candidate of [`${base}.ts`, `${base}.tsx`, `${base}/index.ts`]) {
         try {
           if (statSync(`${root}${candidate}`).isFile()) { queue.push(candidate); break; }

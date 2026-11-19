@@ -41,3 +41,15 @@ next-env.d.ts
 /outputs/
 /work/
 .wrangler/
+
+# Integrated customer app: dependencies, generated CSS/builds and private data.
+**/node_modules/
+**/target/
+**/dist/
+**/.local-run/
+*.sqlite*
+*.mv.db
+*.tsbuildinfo
+*.log
+!/.env.example
+/customer-app/frontend/public/workspace.css

@@ -1,6 +1,7 @@
 import { derivePreparationStart, enforceSafety, fallbackAnalysis, type JobCategory } from "../../../lib/planner";
 import { applyDoneeoRulesGate } from "../../../lib/rules-gate";
 import { applyCustomerAnswers, buildJobIntelligence } from "../../../lib/job-intelligence";
+import { savedPlanningFallback } from "../../../lib/planning-continuity";
 import { architecturePosition } from "../../../lib/canonical-architecture";
 import { augmentWithHouseholdKnowledge } from "../../../lib/work-ontology";
 import {
@@ -567,9 +568,12 @@ export async function POST(request: Request) {
     );
   };
 
-  let analysis: ReturnType<typeof fallbackAnalysis> = fallback;
-  let pipeline = "RULE-BASED PLANNER";
-  let mode = "safe-fallback";
+  const savedFallback = requestedWorkCaseId
+    ? savedPlanningFallback(await workCaseStore.getLatestAnalysis(requestedWorkCaseId), authoritativeRequest)
+    : null;
+  let analysis: ReturnType<typeof fallbackAnalysis> = savedFallback || fallback;
+  let pipeline = savedFallback ? "SAVED PLAN CONTINUITY" : "RULE-BASED PLANNER";
+  let mode = savedFallback ? "saved-plan-fallback" : "safe-fallback";
 
   if (!process.env.GEMINI_API_KEY) {
     architectNotes.push("Gemini skipped: GEMINI_API_KEY not set");
@@ -598,15 +602,15 @@ export async function POST(request: Request) {
   );
 
   const withDiagnostics =
-    mode === "safe-fallback" && architectNotes.length
+    mode.includes("fallback") && architectNotes.length
       ? {
           ...finalChecked,
           audit: {
             ...finalChecked.audit,
-            issues: [
+            issues: Array.from(new Set([
               ...(finalChecked.audit?.issues || []),
               ...architectNotes,
-            ],
+            ])),
           },
         }
       : finalChecked;
@@ -624,6 +628,7 @@ export async function POST(request: Request) {
 
     return Response.json({
       analysis: withDiagnostics,
+      answers: customerAnswers,
       mode: `${mode}+rules-gate+job-intelligence+independent-validation`,
       architectNotes,
       workCaseId: control.workCaseId,
