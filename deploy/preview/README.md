@@ -30,6 +30,6 @@ docker run --name doneeo-preview -p 3000:3000 \
   doneeo-preview
 ```
 
-GitHub CI builds the actual image, checks public/authenticated planning, restarts the container, and checks saved conversation plus native WorkCase recovery from the same volume. These checks use fictional account data and deterministic planning without paid model calls.
+GitHub CI builds the actual image, checks public/authenticated planning, removes and replaces the container, and checks saved conversation plus native WorkCase recovery from the same volume. This checks the mounted storage rather than relying on the old container's writable layer. The checks use fictional account data and deterministic planning without paid model calls.
 
 Provider identities, availability/prices, checkout and execution progress remain prototype simulations. No real charge or provider dispatch occurs.

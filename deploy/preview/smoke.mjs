@@ -39,7 +39,7 @@ if(process.argv[2]==='resume'){
   assert.equal(resumed.status,200);
   assert.equal(resumed.data.workCaseId,fixture.workCaseId);
   assert.ok(resumed.data.analysis.tasks.length);
-  console.log('PASS: login, saved conversation and canonical work survive a container restart.');
+  console.log('PASS: login, saved conversation and canonical work survive replacing the container.');
 }else{
   const account={name:'Preview check',email:`preview-${randomUUID()}@example.test`,password:randomUUID()+randomUUID()};
   const withoutCsrf=csrf;csrf=undefined;
