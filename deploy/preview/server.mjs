@@ -13,8 +13,9 @@ const server=http.createServer(async(request,response)=>{
     response.setHeader('X-Content-Type-Options','nosniff');
     response.setHeader('Referrer-Policy','strict-origin-when-cross-origin');
     if(request.url==='/healthz'){
-      const checks=await Promise.all(['http://127.0.0.1:8080/api/health','http://127.0.0.1:5174/api/architecture'].map(async url=>(await fetch(url,{signal:AbortSignal.timeout(3000)})).ok));
-      return json(checks.every(Boolean)?200:503,{status:checks.every(Boolean)?'ok':'starting'});
+      const checks=await Promise.all(['http://127.0.0.1:8080/api/health','http://127.0.0.1:5174/api/architecture'].map(async url=>(await fetch(url,{signal:AbortSignal.timeout(3000)})).status));
+      const healthy=checks.every(status=>status===200);
+      return json(healthy?200:503,{status:healthy?'ok':'starting',services:{customer:checks[0],planner:checks[1]}});
     }
     if(Date.now()>=expiry){
       if(request.url?.startsWith('/api/'))return json(410,{error:'This test preview has ended.'});

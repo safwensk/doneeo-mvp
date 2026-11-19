@@ -17,9 +17,10 @@ async function call(path,body){
   return {status:response.status,data,text};
 }
 const deadline=Date.now()+120000;
+let lastHealth='No response';
 while(true){
-  try{const health=await fetch(base+'/healthz',{signal:AbortSignal.timeout(3000)});if(health.ok)break;}catch{}
-  if(Date.now()>deadline)throw new Error('Preview did not become healthy.');
+  try{const health=await fetch(base+'/healthz',{signal:AbortSignal.timeout(3000)});lastHealth=await health.text();if(health.ok)break;}catch{}
+  if(Date.now()>deadline)throw new Error('Preview did not become healthy: '+lastHealth);
   await sleep(1000);
 }
 assert.equal((await call('/')).status,200);

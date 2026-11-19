@@ -19,7 +19,6 @@ const runtime=new Miniflare({
   host:'127.0.0.1',port:5174,
   d1Databases:{DB:'00000000-0000-4000-8000-000000000000'},
   d1Persist:resolve(process.env.DONEEO_PLANNER_STATE||'.wrangler/state','v3/d1'),
-  assets:{directory:resolve(root,'dist/client'),binding:'ASSETS'},
   bindings,
 });
 await runtime.ready;
