@@ -1,0 +1,35 @@
+FROM node:24-bookworm AS web
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY customer-app/frontend/package.json customer-app/frontend/package-lock.json ./customer-app/frontend/
+RUN npm --prefix customer-app/frontend ci --no-audit --no-fund
+COPY . .
+RUN chmod +x scripts/*.sh && npm run build && npm --prefix customer-app/frontend run build
+
+FROM maven:3.9-eclipse-temurin-21 AS java
+WORKDIR /build
+COPY customer-app/backend/pom.xml ./pom.xml
+COPY customer-app/backend/src ./src
+RUN mvn --batch-mode -DskipTests package
+
+FROM eclipse-temurin:21-jre-noble
+RUN apt-get update && apt-get install -y --no-install-recommends gosu libatomic1 libstdc++6 \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --gid 10001 doneeo && useradd --uid 10001 --gid doneeo --create-home doneeo
+COPY --from=web /usr/local/ /usr/local/
+WORKDIR /app
+COPY --from=web --chown=doneeo:doneeo /app/node_modules ./node_modules
+COPY --from=web --chown=doneeo:doneeo /app/package.json /app/package-lock.json ./
+COPY --from=web --chown=doneeo:doneeo /app/dist ./dist
+COPY --from=web --chown=doneeo:doneeo /app/customer-app/frontend/dist ./customer-app/frontend/dist
+COPY --from=web --chown=doneeo:doneeo /app/deploy/preview ./deploy/preview
+COPY --from=web --chown=doneeo:doneeo /app/scripts ./scripts
+COPY --from=web --chown=doneeo:doneeo /app/drizzle ./drizzle
+COPY --from=web --chown=doneeo:doneeo /app/worker ./worker
+COPY --from=java --chown=doneeo:doneeo /build/target/doneeo-api-0.2.0-SNAPSHOT.jar ./customer-app/backend/app.jar
+RUN chown doneeo:doneeo /app && chmod +x deploy/preview/*.sh scripts/*.sh
+ENV PORT=3000 DONEEO_DATA_ROOT=/data DONEEO_COOKIE_SECURE=true CI=true \
+    WRANGLER_SEND_METRICS=false WRANGLER_WRITE_LOGS=false
+EXPOSE 3000
+ENTRYPOINT ["/app/deploy/preview/entrypoint.sh"]

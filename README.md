@@ -12,6 +12,8 @@ For Windows, configure Java 21 and Maven, then run `customer-app/START_DONEEO_WI
 
 The instructions below continue to apply to the canonical planner itself.
 
+For a multi-day test, [the persistent preview container](deploy/preview/README.md) packages all three services with a shared data volume and an explicit expiry. Hosting activation is separate from publishing source.
+
 ## Requirements
 
 - Node.js `>=22.13.0`

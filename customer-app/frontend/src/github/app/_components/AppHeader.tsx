@@ -16,6 +16,7 @@ export function AppHeader({ stage, progress, onSignOut, onNewRequest }: {
 }) {
   const account = useRef<HTMLDetailsElement>(null);
   const trigger = useRef<HTMLElement>(null);
+  const showPreviewTools = typeof window !== "undefined" && ["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname);
   useEffect(() => {
     const menu = account.current;
     const root = menu?.getRootNode();
@@ -63,13 +64,13 @@ export function AppHeader({ stage, progress, onSignOut, onNewRequest }: {
         </summary>
         <div className="absolute right-0 top-full mt-2 w-[224px] rounded-xl-r border border-line-r bg-surface-r p-2 shadow-raised-r">
           <button onClick={() => action(onNewRequest)} className="flex w-full items-center gap-2 rounded-lg-r px-3 py-3 text-left text-sm text-ink-r hover:bg-canvas-r"><Plus size={16} aria-hidden="true" />New request</button>
-          <details className="border-y border-line-r">
+          {showPreviewTools && <details className="border-y border-line-r">
             <summary className="cursor-pointer px-3 py-3 text-xs text-muted-r">Preview tools</summary>
             <nav aria-label="Preview tools" className="pb-2">{TOOLS.map(link =>
               <a key={link.href} href={`http://localhost:5174${link.href}`} target="_blank" rel="noreferrer"
                 className="block rounded-lg-r px-4 py-2 text-xs text-muted-r hover:bg-canvas-r hover:text-ink-r">{link.label}</a>)}
             </nav>
-          </details>
+          </details>}
           <button onClick={() => action(onSignOut)} className="flex w-full items-center gap-2 rounded-lg-r px-3 py-3 text-left text-sm text-ink-r hover:bg-canvas-r"><LogOut size={16} aria-hidden="true" />Log out</button>
         </div>
       </details>
