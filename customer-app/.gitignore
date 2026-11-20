@@ -1,0 +1,12 @@
+node_modules/
+dist/
+target/
+.env*
+.local-run/
+.wrangler/
+.sites-runtime/
+*.sqlite*
+*.mv.db
+*.tsbuildinfo
+*.log
+.DS_Store

@@ -1,0 +1,15 @@
+.git
+**/node_modules
+**/dist
+**/target
+**/.env*
+**/.dev.vars*
+**/.local-run
+**/.wrangler
+**/.sites-runtime
+**/*.sqlite*
+**/*.log
+**/*.tsbuildinfo
+outputs
+work
+.vercel

@@ -467,7 +467,41 @@ assumes exists, and 4 is partly a consequence of it. Then 4, then 2, then 8.
 
 ---
 
+### 2026-11-19 · Customer application publication prepared (Codex)
+
+Base checked live: `main` at `0516ca35c3d9e8a29efd10141fe241bb92511d02`;
+customer UI baseline `frontend/redesign-main-flow` at
+`03925c28ca7c0d7580ea04cb93a51ea741d8e0d8`. Safwen requested publishing the
+completed local advancement. The React/Spring Boot customer app is added under
+`customer-app/`, preserving the root planner and original design. Login opens the
+full-page saved conversation, then the original planning/approval/demo-progress
+flow. Shared engine changes preserve saved-plan continuity during provider outages
+and skip a packaging destination question after removal is declined. Setup is
+portable, private runtime/data/keys are excluded, and separate frontend/backend CI
+jobs accompany the existing engine gate. See `docs/customer-app-progress.md` for
+the boundaries, provenance, tests and demo caveats. Customer frontend build and
+both backend integration tests passed from the publication checkout. Full GitHub
+CI is pending; this entry is a publication record, not a claim that the engine's
+remote Definition of Done or the open identity reconcile is complete.
+
+### 2026-11-19 · Persistent preview packaging prepared (Codex)
+
+Base `43284a37426b7543e51f7940e02c14d1b163a187`, checked live with main at
+`0516ca35c3d9e8a29efd10141fe241bb92511d02`. The first public Vercel sandbox
+verified real Gemini planning, authenticated discussion, follow-ups, exact retries
+and login/resume. Safwen requested a week of testing; the sandbox session limit
+cannot provide that. `Dockerfile.preview` and `deploy/preview/` now package the
+unchanged customer app, Java API and compiled canonical Worker with persistent
+customer/D1 state, private planner networking and an absolute test expiry.
+Miniflare is explicitly pinned to the version already in the lockfile; no model
+or layer identity changed. Hosted account menus omit the localhost-only developer
+links. New image CI verifies native planning and recovery after a container
+restart. Container CI and hosting activation are pending; this records preparation
+and does not claim a week-long deployment is live.
+
 ## DO NOT REPEAT
+
+
 
 Each line is something that actually happened here, with its cause.
 
