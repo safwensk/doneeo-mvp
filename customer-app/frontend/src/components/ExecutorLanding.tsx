@@ -1,58 +1,29 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
-  ArrowRight, CalendarDays, CheckCircle2, ClipboardList, HardHat,
+  ArrowRight, CalendarDays, ClipboardList, HardHat,
   Layers3, Menu, ReceiptText, Truck, UserRound, UsersRound, Wrench, X,
 } from 'lucide-react';
 import '../executor-landing.css';
 
-type ProfileDraft = {
-  name: string;
-  email: string;
-  city: string;
-  role: '' | 'helper' | 'professional';
-};
-
-const draftKey = 'doneeo.executor-profile-draft.v1';
-const emptyDraft: ProfileDraft = { name: '', email: '', city: '', role: '' };
-
-function readDraft(): ProfileDraft {
-  try {
-    const value: unknown = JSON.parse(localStorage.getItem(draftKey) || 'null');
-    if (!value || typeof value !== 'object') return { ...emptyDraft };
-    const draft = value as Record<string, unknown>;
-    if (typeof draft.name !== 'string' || typeof draft.email !== 'string'
-      || typeof draft.city !== 'string'
-      || (draft.role !== 'helper' && draft.role !== 'professional')) return { ...emptyDraft };
-    return {
-      name: draft.name.slice(0, 100), email: draft.email.slice(0, 254),
-      city: draft.city.slice(0, 150), role: draft.role,
-    };
-  } catch {
-    return { ...emptyDraft };
-  }
-}
-
 const requestRows = [
-  { icon: ClipboardList, label: 'Clear scope & your role', description: 'See the tasks and expected result' },
+  { icon: UserRound, label: 'Your role', description: 'Local helper or licensed professional' },
   { icon: Layers3, label: 'Proposed rate', description: 'Based on the job and your relevant profile' },
-  { icon: Truck, label: 'Equipment & pickup', description: 'Your listed equipment plus rentals if needed' },
-  { icon: UsersRound, label: 'Working together', description: 'Other helpers or professionals coordinated' },
-  { icon: CalendarDays, label: 'Schedule', description: 'Matched only to available calendar slots' },
+  { icon: Truck, label: 'Equipment', description: 'Use listed equipment or arrange rentals if needed' },
+  { icon: UsersRound, label: 'Team', description: 'Other helpers or professionals coordinated by Doneeo' },
+  { icon: CalendarDays, label: 'Schedule', description: 'Matched to your available calendar slots' },
 ];
 
 const organizedSteps = [
-  { icon: ClipboardList, title: 'Order confirmed', description: 'Your agreed role, scope, rate and schedule are locked in.' },
-  { icon: CalendarDays, title: 'Calendar managed', description: 'Doneeo only considers your profile when your calendar shows availability for the job. Accepted work is added to your calendar.' },
-  { icon: Truck, title: 'Equipment & team coordinated', description: 'Use listed equipment. Rentals, pickup and extra teammates are arranged when needed.' },
-  { icon: CheckCircle2, title: 'Plan & progress visible', description: 'Follow steps, updates and coordination through completion.' },
+  { icon: ClipboardList, title: 'Plan the job', description: 'We define the tasks, equipment and people the job needs.' },
+  { icon: CalendarDays, title: 'Match and schedule', description: 'We send you jobs based on your profile and only when your calendar shows you’re available.' },
+  { icon: Truck, title: 'Coordinate the work', description: 'Once you accept, we confirm the work order and arrange the team, equipment and handoffs.' },
+  { icon: ReceiptText, title: 'Invoice and pay', description: 'We handle customer invoicing and track payments against the agreed work order.' },
 ];
 
 export default function ExecutorLanding() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [draft, setDraft] = useState<ProfileDraft>(readDraft);
-  const [saved, setSaved] = useState(false);
-  const [formError, setFormError] = useState('');
   const planDialog = useRef<HTMLDialogElement>(null);
+  const profileDialog = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
     document.title = 'Work with Doneeo — Bring your skills';
@@ -60,38 +31,10 @@ export default function ExecutorLanding() {
       'Bring your skills. Doneeo matches suitable job requests to local helpers and licensed professionals, with clear plans and calendar-based availability.');
   }, []);
 
-  function updateDraft(field: keyof ProfileDraft, value: string) {
-    setDraft(current => ({ ...current, [field]: value }));
-    setSaved(false);
-    setFormError('');
-  }
-
-  function saveDraft(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const normalized = { ...draft, name: draft.name.trim(), email: draft.email.trim(), city: draft.city.trim() };
-    if (!normalized.name || !normalized.city || !normalized.role) {
-      setFormError('Please add your name, city or service area, and the role you want to explore.');
-      return;
-    }
-    try {
-      localStorage.setItem(draftKey, JSON.stringify(normalized));
-      setDraft(normalized);
-      setSaved(true);
-      setFormError('');
-    } catch {
-      setFormError('This browser could not save your draft. Please allow local storage and try again.');
-    }
-  }
-
-  function clearDraft() {
-    try {
-      localStorage.removeItem(draftKey);
-      setDraft({ ...emptyDraft });
-      setSaved(false);
-      setFormError('');
-    } catch {
-      setFormError('This browser could not clear the saved draft. Please check its storage settings.');
-    }
+  function openProfilePreview() {
+    setMenuOpen(false);
+    planDialog.current?.close();
+    profileDialog.current?.showModal();
   }
 
   return <div className="executor-page">
@@ -108,7 +51,7 @@ export default function ExecutorLanding() {
         </nav>
         <div className="executor-nav-actions">
           <a className="executor-customer-link" href="/">For customers</a>
-          <a className="primary" href="#join-doneeo">Join Doneeo</a>
+          <button className="primary" type="button" aria-haspopup="dialog" onClick={openProfilePreview}>Start my profile</button>
           <button className="executor-menu-toggle" type="button" onClick={() => setMenuOpen(open => !open)}
             aria-expanded={menuOpen} aria-controls="executor-mobile-menu" aria-label={menuOpen ? 'Close menu' : 'Open menu'}>
             {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
@@ -126,15 +69,14 @@ export default function ExecutorLanding() {
     <main className="executor-container" id="executor-main">
       <section className="executor-hero" id="the-work" aria-labelledby="executor-heading">
         <div className="executor-hero-copy">
-          <span className="executor-eyebrow"><UsersRound size={21} aria-hidden="true" />Local helpers & licensed professionals</span>
+          <span className="executor-eyebrow"><UsersRound size={21} aria-hidden="true" />Work with Doneeo</span>
           <h1 id="executor-heading">Bring your skills.<br /><em>We match you with<br className="executor-heading-break" /> work that fits.</em></h1>
-          <p>Doneeo matches job requests to your skills, profile and available calendar slots. You accept the work that suits you. We handle the plan, calendar, team coordination, equipment arrangements, billing and payments.</p>
-          <a className="primary executor-start" href="#join-doneeo">Start my Doneeo profile <ArrowRight size={24} aria-hidden="true" /></a>
-          <p className="executor-reassurance"><CheckCircle2 size={26} aria-hidden="true" /><span>No professional qualification needed for suitable local-helper work.</span></p>
+          <p>Set up your profile and tell us when you’re available. Doneeo sends you work that fits your skills and calendar. Review the plan and accept the jobs that suit you.</p>
+          <button className="primary executor-start" type="button" aria-haspopup="dialog" onClick={openProfilePreview}>Start my Doneeo profile <ArrowRight size={24} aria-hidden="true" /></button>
         </div>
 
         <div className="executor-request-card">
-          <div className="executor-request-top"><h2>Review a suitable request</h2><span>Example only</span></div>
+          <div className="executor-request-top"><h2>Review a job request</h2><span>Example</span></div>
           <h3 className="executor-request-title"><span><Wrench size={31} aria-hidden="true" /></span>Help get a workspace ready to use</h3>
           <dl className="executor-request-rows">
             {requestRows.map(row => <div key={row.label}>
@@ -143,35 +85,36 @@ export default function ExecutorLanding() {
             </div>)}
           </dl>
           <div className="executor-request-bottom">
-            <button className="outlined" type="button" onClick={() => planDialog.current?.showModal()}>Review the full plan <ArrowRight size={20} aria-hidden="true" /></button>
-            <span>Accept the jobs that suit you.</span>
+            <button className="outlined" type="button" onClick={() => planDialog.current?.showModal()}>See the plan before you accept or decline <ArrowRight size={18} aria-hidden="true" /></button>
           </div>
         </div>
       </section>
 
       <section className="executor-roles" id="who-can-join" aria-labelledby="executor-roles-heading">
-        <h2 id="executor-roles-heading">Your abilities matter. <em>There's a role to explore.</em></h2>
+        <h2 id="executor-roles-heading">Put your time, tools and skills <em>to work.</em></h2>
         <div className="executor-role-grid">
           <article className="executor-role-card">
-            <img src="/images/executor-local-helper-v1.png" alt="A local helper in a green shirt outside a home" width="1200" height="675" loading="lazy" decoding="async" />
+            <img src="/images/recruitment-helpers-v1.webp" alt="A woman and man wearing green Doneeo Helper shirts" width="1200" height="751" loading="lazy" decoding="async" />
             <div className="executor-role-copy"><span><UserRound size={39} aria-hidden="true" /></span><div>
-              <h3>Local helper</h3>
-              <p>Practical skills and free time. No professional qualification needed for suitable helper tasks.</p>
+              <h3>Doneeo Helper</h3>
+              <p className="executor-role-label">Local helper</p>
+              <p>No experience needed for suitable local tasks. Put your free time to work, list any equipment you have, and get ready for your first job.</p>
             </div></div>
           </article>
           <article className="executor-role-card">
-            <img src="/images/executor-professional-v1.png" alt="A professional in navy workwear and a white hard hat at a worksite" width="1200" height="675" loading="lazy" decoding="async" />
+            <img src="/images/recruitment-professionals-v1.webp" alt="A woman and man wearing navy Doneeo Pro shirts and white hard hats" width="1200" height="751" loading="lazy" decoding="async" />
             <div className="executor-role-copy"><span><HardHat size={39} aria-hidden="true" /></span><div>
-              <h3>Licensed professional</h3>
-              <p>Put your qualifications and experience to work on requests that need them.</p>
+              <h3>Doneeo Pro</h3>
+              <p className="executor-role-label">Licensed professional</p>
+              <p>Put your licence and experience to work on jobs that need them. Add your qualifications and availability so Doneeo can send you suitable requests.</p>
             </div></div>
           </article>
         </div>
-        <p className="executor-team-note">If the job needs more than one person, Doneeo coordinates the team and the handoffs.</p>
       </section>
 
       <section className="executor-organized" id="how-doneeo-helps" aria-labelledby="executor-organized-heading">
-        <h2 id="executor-organized-heading">Once you accept, <em>Doneeo keeps it organized.</em></h2>
+        <h2 id="executor-organized-heading">Set up your profile. <em>Doneeo handles the rest.</em></h2>
+        <p className="executor-organized-intro">From the customer’s request to a clear work order, we plan and coordinate the job through completion.</p>
         <div className="executor-organized-grid">
           {organizedSteps.map(step => <div key={step.title}>
             <step.icon size={46} strokeWidth={1.8} aria-hidden="true" />
@@ -180,42 +123,33 @@ export default function ExecutorLanding() {
         </div>
       </section>
 
-      <section className="executor-terms-grid" aria-label="Rates and payments">
-        <article><div className="executor-terms-title"><Layers3 size={53} strokeWidth={1.8} aria-hidden="true" /><h2>Fair proposed rates.<br />Clear before you accept.</h2></div>
-          <p>See the work, responsibilities, equipment and payment terms. Doneeo proposes the rate based on the request and your relevant skills, experience and profile. You decide what suits you.</p>
+      <section className="executor-terms-grid" aria-label="Review and follow your work order">
+        <article><div className="executor-terms-title"><Layers3 size={44} strokeWidth={1.8} aria-hidden="true" /><div>
+          <h2>Know what you’re accepting</h2>
+          <p>See your role, schedule, equipment and proposed rate before you accept.</p>
+        </div></div>
         </article>
-        <article><div className="executor-terms-title"><ReceiptText size={53} strokeWidth={1.8} aria-hidden="true" /><h2>Billing and payments<br />are handled.</h2></div>
-          <p>Doneeo manages customer invoicing and the payment process around the agreed job. You can focus on the work and follow its progress in one place.</p>
+        <article><div className="executor-terms-title"><ReceiptText size={44} strokeWidth={1.8} aria-hidden="true" /><div>
+          <h2>Follow the job in one place</h2>
+          <p>See the confirmed work order, next steps and updates through completion.</p>
+        </div></div>
         </article>
       </section>
 
       <section className="executor-join" id="join-doneeo" aria-labelledby="executor-join-heading">
-        <h2 id="executor-join-heading">Your skills and free time can <em>help your community.</em></h2>
-        <p className="executor-preview-note" id="executor-preview-note">Test preview: this form saves a profile draft only in this browser. Live applications, matching and payments are not available yet.</p>
-        <form className="executor-join-form" onSubmit={saveDraft} aria-describedby="executor-preview-note">
-          <div className="executor-form-row"><label htmlFor="executor-name">Name</label><input id="executor-name" name="name" autoComplete="name" required maxLength={100} value={draft.name} onChange={event => updateDraft('name', event.target.value)} /></div>
-          <div className="executor-form-row"><label htmlFor="executor-email">Email</label><input id="executor-email" name="email" type="email" autoComplete="email" required maxLength={254} value={draft.email} onChange={event => updateDraft('email', event.target.value)} /></div>
-          <div className="executor-form-row"><label htmlFor="executor-city">City or service area</label><input id="executor-city" name="city" autoComplete="address-level2" required maxLength={150} value={draft.city} onChange={event => updateDraft('city', event.target.value)} /></div>
-          <fieldset className="executor-role-choice"><legend>I'd like to join as</legend><div>
-            <label><input name="executor-role" type="radio" value="helper" required checked={draft.role === 'helper'} onChange={() => updateDraft('role', 'helper')} />Local helper</label>
-            <label><input name="executor-role" type="radio" value="professional" required checked={draft.role === 'professional'} onChange={() => updateDraft('role', 'professional')} />Licensed professional</label>
-          </div></fieldset>
-          <div className="executor-form-actions"><button className="primary" type="submit">{saved ? 'Draft saved' : 'Join Doneeo'} {saved ? <CheckCircle2 size={21} aria-hidden="true" /> : <ArrowRight size={21} aria-hidden="true" />}</button>
-            {(draft.name || draft.email || draft.city || draft.role) && <button className="executor-clear-draft" type="button" onClick={clearDraft}>Clear draft</button>}
-          </div>
-          <div aria-live="polite" aria-atomic="true">
-            {saved && <p className="executor-form-success" role="status"><CheckCircle2 size={22} aria-hidden="true" /><span>Your preview profile draft is saved on this device. No application has been submitted and no account has been created.</span></p>}
-          </div>
-          {formError && <p className="executor-form-error" role="alert">{formError}</p>}
-          <p className="executor-next-note">Next: your skills, calendar availability and equipment. Add qualifications where the work requires them.</p>
-        </form>
+        <h2 id="executor-join-heading">Create your Doneeo profile</h2>
+        <p className="executor-join-copy">Sign in or create an account, then choose Local helper or Licensed professional.</p>
+        <button className="primary executor-start" type="button" aria-haspopup="dialog" aria-describedby="executor-profile-status" onClick={openProfilePreview}>
+          Start my Doneeo profile <ArrowRight size={24} aria-hidden="true" />
+        </button>
+        <p className="executor-profile-status" id="executor-profile-status">Worker registration is coming soon.</p>
       </section>
     </main>
 
     <footer className="executor-container executor-footer">
       <a href="/" aria-label="Doneeo customer homepage"><img src="/images/doneeo-logo.png" alt="Doneeo" width="119" height="34" /></a>
       <a href="/">For customers</a><a href="/#trust">Support</a>
-      <span>Test preview · Job matching and payments are not yet live.</span>
+      <span>Preview. Job matching and payments are not live.</span>
     </footer>
 
     <dialog className="executor-plan-dialog" ref={planDialog} aria-labelledby="executor-plan-heading">
@@ -230,7 +164,18 @@ export default function ExecutorLanding() {
         <li><strong>Accept, then follow the plan</strong><span>Once accepted, the agreed scope, role, rate and schedule are confirmed. Follow coordination and progress through completion.</span></li>
       </ol>
       <p className="executor-dialog-note">This example has no live job, price or payment. No work is booked from this preview.</p>
-      <a className="primary" href="#join-doneeo" onClick={() => planDialog.current?.close()}>Start my Doneeo profile <ArrowRight size={20} aria-hidden="true" /></a>
+      <button className="primary" type="button" aria-haspopup="dialog" onClick={openProfilePreview}>Start my Doneeo profile <ArrowRight size={20} aria-hidden="true" /></button>
+    </dialog>
+
+    <dialog className="executor-plan-dialog" ref={profileDialog} aria-labelledby="executor-profile-heading" aria-describedby="executor-registration-note">
+      <form method="dialog"><button className="executor-dialog-close" aria-label="Close profile preview"><X size={23} aria-hidden="true" /></button></form>
+      <h2 id="executor-profile-heading">Create your Doneeo profile</h2>
+      <p id="executor-registration-note">Worker registration is coming soon. Here’s how you’ll get started.</p>
+      <ol className="executor-example-plan">
+        <li><strong>Sign in or create an account</strong><span>Start with your Doneeo account.</span></li>
+        <li><strong>Choose your role</strong><span>Join as a Local helper or Licensed professional.</span></li>
+        <li><strong>Complete your profile</strong><span>Add your skills, service area, availability and equipment. Include your qualifications for licensed work.</span></li>
+      </ol>
     </dialog>
   </div>;
 }
