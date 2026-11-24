@@ -6,6 +6,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,7 +29,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
         "server.port=0",
         "spring.datasource.url=jdbc:h2:mem:customer-flow;DB_CLOSE_DELAY=-1",
-        "spring.datasource.driver-class-name=org.h2.Driver"
+        "spring.datasource.driver-class-name=org.h2.Driver",
+        "DONEEO_EXECUTOR_DEMO=true",
+        "DONEEO_EXECUTOR_DOCUMENT_KEY=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 })
 class CustomerFlowTest {
     @Value("${local.server.port}") int port;
@@ -278,6 +282,81 @@ class CustomerFlowTest {
         assertEquals(0, reloaded.path("availability").size());
     }
 
+    @Test
+    void workerOnboardingOfferAndCalendarUseTheSameAccountAndFullWindow() throws Exception {
+        Client owner = new Client();
+        String accountId = createWorker(owner);
+        var profile = json.createObjectNode().put("role", "professional").put("timeZone", "America/Toronto");
+        profile.putObject("qualifications").put("trade", "Electrician").put("region", "Ontario");
+        var availability = profile.putArray("availability");
+        Arrays.stream(java.time.DayOfWeek.values()).forEach(day -> availability.addObject()
+                .put("day", day.name()).put("start", "08:00").put("end", "17:00"));
+        var setup = profile.putObject("setup").put("radiusKm", 20).put("driverLicensed", true).put("about", "Example setup");
+        setup.putObject("address").put("street", "100 Test Avenue").put("city", "Toronto").put("region", "Ontario")
+                .put("postalCode", "M5V 1A1").put("country", "Canada");
+        setup.putArray("workTypes").addObject().put("label", "Furniture assembly").put("level", "independent");
+        setup.putArray("kit").add("Cordless drill and bits").add("Stud finder");
+        setup.putArray("blockedDates");
+        String base = "/api/executor";
+        var update = Map.of("accountId", accountId, "profile", profile);
+        assertEquals(200, owner.request("POST", base+"/profile/draft", update, true).statusCode());
+        assertEquals(200, owner.request("GET", base+"/profile/draft", null, false).statusCode());
+        assertEquals(400, owner.request("POST", base+"/profile", update, true).statusCode());
+        String fixture = "%PDF-1.4\nDoneeo test fixture\n%%EOF";
+        String fixtureBytes = Base64.getEncoder().encodeToString(fixture.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        assertEquals(200, owner.request("POST", base+"/assets", Map.of("accountId", accountId,"kind","identity","data",fixtureBytes), true).statusCode());
+        assertEquals(fixture, owner.request("GET",base+"/assets/identity",null,false).body());
+        byte[] encrypted=database.queryForObject("SELECT encrypted_content FROM executor_assets WHERE account_id=? AND kind='identity'",byte[].class,accountId);
+        assertFalse(Arrays.equals(fixture.getBytes(java.nio.charset.StandardCharsets.UTF_8),encrypted));
+        assertEquals(200, owner.request("POST", base+"/assets", Map.of("accountId", accountId,"kind","trade","sample",true), true).statusCode());
+        assertEquals(400, owner.request("POST", base+"/profile", update, true).statusCode());
+        assertEquals(200, owner.request("POST", base+"/assets", Map.of("accountId", accountId,"kind","driver","sample",true), true).statusCode());
+        var saved = owner.request("POST", base+"/profile", update, true);
+        assertEquals(200, saved.statusCode(), saved.body());
+        assertEquals(204, owner.request("GET", base+"/profile/draft", null, false).statusCode());
+        assertEquals(403, owner.request("GET", base+"/reviews", null, false).statusCode());
+
+        var offered = owner.request("POST", base+"/jobs/sample", Map.of("accountId",accountId), true);
+        assertEquals(200, offered.statusCode(), offered.body());
+        JsonNode job = json.readTree(offered.body());
+        String jobId = job.path("id").asText();
+        assertEquals(225 * 60000L, job.path("end").asLong()-job.path("start").asLong());
+        assertEquals(2, job.path("plan").path("workerKit").size());
+        assertTrue(json.readTree(owner.request("GET",base+"/workspace",null,false).body()).path("notifications").size()>0);
+        Client other = new Client();
+        createWorker(other);
+        assertEquals(404, other.request("GET",base+"/assets/identity",null,false).statusCode());
+        assertEquals(404, other.request("GET", base+"/jobs/"+jobId, null, false).statusCode());
+        String jobPath = base+"/jobs/"+jobId;
+        assertEquals(400, owner.request("POST",jobPath,Map.of("accountId",accountId,"action","accept"),true).statusCode());
+        assertEquals(200, owner.request("POST",jobPath,Map.of("accountId",accountId,"action","missing","message","Drill and bits"),true).statusCode());
+        var acceptance = Map.of("accountId",accountId,"action","accept","bringConfirmed",true);
+        assertEquals(409, owner.request("POST",jobPath,acceptance,true).statusCode());
+        assertEquals(200, owner.request("POST",jobPath,Map.of("accountId",accountId,"action","resolve_sample_equipment"),true).statusCode());
+        var accepted = owner.request("POST",jobPath,acceptance,true);
+        assertEquals(200, accepted.statusCode(), accepted.body());
+        assertEquals("UPCOMING", json.readTree(accepted.body()).path("job").path("status").asText());
+        assertEquals(200, owner.request("POST",jobPath,acceptance,true).statusCode());
+
+        String overlapping = UUID.randomUUID().toString();
+        database.update("INSERT INTO executor_jobs SELECT ?,account_id,start_at,end_at,'OFFERED',0,0,plan_json FROM executor_jobs WHERE id=?",
+                overlapping,jobId);
+        assertEquals(409, owner.request("POST",base+"/jobs/"+overlapping,acceptance,true).statusCode());
+        assertEquals(200, owner.request("POST",base+"/jobs/"+overlapping,Map.of("accountId",accountId,"action","decline"),true).statusCode());
+        for(int i=0;i<4;i++) assertEquals(200, owner.request("POST",jobPath,Map.of("accountId",accountId,"action","advance","step",i),true).statusCode());
+        var done = owner.request("POST",jobPath,Map.of("accountId",accountId,"action","complete_sample"),true);
+        assertEquals(200,done.statusCode(),done.body());
+        assertEquals("COMPLETED",json.readTree(done.body()).path("job").path("status").asText());
+    }
+
+    private String createWorker(Client client) throws Exception {
+        client.refreshCsrf();
+        var registration=client.request("POST","/api/auth/register",Map.of("name","Sample worker","email",UUID.randomUUID()+"@example.test","password","test-worker-only-2026"),true);
+        assertEquals(200,registration.statusCode(),registration.body());
+        client.refreshCsrf();
+        return json.readTree(registration.body()).path("id").asText();
+    }
+
     private class Client {
         private final HttpClient client = HttpClient.newBuilder()
                 .cookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_ALL)).build();
@@ -300,4 +379,3 @@ class CustomerFlowTest {
         }
     }
 }
-

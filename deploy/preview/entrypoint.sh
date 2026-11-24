@@ -20,6 +20,7 @@ if [ "$(readlink -f /app/.wrangler/state)" != "$(readlink -f "$data_root/planner
   echo 'Planner state must point to the mounted preview data directory.' >&2; exit 1
 fi
 export DONEEO_DATA_DIR="$data_root/customer"
+export DONEEO_EXECUTOR_DEMO=true
 export DONEEO_PLANNER_STATE="$data_root/planner"
 bash scripts/db-local.sh --keep
 children=()

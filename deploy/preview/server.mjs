@@ -25,7 +25,8 @@ const server=http.createServer(async(request,response)=>{
     if(request.url==='/__preview')return json(200,{application:'Doneeo',environment:'test-preview',commit:process.env.RAILWAY_GIT_COMMIT_SHA||process.env.DONEEO_GIT_COMMIT||'local',expiresAt:new Date(expiry).toISOString()});
     if(request.url?.startsWith('/api/')){
       const parts=[];let size=0;
-      for await(const part of request){size+=part.length;if(size>512*1024)return json(413,{error:'Request too large.'});parts.push(part);}
+      const limit=request.method==='POST'&&request.url==='/api/executor/assets'?3*1024*1024:512*1024;
+      for await(const part of request){size+=part.length;if(size>limit)return json(413,{error:'Request too large.'});parts.push(part);}
       const body=Buffer.concat(parts);
       const headers={...request.headers,'x-forwarded-proto':process.env.DONEEO_COOKIE_SECURE==='false'?'http':'https','x-forwarded-host':request.headers.host,'content-length':String(body.length)};
       delete headers['transfer-encoding'];delete headers.connection;

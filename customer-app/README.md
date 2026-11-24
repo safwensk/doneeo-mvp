@@ -104,6 +104,14 @@ This is a local prototype, not a production launch. Email verification, password
 
 The optional AI and route services may fail because of unavailable quota, provider demand or invalid credentials. A fallback preserves continuity; it does not prove that the model-generated plan is complete. The wider architecture's partially implemented layers and open identity reconciliation remain documented in the root LOGBOOK; this customer app does not close those gaps.
 
+## Worker workspace
+
+Open `/executors/profile` to create or upgrade a Helper or Pro profile. The workspace stores drafts, equipment, weekly availability, blocked dates, job offers and job history against the signed-in account. Accepting an offer reserves its entire work window, including rental pickup, travel and return. Existing worker profiles are carried into the expanded setup.
+
+The Railway test entrypoint enables `DONEEO_EXECUTOR_DEMO`. To try the same sample flow locally, set `DONEEO_EXECUTOR_DEMO=true` before starting the Java API, use sample documents and choose **Receive a sample offer** in Jobs. The sample tests the workflow without dispatching customer requests, purchasing rentals or making payments.
+
+Real document review uses an AES-256 key supplied through `DONEEO_EXECUTOR_DOCUMENT_KEY` as 32 Base64-encoded bytes. `DONEEO_EXECUTOR_REVIEWERS` takes a comma-separated list of trusted Doneeo account IDs. The test environment can generate its own private key in the data directory for test files. Keep document keys and uploads out of Git.
+
 ## Checks
 
 From the repository root:
