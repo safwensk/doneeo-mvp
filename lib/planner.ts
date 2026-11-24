@@ -215,9 +215,27 @@ export function normalizeIntakeForInference(sourceText: string) {
     .replace(/\b(?:frige|refridgerator|refrigerater)\b/gi, "refrigerator")
     .replace(/\b(?:appartement|apartement|appartment|appratment)\b/gi, "apartment")
     .replace(/\b(?:bassment|baisment)\b/gi, "basement")
-    .replace(/\bkistchen\b/gi, "kitchen")
+    .replace(/\b(?:kistchen|kitcehn|kithcen|kichen)\b/gi, "kitchen")
+    .replace(/\b(?:bathrom|bathoom|batroom)(s?)\b/gi, "bathroom$1")
+    .replace(/\b(?:cleen|claen|clena|clen)(ing|ed|er|s)?\b/gi, "clean$1")
+    .replace(/\b(?:cleaing|cleanning)\b/gi, "cleaning")
+    .replace(/\b(?:vaccuum|vacum|vacume)\b/gi, "vacuum")
+    .replace(/\b(?:mvoe|moev)\b/gi, "move")
+    .replace(/\b(?:furtniture|furnture|funiture)\b/gi, "furniture")
+    .replace(/\b(?:asembel|assembel|asemble)\b/gi, "assemble")
+    .replace(/\b(?:asembly|assemlby)\b/gi, "assembly")
+    .replace(/\b(?:isntall|instal|insall|intall)\b/gi, "install")
+    .replace(/\b(?:diliver|deliever)\b/gi, "deliver")
+    .replace(/\b(?:elecrical|electrial|electical)\b/gi, "electrical")
+    .replace(/\b(?:plumming|plmbing)\b/gi, "plumbing")
+    .replace(/\b(?:elavator|elevetor|elivator)\b/gi, "elevator")
+    .replace(/\b(?:allegies|alergies|allregies)\b/gi, "allergies")
     .replace(/\bleaving room\b/gi, "living room")
-    .replace(/\bstaturday\b/gi, "saturday")
+    .replace(/\b(?:staturday|satuday|saterday)\b/gi, "saturday")
+    .replace(/\b(?:firday|fridy)\b/gi, "friday")
+    .replace(/\b(?:tomorow|tommorow)\b/gi, "tomorrow")
+    .replace(/\b(?:somone|someome)\b/gi, "someone")
+    .replace(/\bplz\b/gi, "please")
     .replace(/\bpreferblu\b/gi, "preferably")
     .replace(/\bmu(?=\s+apartment\b)/gi, "my")
     .replace(/\bthe\s+unstall\b/gi, "then install")
@@ -307,7 +325,7 @@ function cleanItem(value: string) {
 
 function addRouteNode(nodes: RouteNode[], location: string, action: string) {
   const normalizedLocation = cleanRouteText(location);
-  if (!normalizedLocation || normalizedLocation.length < 2) return;
+  if (normalizedLocation.length < 2 || isTimingFragment(normalizedLocation)) return;
   // Merge consecutive actions at the same stop, but preserve a later return
   // to that address as a new route node. This keeps A → B → A continuity.
   const existing = nodes.at(-1)?.location.toLowerCase() === normalizedLocation.toLowerCase() ? nodes.at(-1) : undefined;
@@ -460,8 +478,8 @@ const questionSets: Record<JobCategory, PlannerQuestion[]> = {
     commonTiming,
   ],
   general: [
+    { id: "task_details", label: "What would you like Doneeo to help you get done?", type: "text", required: true },
     { id: "service_address", label: "Where is the work needed?", type: "text", required: true },
-    { id: "task_details", label: "What would a prepared helper need to know?", type: "text", required: true },
     { id: "tools", label: "Do you have the required tools or equipment?", type: "boolean" },
     { id: "regulated", label: "Could this require a licence or certified professional?", type: "boolean" },
     commonTiming,
@@ -571,7 +589,9 @@ function contextualQuestions(category: JobCategory, text: string, recurring: boo
   ];
   if (category === "cleaning") return [
     { id: "service_address", label: "What is the cleaning address?", help: "Used to match a nearby cleaner and estimate travel.", type: "text", required: true },
-    ...(!/(?:8|9|10|11|12)\s*(?:a\.?m\.?|in the morning)/i.test(text) ? [{ id: "arrival_window", label: "What Friday-morning arrival window works best?", type: "choice" as const, options: ["8–9 a.m.", "9–10 a.m.", "10–11 a.m.", "Flexible morning"], required: true }] : []),
+    commonTiming,
+    { id: "cleaning_scope", label: "Which rooms or areas should be cleaned?", help: "Include any areas to skip or tasks that need special attention.", type: "text", required: true },
+    { id: "cleaning_depth", label: "What level of cleaning do you need?", type: "choice", options: ["Standard clean", "Deep clean", "Move-in or move-out clean", "Other"], required: true },
     { id: "surface_notes", label: "Are there delicate surfaces, allergies or products that must be avoided?", help: "Enter “none” if there are no restrictions.", type: "text", required: true },
     { id: "home_access", label: "How will the cleaner access the house?", help: "Someone home, lockbox, concierge, or another arrangement.", type: "text", required: true },
     { id: "pets", label: "Will any pets be present during cleaning?", type: "boolean", required: false },
@@ -580,7 +600,11 @@ function contextualQuestions(category: JobCategory, text: string, recurring: boo
 }
 
 const streetTypePattern = /\b(?:av(?:e(?:nue)?)?|avenue|rue|street|st|road|rd|boulevard|blvd|chemin|ch|place|drive|dr|lane|ln|court|ct|route|rang|terrasse|way|crescent|cres)\b/i;
-const countedObjectPattern = /^\d+(?:\.\d+)?\s*(?:boxes?|box|items?|desks?|chairs?|shelves?|rooms?|people|persons?|helpers?|workers?|executors?|flights?|steps?|doors?|appliances?|pieces?|kg|lb|lbs|pounds?|minutes?|mins?|hours?|hrs?|feet|ft|inches?|m²|sq\.?\s*(?:ft|m))\b/i;
+const countedObjectPattern = /^\d+(?:\.\d+)?\s*(?:boxes?|box|items?|desks?|chairs?|shelves?|rooms?|bedrooms?|bathrooms?|kitchens?|people|persons?|helpers?|workers?|executors?|flights?|steps?|doors?|appliances?|pieces?|kg|lb|lbs|pounds?|minutes?|mins?|hours?|hrs?|feet|ft|inches?|m²|sq\.?\s*(?:ft|m))\b/i;
+
+function isTimingFragment(location: string) {
+  return /^(?:\d{1,2}(?::\d{2})?\s*(?:[ap](?:\.?m\.?)?)?\.?$|(?:today|tomorrow|(?:next\s+)?(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday))(?:\s+(?:morning|afternoon|evening))?$)/i.test(location);
+}
 
 /**
  * Extract only plausible civic addresses. The look-ahead intentionally finds
@@ -593,7 +617,7 @@ export function extractStreetAddresses(sourceText: string) {
   const matches = Array.from(sourceText.matchAll(candidatePattern));
   const addresses = matches.flatMap(match => {
     const raw = String(match[1] || "").trim();
-    if (!raw || /^\d{1,2}\s+(?:a\.?m\.?|p\.?m\.?)(?:\s|$)/i.test(raw) || countedObjectPattern.test(raw)) return [];
+    if (!raw || /^\d{1,2}\s+(?:a\.?m\.?|p\.?m\.?)(?:\s|$)/i.test(raw) || countedObjectPattern.test(normalizeIntakeForInference(raw))) return [];
 
     const trimmed = raw
       .split(/\s+\b(?:today|tomorrow|next|this|every|before|after|then|deliver|drop|install|instal|connect|assemble|move|carry|pick)\b/i)[0]
@@ -745,17 +769,52 @@ function requestProvidesAddressForQuestion(question: PlannerQuestion, sourceText
   return category !== "moving" && addresses.length > 0;
 }
 
+function hasPracticalOutcome(source: string) {
+  const meaningfulWords = source.replace(/\b(?:a|about|an|any|anybody|anyone|are|asap|assistance|can|could|do|done|doneeo|for|get|have|hello|help|hey|hi|i|it|job|looking|me|my|need|now|on|our|please|problem|someone|something|somebody|some|task|thank|thanks|the|this|thing|to|today|tomorrow|urgent|us|want|we|with|work|would|you)\b/gi, "");
+  return /\p{L}/u.test(meaningfulWords);
+}
+
+const cleaningArea = String.raw`(?:bedrooms?|living rooms?|basements?|dining rooms?|kitchens?|bathrooms?|garages?|(?:whole|entire) (?:house|home|apartment))`;
+const cleaningAreaSpecified = new RegExp(String.raw`\b(?:clean(?:ing|s)?|vacuum|mop)\b[^.!?;]{0,85}\b${cleaningArea}\b|\b${cleaningArea}\b[^.!?;]{0,65}\b(?:cleaned|need(?:s)? cleaning)\b`);
+const cleaningLevel = String.raw`(?:standard|regular|routine|deep|light|move[- ](?:in|out))`;
+const explicitCleaningDepth = new RegExp(String.raw`\b${cleaningLevel}\s+clean(?:ing)?\b|^${cleaningLevel}$`, "i");
+const alternativeCleaningDepth = new RegExp(String.raw`\b${cleaningLevel}(?: clean(?:ing)?)?\s+or\s+(?:(?:a|an)\s+)?${cleaningLevel}\b`, "i");
+
+export function intakeCleaningDepth(text: string) {
+  const clauses = normalizeIntakeForInference(text).replace(/’/g, "'").split(/[.!?;,]+/);
+  for (const clause of clauses) {
+    if (alternativeCleaningDepth.test(clause) || /\b(?:whether|maybe|possibly|unsure|uncertain)\b/i.test(clause)) continue;
+    const depth = explicitCleaningDepth.exec(clause.trim());
+    if (!depth) continue;
+    const prefix = clause.trim().slice(0, depth.index);
+    if (/\b(?:no|not|without|never|don't|doesn't|won't|avoid|skip)\b/i.test(prefix)) continue;
+    return depth[0];
+  }
+  return undefined;
+}
+
+export function schedulingQuestionTopic(question: PlannerQuestion): "arrival" | "deadline" | undefined {
+  const id = question.id.toLowerCase();
+  const label = question.label.toLowerCase();
+  if (/^(?:deadline|completion_deadline|finish_by)$/.test(id) || /\b(?:completion deadline|what time (?:must|should) (?:it|the work|the job) (?:finish|be completed))\b/.test(label)) return "deadline";
+  if (/^(?:schedule|scheduled_date|requested_time|service_(?:date|time)|arrival_(?:date|time|window)|preferred_(?:schedule|day|date|time|visits))$/.test(id)) return "arrival";
+  if (/\b(?:what|which) (?:day and time|date and (?:arrival |time )?window|date and time|arrival window|(?:days|day) and time windows?)\b/.test(label)
+    || /\bwhen (?:should (?:this|the (?:job|work|service|visit)) (?:happen|start|take place)|should (?:we|the (?:helper|cleaner|team|provider)) arrive|would you like (?:us|the (?:helper|cleaner|team|provider)) to (?:arrive|start))\b/.test(label)) return "arrival";
+  return undefined;
+}
+
 export function requestAlreadyAnswersQuestion(question: PlannerQuestion, analysis: PlannerAnalysis) {
   const sourceText = analysis.sourceText;
-  const source = sourceText.toLowerCase();
+  const source = normalizeIntakeForInference(sourceText).toLowerCase();
   const concept = `${question.id} ${question.label}`.toLowerCase();
   const suppliedSchedule = extractScheduleWindow(sourceText);
+  const schedulingTopic = schedulingQuestionTopic(question);
 
   const stopQuestion = question.id.match(/^stop_(\d+)_(floor|elevator|vehicle_access|access)$/);
   if (stopQuestion) {
     const index = Math.max(0, Number(stopQuestion[1]) - 1);
     const routeStops = analysis.routeNodes.length ? analysis.routeNodes.map(node => node.location) : analysis.stops;
-    const context = `${stopContext(sourceText, routeStops, index)} ${routeStops[index] || ""}`;
+    const context = `${stopContext(source, routeStops, index)} ${routeStops[index] || ""}`;
     if (stopQuestion[2] === "floor" && contextHasFloor(context)) return true;
     if (stopQuestion[2] === "elevator" && (/\belevator\b/i.test(context) || contextMakesElevatorIrrelevant(context))) return true;
     if (stopQuestion[2] === "vehicle_access" && /\b(?:loading zone|parking|vehicle|truck|van|driveway|curb|entrance|remote parking)\b/i.test(context)) return true;
@@ -764,16 +823,23 @@ export function requestAlreadyAnswersQuestion(question: PlannerQuestion, analysi
 
   if (requestProvidesAddressForQuestion(question, sourceText, analysis.category)) return true;
   if (/(order|item).*(paid|ready)|(paid|ready).*(order|item)/.test(concept) && /\border\b[^.]{0,60}\bpaid\b[^.]{0,60}\bready\b|\bpaid\b[^.]{0,60}\bready\b/i.test(sourceText)) return true;
-  if (/(customer|you).*(help|carry|lift)|(help|carry|lift).*(customer|you)/.test(concept) && /(?:cannot|can't|can not|unable|won't)\s+(?:help|assist|carry|lift)/i.test(sourceText)) return true;
+  if (/(customer|you).*(help|carry|lift)|(help|carry|lift).*(customer|you)/.test(concept) && /(?:cannot|can't|can not|unable|won't)\s+(?:help|assist|carry|lift)/i.test(source)) return true;
   const itemScopeQuestion = /(what.*(?:move|deliver|assemble|install)|items?|quantity|how many)/.test(concept)
     && !/(where|destination|room|area|receive|place|path|access)/.test(concept);
   if (!/(floor|elevator|stairs|access|weight|size|dimension|condition|content|fragile|special handling|anchor|mount|hardware|parts?|instructions?)/.test(concept) && itemScopeQuestion && analysis.items.length > 0 && /\b(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|\d+)\b/i.test(sourceText)) return true;
-  if (/(when|schedule|date|time|arrival|start)/.test(concept) && suppliedSchedule?.arrivalTime) return true;
-  if (/(deadline|complete by|finish by)/.test(concept) && suppliedSchedule?.deadlineTime) return true;
+  if (schedulingTopic === "arrival" && suppliedSchedule?.arrivalTime) return true;
+  if (schedulingTopic === "deadline" && suppliedSchedule?.deadlineTime) return true;
   if (/(remove|dispose).*(packaging|boxes)|(packaging|boxes).*(remove|dispose)/.test(concept) && !/(where|destination|recycl|take away|leave)/.test(concept) && /remove\s+all\s+packaging|remove\s+(?:the\s+)?(?:packaging|boxes)/i.test(sourceText)) return true;
   if (question.id === "mounted_item" && /\b\d{2,3}[ -]?(?:inch|in\b|")|\b\d+\s*(?:kg|lb)/i.test(sourceText)) return true;
   if (question.id === "wall_type" && /\b(?:drywall|concrete|brick|plaster|tile)\b/i.test(sourceText)) return true;
-  if ((question.id === "task_details" || question.id === "tasks" || /^(?:what )?(?:tasks?|work scope|support needed)\b/.test(question.label.toLowerCase())) && analysis.tasks.length > 0) return true;
+  if (analysis.category === "cleaning") {
+    if ((question.id === "cleaning_scope" || /^(?:what|which) (?:rooms?|areas?) (?:do you (?:want|need) |should be )?(?:to be )?clean/.test(question.label.toLowerCase()))
+      && cleaningAreaSpecified.test(source)) return true;
+    if ((question.id === "cleaning_depth" || /\bstandard\b.*\bdeep\b|\bdeep\b.*\bstandard\b/.test(question.label.toLowerCase()))
+      && intakeCleaningDepth(source)) return true;
+  }
+  if ((question.id === "task_details" || question.id === "tasks" || /^(?:what )?(?:tasks?|work scope|support needed)\b/.test(question.label.toLowerCase()))
+    && analysis.tasks.length > 0 && (analysis.category !== "general" || hasPracticalOutcome(source))) return true;
   if (/(recurring|frequency|how often)/.test(concept) && analysis.recurrence.recurring && analysis.recurrence.frequency !== "Recurring schedule to confirm") return true;
   if (/(instruction|product model)/.test(concept) && /instructions? (?:are|is) (?:included|available)|product model\s+(?:is\s+)?(?:included|provided)/.test(source)) return true;
   return false;
@@ -782,11 +848,12 @@ export function requestAlreadyAnswersQuestion(question: PlannerQuestion, analysi
 export function fallbackAnalysis(request: string): PlannerAnalysis {
   const normalizedRequest = normalizeIntakeForInference(request);
   const text = normalizedRequest.toLowerCase();
+  const recurring = /\b(?:each|every|weekly|daily|monthly|recurring|twice\s+(?:a|per)\s+week|biweekly)\b/i.test(normalizedRequest);
   const category: JobCategory = /(father|mother|parent|elder|senior|grocer|companionship|wellness|lives alone)/.test(text)
     ? "elder_support"
-    : /(clean|cleaning|vacuum|mop|bathroom|housekeeping)/.test(text)
+    : /\b(?:clean(?:ing|s|ed)?|vacuum|mop|housekeeping)\b/.test(text)
       ? "cleaning"
-    : /(assemble|install|mount|wardrobe|shelf|tv|fixture)/.test(text)
+      : /\b(?:assembl(?:e|y|ing)|install(?:ation|ing)?|mount(?:ing)?|wardrobe|shelf|tv|fixture)\b/.test(text)
       ? "installation"
       : /(couch|sofa|\bmove\b|moving|pick\s*up|carry|furniture|appliance|boxes)/.test(text)
         ? "moving"
@@ -795,7 +862,7 @@ export function fallbackAnalysis(request: string): PlannerAnalysis {
   const titles: Record<JobCategory, string> = {
     moving: "Move and delivery",
     installation: "Assembly and installation",
-    cleaning: "Recurring home cleaning",
+    cleaning: recurring ? "Recurring home cleaning" : "Home cleaning",
     elder_support: "Practical support visit",
     general: "Custom practical task",
   };
@@ -809,15 +876,13 @@ export function fallbackAnalysis(request: string): PlannerAnalysis {
   // can collapse them.
   const routeNodes = deriveRouteNodes(normalizedRequest);
   const tasks = category === "moving" && routeNodes.length ? routeNodes.flatMap(node => node.actions) : rawTasks;
-  const genericStops = Array.from(normalizedRequest.matchAll(/(?:\bat\b|\bfrom\b|\bto\b|\bdeliver(?:ed)?\s+to\b|\bdrop(?:ped)?\s+(?:it\s+)?at\b)\s+([^,.;]+?)(?=\s+(?:and|then)\s+(?:pick|drop|deliver|take)|[,.;]|$)/gi)).map(match => match[1].trim());
   const movingStops = category === "moving" ? [
     normalizedRequest.match(/pick\s*up.+?\s(?:at|in|from)\s+([^,.;]+)/i)?.[1],
     normalizedRequest.match(/deliver(?:\s+it)?\s+to\s+([^,.;]+)/i)?.[1],
     normalizedRequest.match(/(?:then\s+)?take.+?\s+to\s+([^,.;]+)/i)?.[1],
-  ].filter((value): value is string => Boolean(value)).map(value => value.trim()) : [];
-  const stops = routeNodes.length ? routeNodes.map(node => node.location) : Array.from(new Set(movingStops.length >= 2 ? movingStops : genericStops));
+  ].filter((value): value is string => Boolean(value)).map(value => value.trim()).filter(value => !isTimingFragment(value)) : [];
+  const stops = routeNodes.length ? routeNodes.map(node => node.location) : movingStops.length >= 2 ? movingStops : providedStreetAddresses(request);
   const scheduleWindow = extractScheduleWindow(normalizedRequest);
-  const recurring = /(?:each|every|weekly|daily|monthly|recurring|twice\s+(?:a|per)\s+week|biweekly)/i.test(normalizedRequest);
   const frequency = normalizedRequest.match(/(?:each|every)\s+(?:day|week|month)|weekly|daily|monthly|twice\s+(?:a|per)\s+week|biweekly/i)?.[0] || (recurring ? "Recurring schedule to confirm" : "One-time");
   const largeInstallation = category === "installation" && /(?:twelve|12).{0,35}(?:desk|chair)|(?:six|6).{0,25}(?:shelf|shelves)|three rooms/i.test(normalizedRequest);
   const recommendedTeamSize = category === "moving" && (customerCanHelp === false || /heavy|large|couch|sofa|appliance|stairs/i.test(normalizedRequest)) ? 2 : /(?:four|4)\s+(?:people|helpers|workers)/i.test(normalizedRequest) ? 4 : /(?:three|3)\s+(?:people|helpers|workers)/i.test(normalizedRequest) || largeInstallation ? 3 : 1;
@@ -856,7 +921,7 @@ export function fallbackAnalysis(request: string): PlannerAnalysis {
     safetyNote: category === "elder_support"
       ? "Doneeo separates practical companionship from regulated personal or clinical care."
       : "Licensing and safety requirements are checked before a provider can be assigned.",
-    questions: contextualQuestions(category, request, recurring, stops),
+    questions: contextualQuestions(category, normalizedRequest, recurring, stops),
     extractedAnswers,
     tasks: tasks.length ? tasks : [request],
     stops,
@@ -868,13 +933,13 @@ export function fallbackAnalysis(request: string): PlannerAnalysis {
     preparation: [] as PreparationStep[],
     items,
     customerCanHelp,
-    equipment: equipmentFor(category, request),
+    equipment: equipmentFor(category, normalizedRequest),
     recurrence: { recurring, frequency },
     recommendedTeamSize,
     skillRequirements,
     executionSteps,
     understoodFacts,
-    estimate: { serviceMinutesPerVisit, travelMinutes, people: recommendedTeamSize, recurringVisits: recurring ? frequency : "One-time", materialsSummary: category === "elder_support" ? "Provider transportation, grocery list/payment method, phone for visit update" : equipmentFor(category, request).map(item => item.name).join(", ") },
+    estimate: { serviceMinutesPerVisit, travelMinutes, people: recommendedTeamSize, recurringVisits: recurring ? frequency : "One-time", materialsSummary: category === "elder_support" ? "Provider transportation, grocery list/payment method, phone for visit update" : equipmentFor(category, normalizedRequest).map(item => item.name).join(", ") },
     sourceText: request,
     audit: { status: "deterministic", issues: [], checks: ["Facts extracted", "Repeated questions removed", "Tasks preserved", "Team size bounded", "Equipment plan present", "Safety rules applied"] },
   });
@@ -883,8 +948,8 @@ export function fallbackAnalysis(request: string): PlannerAnalysis {
 export function enforceSafety(analysis: PlannerAnalysis): PlannerAnalysis {
   analysis = enrichCompositeRequest(analysis);
   const answered = analysis.extractedAnswers || {};
-  const source = analysis.sourceText.toLowerCase();
-  const suppliedSchedule = extractScheduleWindow(analysis.sourceText);
+  const normalizedSource = normalizeIntakeForInference(analysis.sourceText);
+  const source = normalizedSource.toLowerCase();
   const questions = analysis.questions.filter(question => {
     const concept = `${question.id} ${question.label}`.toLowerCase();
     if (requestAlreadyAnswersQuestion(question, analysis)) return false;
@@ -894,14 +959,10 @@ export function enforceSafety(analysis: PlannerAnalysis): PlannerAnalysis {
     if (analysis.customerCanHelp !== null && question.id === "customer_help") return false;
     if (!question.id.startsWith("stop_") && /(elevator)/.test(concept) && /\b(?:has|with|there is|usable)\s+(?:an?\s+)?elevator\b|\b(?:no|without)\s+elevator\b/.test(source)) return false;
     if (/(straps)/.test(concept)) return false;
-    if (/(when|schedule|date|time|arrival|start)/.test(concept) && suppliedSchedule?.arrivalTime) return false;
-    if (/(deadline|complete by|finish by)/.test(concept) && suppliedSchedule?.deadlineTime) return false;
-    if (analysis.tasks.length > 0 && (question.id === "task_details" || question.id === "tasks")) return false;
     if (["item", "mounting"].includes(question.id) && /assemble|install|mount/.test(source)) return false;
     if (question.id === "mounting" && /wall shel|install.{0,30}shel|mount/.test(source)) return false;
-    if (/(when|schedule|date|time|deadline)/.test(concept) && /next\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|before\s+\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?)?/i.test(source)) return false;
-    if (/(when|schedule|date|time|deadline)/.test(concept) && /every\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)(?:\s+(?:morning|afternoon|evening))?/i.test(source)) return false;
-    if (analysis.category === "cleaning" && /(tools?|equipment|cleaning products?|what.*clean)/.test(concept)) return false;
+    if (question.id === "schedule" && /\b(?:today|tomorrow|(?:next|every)\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday))\b/.test(source)) return false;
+    if (analysis.category === "cleaning" && ["tools", "equipment"].includes(question.id) && !question.required) return false;
     if (["utilities", "regulated"].includes(question.id) && !/(electric|wiring|outlet|gas|plumb|pipe|water connection)/.test(source)) return false;
     if (/(frequency|how often|visits? per week|one visit or recurring)/.test(concept) && analysis.recurrence.recurring && analysis.recurrence.frequency !== "Recurring schedule to confirm") return false;
     if (/(independent|walk|mobility)/.test(concept) && /walks? independently|independent/.test(source)) return false;
@@ -913,7 +974,6 @@ export function enforceSafety(analysis: PlannerAnalysis): PlannerAnalysis {
     const value = answered[question.id];
     return !(typeof value === "boolean" || (typeof value === "string" && value.trim().length > 1));
   });
-  const normalizedSource = normalizeIntakeForInference(analysis.sourceText);
   const derivedRoute = deriveRouteNodes(normalizedSource);
   const deterministicRoute = compositeDishwasherRequest(normalizedSource)
     ? compositeDishwasherRoute(normalizedSource, derivedRoute)

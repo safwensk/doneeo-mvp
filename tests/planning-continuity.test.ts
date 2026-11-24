@@ -59,7 +59,62 @@ test("facts supplied up front remove repeat intake questions and preserve the re
   assert.deepEqual(intake.questions.map(question => question.id), ["cleaning_depth"]);
   assert.equal(intake.extractedAnswers.pets, false);
   assert.match(String(intake.extractedAnswers.home_access), /let the cleaner in/);
-  assert.match(String(intake.extractedAnswers.surface_notes), /bleach/);
+  assert.match(String(intake.extractedAnswers.cleaning_product_restrictions), /bleach/);
+});
+
+test("a known product restriction leaves allergy and surface precautions open", () => {
+  const analysis = fallbackAnalysis("Clean the kitchen at 100 Example Avenue on Friday at 10 a.m. I'll let the cleaner in. Please do not use bleach.");
+  const question = { id: "surface_notes", label: "Are there delicate surfaces, allergies or products that must be avoided?", type: "text" as const, required: true };
+  const intake = retainKnownIntakeFacts({ ...analysis, questions: [question] }, {}, []);
+  assert.equal(intake.extractedAnswers.surface_notes, undefined);
+  assert.equal(intake.extractedAnswers.cleaning_product_restrictions, "do not use bleach");
+  assert.equal(intake.questions[0]?.id, "surface_notes");
+  assert.match(intake.questions[0]?.label || "", /delicate surfaces or allergies/);
+  assert.doesNotMatch(intake.questions[0]?.label || "", /products|bleach/);
+  assert.equal(applyDoneeoRulesGate(intake).rulesGate?.status, "needs_information");
+  const stripped = { ...analysis, extractedAnswers: { surface_notes: "No bleach" }, questions: [] };
+  const resumed = retainKnownIntakeFacts(stripped, {}, []);
+  assert.equal(resumed.questions[0]?.id, "cleaning_safety_followup");
+  const answers = { cleaning_safety_followup: "None" };
+  const finished = retainKnownIntakeFacts(resumed, answers, rememberClarifications(resumed, answers));
+  assert.deepEqual(finished.questions, []);
+  assert.ok(finished.understoodFacts.some(fact => /delicate surfaces or allergies.*None/.test(fact)));
+});
+
+test("an inferred partial answer does not clear a custom bundled safety question", () => {
+  const analysis = fallbackAnalysis("Clean the kitchen at 100 Example Avenue on Friday at 10 a.m.");
+  analysis.extractedAnswers.prep_safety = "Avoid ammonia";
+  analysis.questions = [{
+    id: "prep_safety", label: "Are there delicate surfaces, allergies or products to avoid?", type: "text", required: true,
+  }];
+  const intake = retainKnownIntakeFacts(analysis, {}, []);
+  assert.equal(intake.extractedAnswers.cleaning_product_restrictions, "Avoid ammonia");
+  assert.equal(intake.questions[0]?.id, "cleaning_safety_followup");
+  assert.match(intake.questions[0]?.label || "", /delicate surfaces or allergies/);
+  const answers = { cleaning_safety_followup: "No allergies" };
+  const partial = retainKnownIntakeFacts(intake, answers, rememberClarifications(intake, answers));
+  assert.equal(partial.questions[0]?.id, "confirm_cleaning_delicate_surfaces");
+  assert.match(partial.questions[0]?.label || "", /delicate surfaces/);
+  assert.doesNotMatch(partial.questions[0]?.label || "", /allergies/);
+});
+
+test("an uncertain or negative preference cannot fill in cleaning depth", () => {
+  for (const request of ["I don't want a deep clean.", "I am unsure whether to book a standard clean or a deep clean."]) {
+    const analysis = fallbackAnalysis(request);
+    analysis.questions = [{ id: "cleaning_depth", label: "Would you like a standard or deep clean?", type: "choice", required: true }];
+    assert.equal(retainKnownIntakeFacts(analysis, {}, []).questions[0]?.id, "cleaning_depth");
+  }
+});
+
+test("ownership and location-specific details remain separate from general cleaning facts", () => {
+  const analysis = fallbackAnalysis("Clean at 100 Example Avenue on Friday at 10 a.m. I'll be home to let the cleaner in. I'll provide cleaning supplies.");
+  analysis.questions = [
+    { id: "home_entry", label: "How will the cleaner enter?", type: "text", required: true },
+    { id: "garage_entry", label: "How will the cleaner enter the garage?", type: "text", required: true },
+    { id: "cleaning_supply_owner", label: "Who will bring cleaning supplies?", type: "text", required: true },
+    { id: "supply_types", label: "Which cleaning products will you provide?", type: "text", required: true },
+  ];
+  assert.deepEqual(retainKnownIntakeFacts(analysis, {}, []).questions.map(question => question.id), ["garage_entry", "supply_types"]);
 });
 
 test("a reworded question does not reopen a confirmed answer or facts volunteered in the reply", () => {
@@ -81,11 +136,11 @@ test("a reworded question does not reopen a confirmed answer or facts volunteere
 
 test("a confirmed pickup detail does not suppress the same kind of question at delivery", () => {
   const previous = fallbackAnalysis("Move a sofa from 100 Example Avenue to 200 Example Road on Friday at 10 a.m.");
-  previous.questions = [{ id: "stop_1_elevator", label: "Is there an elevator at pickup?", type: "boolean", required: true }];
+  previous.questions = [{ id: "stop_1_elevator", label: "Is there an elevator?", type: "boolean", required: true }];
   const answers = { stop_1_elevator: false };
   const revised = { ...previous, questions: [
     ...previous.questions,
-    { id: "stop_2_elevator", label: "Is there an elevator at delivery?", type: "boolean" as const, required: true },
+    { id: "stop_2_elevator", label: "Is there an elevator?", type: "boolean" as const, required: true },
   ] };
   const intake = retainKnownIntakeFacts(revised, answers, rememberClarifications(previous, answers));
   assert.deepEqual(intake.questions.map(question => question.id), ["stop_2_elevator"]);
@@ -100,6 +155,8 @@ test("reuse the saved queue for an ordinary answer, but reevaluate scope changes
   const draft = applyDoneeoRulesGate(applyCustomerAnswers(previous, { cleaning_depth: "Standard" }));
   assert.equal(canContinueIntake(draft, previous, { cleaning_depth: "Standard" }), true);
   assert.equal(canContinueIntake(draft, previous, { cleaning_depth: "Actually, also need three rooms painted" }), false);
+  assert.equal(canContinueIntake(draft, previous, { home_access: "I'll let the cleaner in. The stairs are damaged." }), false);
+  assert.equal(canContinueIntake(draft, previous, { home_access: "I will be there at 10 a.m." }), true);
   assert.equal(canContinueIntake(draft, previous, {}), false);
   const finished = applyDoneeoRulesGate(applyCustomerAnswers(previous, { cleaning_depth: "Standard", home_access: "I will open the door" }));
   assert.equal(canContinueIntake(finished, previous, { home_access: "I will open the door" }), false);

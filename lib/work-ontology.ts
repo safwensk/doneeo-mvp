@@ -1,4 +1,4 @@
-import { extractScheduleWindow, extractStreetAddresses, normalizeIntakeForInference, type EquipmentRequirement, type PlannerAnalysis, type PlannerQuestion, type TaskPrimitive } from "./planner";
+import { extractScheduleWindow, extractStreetAddresses, normalizeIntakeForInference, schedulingQuestionTopic, type EquipmentRequirement, type PlannerAnalysis, type PlannerQuestion, type TaskPrimitive } from "./planner";
 import { catalogKnowledgeFacts, catalogResourceIds, questionsForRecognizedItems, recognizeHouseholdItems } from "./household-catalog";
 
 export type WorkDomain =
@@ -592,11 +592,13 @@ export function augmentWithHouseholdKnowledge(analysis: PlannerAnalysis): Planne
     if (!/shel/i.test(analysis.sourceText) && question.id === "fasteners") return false;
     return true;
   });
+  const needsTaskDescription = compatibleBaseQuestions.some(question => question.id === "task_details");
   const questions = [...model.questions, ...compatibleBaseQuestions]
     .filter(question => {
-      const concept = `${question.id} ${question.label}`.toLowerCase();
-      if (suppliedSchedule?.arrivalTime && /when|schedule|date|time|arrival|start/.test(concept)) return false;
-      if (suppliedSchedule?.deadlineTime && /deadline|finish|complete by/.test(concept)) return false;
+      if (needsTaskDescription && ["maintenance_item", "maintenance_condition"].includes(question.id)) return false;
+      const topic = schedulingQuestionTopic(question);
+      if (suppliedSchedule?.arrivalTime && topic === "arrival") return false;
+      if (suppliedSchedule?.deadlineTime && topic === "deadline") return false;
       return true;
     })
     .filter((item, index, all) => all.findIndex(candidate => candidate.id === item.id) === index)

@@ -1,4 +1,4 @@
-import { extractStreetAddresses, type PlannerAnalysis, type PlannerQuestion, type RulesGateDomain, type RulesGateIssue, type RulesGateResult } from "./planner";
+import { extractStreetAddresses, normalizeIntakeForInference, type PlannerAnalysis, type PlannerQuestion, type RulesGateDomain, type RulesGateIssue, type RulesGateResult } from "./planner";
 
 const domainLabels: Record<RulesGateDomain, string> = {
   request: "Request integrity",
@@ -35,7 +35,7 @@ function uniqueStrings(values: string[]) {
 }
 
 export function applyDoneeoRulesGate(input: PlannerAnalysis): PlannerAnalysis {
-  const source = input.sourceText.toLowerCase();
+  const source = normalizeIntakeForInference(input.sourceText).toLowerCase();
   const answers = input.extractedAnswers || {};
   const questions = [...input.questions];
   const issues: RulesGateIssue[] = [];
@@ -137,10 +137,12 @@ export function applyDoneeoRulesGate(input: PlannerAnalysis): PlannerAnalysis {
   const unresolvedExternalRoute = input.routeNodes.length === 1
     && /\b(?:pick\s*up|collect)\b.{0,180}\b(?:from|at)\s+(?:costco|ikea|walmart|home depot|rona|store|shop|retailer|warehouse|marketplace|seller)\b/i.test(input.sourceText);
   const hasDrivingRoute = input.routeNodes.length > 1 || addresses.length >= 2 || unresolvedExternalRoute;
+  const transportsItems = input.category === "moving" || unresolvedExternalRoute
+    || /\b(?:move|deliver|transport|carry|haul|pick\s*up|drop\s*off)\b/i.test(source);
   const hasServiceAnswer = ["service_address", "pickup_address", "delivery_address"].some(id => hasMeaningfulValue(answers[id]));
-  const scheduleKnown = hasMeaningfulValue(answers.schedule) || /\b(?:today|tomorrow|next\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|every\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|at\s+\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))/i.test(input.sourceText);
+  const scheduleKnown = hasMeaningfulValue(answers.schedule) || /\b(?:today|tomorrow|next\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|every\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|at\s+\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))/i.test(source);
 
-  if (hasDrivingRoute) {
+  if (hasDrivingRoute && transportsItems) {
     if (input.stops.length < 2 && addresses.length < 2) {
       if (unresolvedExternalRoute) addIssue({ code: "routing.destination_pending", domain: "routing", severity: "information", title: "Delivery route is incomplete", detail: "The retailer pickup is known, but the destination must be supplied before Doneeo can calculate or coordinate the driving route." });
       if (!/(pick\s*up|collect).{0,180}\b\d{1,6}\s+/i.test(input.sourceText)) addQuestion(

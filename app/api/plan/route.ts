@@ -19,12 +19,14 @@ import {
 export const runtime = "edge";
 
 const allowedCategories = new Set<JobCategory>(["moving", "installation", "cleaning", "elder_support", "general"]);
-const architectDeadlineMs = 10_000;
+const architectDeadlineMs = 25_000;
 const reviewDeadlineMs = 3_500;
 
 const systemPrompt = `You are Doneeo's universal job architect for real-world household and physical services. Understand the whole customer outcome before classifying it; an incidental word such as "deliver" must not turn grocery support into moving. Treat category as only a primary display label, never as a limit on the work order. Decompose every request into all independent service domains and dependent outcomes it contains: physical handling and delivery, organizing/decluttering, cleaning, appliance installation, plumbing, electrical, painting, lawn/garden work, mounting, furniture assembly, general maintenance and practical elder support. A single request may require several domains and several separately eligible executors. Preserve every fact the customer already gave. Moving items between rooms, floors, a basement, garage or attic within the same property is one on-site handling location: do not invent driving stops, travel time, vehicle access, pickup/delivery questions or recurrence. Recurrence is true only when the customer explicitly states a repeating cadence.
 
 You are not limited to the domains listed above or to any fixed catalog of job types — reason about the actual request the way a competent human dispatcher would, including situations you have not been given explicit instructions for. If a request describes property damage, water, mold, fire, structural, pest, or any situation where severity or scope genuinely cannot be judged from the words given, do not guess a category, team size or price to fill the schema. Instead, ask real diagnostic questions specific to that exact situation — the kind a professional would actually need answered to assess it (for water: how much, how long ago, source stopped or ongoing, any smell, which materials are affected; adapt this pattern to whatever the actual hazard is, do not reuse this example verbatim) — and state plainly in summary that scope will be confirmed once those answers are in. An honest "I need to understand this better before I can plan it" is correct behavior, not a failure to fill out the form.
+
+Interpret spelling mistakes, informal grammar and incomplete sentences in context without asking for a rewrite. Preserve names, addresses, numbers and stated constraints. If two plausible readings would change the work, ask one focused question that distinguishes them. A partial answer to a combined question establishes only what was actually stated. Keep any remaining detail that matters to scope, safety, access, price or matching; do not mark it as confirmed from an assumption.
 
 Return JSON only with: category, title, summary, safetyNote, tasks, stops, routeNodes, scheduleWindow, preparation, items, customerCanHelp, extractedAnswers, questions, equipment, recurrence, recommendedTeamSize, skillRequirements, executionSteps, understoodFacts, and estimate. routeNodes is the ordered execution route as [{location,actions}], where actions lists every pickup, delivery, handoff or service performed at that exact location. scheduleWindow is {dateLabel,arrivalTime,deadlineTime,arrivalLabel,deadlineLabel}; keep the arrival/start commitment separate from the completion deadline. If a request says “Tomorrow at 9 a.m.” and “finish before 1 p.m.”, arrivalTime is 9:00 AM and deadlineTime is 1:00 PM—the deadline must never replace the start. When “then take the old item to X” follows a delivery at Y, Y has both “Deliver new item” and “Pick up old item,” while X has “Deliver old item.” Preserve this chain even when the customer uses pronouns such as it or them.
 
@@ -72,7 +74,7 @@ function normalizeAnalysis(text: string, fallback: ReturnType<typeof fallbackAna
   // Arrival is a commitment to the customer. Preparation is scheduled backward
   // from it in code, never left to the model to arrive at by itself.
   const scheduleWithPreparation = derivePreparationStart(scheduleWindow, preparation);
-  return enforceSafety({
+  return {
     category,
     title: typeof parsed.title === "string" ? parsed.title.slice(0, 90) : fallback.title,
     summary: typeof parsed.summary === "string" ? parsed.summary.slice(0, 500) : fallback.summary,
@@ -109,7 +111,7 @@ function normalizeAnalysis(text: string, fallback: ReturnType<typeof fallbackAna
     estimate: parsed.estimate && typeof parsed.estimate === "object" ? { serviceMinutesPerVisit: typeof parsed.estimate.serviceMinutesPerVisit === "number" ? Math.max(15, Math.min(600, Math.round(parsed.estimate.serviceMinutesPerVisit))) : fallback.estimate.serviceMinutesPerVisit, travelMinutes: typeof parsed.estimate.travelMinutes === "number" ? Math.max(0, Math.min(240, Math.round(parsed.estimate.travelMinutes))) : fallback.estimate.travelMinutes, people: typeof parsed.estimate.people === "number" ? Math.max(1, Math.min(4, Math.round(parsed.estimate.people))) : fallback.estimate.people, recurringVisits: typeof parsed.estimate.recurringVisits === "string" ? parsed.estimate.recurringVisits.slice(0, 80) : fallback.estimate.recurringVisits, materialsSummary: typeof parsed.estimate.materialsSummary === "string" ? parsed.estimate.materialsSummary.slice(0, 240) : fallback.estimate.materialsSummary } : fallback.estimate,
     sourceText: fallback.sourceText,
     audit: fallback.audit,
-  });
+  };
 }
 
 function deterministicAudit(
@@ -122,9 +124,9 @@ function deterministicAudit(
   if (!analysis.tasks.length) issues.push("No execution tasks were produced");
   if (!analysis.equipment.length && analysis.category !== "elder_support") issues.push("No equipment or materials were identified");
   if (analysis.recommendedTeamSize < 1 || analysis.recommendedTeamSize > 4) issues.push("Team size is outside operating limits");
-  const answered = applyCustomerAnswers(augmentWithHouseholdKnowledge(analysis), customerAnswers);
-  const known = retainKnownIntakeFacts(answered, customerAnswers, history);
-  const normalized = enforceSafety({ ...known, recommendedTeamSize: Math.max(1, Math.min(4, known.recommendedTeamSize)) });
+  const known = retainKnownIntakeFacts(augmentWithHouseholdKnowledge(analysis), customerAnswers, history);
+  const answered = applyCustomerAnswers(known, customerAnswers);
+  const normalized = enforceSafety({ ...answered, recommendedTeamSize: Math.max(1, Math.min(4, answered.recommendedTeamSize)) });
   const firstGate = applyDoneeoRulesGate(normalized);
   const finalAnalysis = applyDoneeoRulesGate(retainKnownIntakeFacts(enforceSafety(firstGate), customerAnswers, history));
   issues.push(...finalAnalysis.rulesGate!.issues.filter(issue => issue.severity !== "information").map(issue => issue.title));
@@ -312,7 +314,7 @@ async function analyzeWithGemini(userRequest: string, fallback: ReturnType<typeo
   // budget and the JSON comes back truncated mid-string. Give the schema real
   // headroom and cap the reasoning depth. Never send thinkingLevel together
   // with the legacy thinkingBudget — the request is rejected outright.
-  const thinkingLevel = process.env.GEMINI_THINKING_LEVEL || "low";
+  const thinkingLevel = process.env.GEMINI_THINKING_LEVEL || "medium";
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
     method: "POST",
     signal: AbortSignal.timeout(architectDeadlineMs),
@@ -561,7 +563,12 @@ export async function POST(request: Request) {
     ...submittedAnswers,
   };
 
-  const savedFallback = savedPlanningFallback(previousSnapshot, authoritativeRequest);
+  const confirmedScope = customerAnswers.task_details;
+  const scopeClarification = typeof confirmedScope === "string" ? confirmedScope.trim() : "";
+  const clarifiedRequest = scopeClarification
+    ? `${authoritativeRequest}\n\n${scopeClarification}`
+    : authoritativeRequest;
+  const savedFallback = savedPlanningFallback(previousSnapshot, clarifiedRequest);
   const history = rememberClarifications(savedFallback, customerAnswers);
   const labels = new Map(history.map(question => [question.id, question.label]));
 
@@ -573,10 +580,10 @@ export async function POST(request: Request) {
   );
 
   const planningRequest = answerLines.length
-    ? `${authoritativeRequest}\n\nCUSTOMER ANSWERS COLLECTED AFTER THE ORIGINAL REQUEST:\n${answerLines.join("\n")}\nTreat these as confirmed facts. Do not ask them again under any wording or ID. Keep the IDs of any remaining questions.`
+    ? `${authoritativeRequest}\n\nCUSTOMER ANSWERS COLLECTED AFTER THE ORIGINAL REQUEST:\n${answerLines.join("\n")}\nPreserve what each answer actually confirms. Do not repeat answered details under any wording or ID. Keep the IDs of remaining questions unless narrowing a partially answered question to the detail still needed.`
     : authoritativeRequest;
 
-  const fallback = fallbackAnalysis(authoritativeRequest);
+  const fallback = fallbackAnalysis(clarifiedRequest);
 
   const architectNotes: string[] = [];
   const noteFailure = (name: string, error: unknown) => {
@@ -589,13 +596,17 @@ export async function POST(request: Request) {
 
   const stored = storedAnswers as Record<string, string | boolean>;
   const changed = Object.fromEntries(Object.entries(submittedAnswers).filter(([key, value]) => stored[key] !== value));
-  const savedIntelligence = savedFallback && deterministicAudit(
-    savedFallback, "SAVED PLAN CONTINUITY → RULES GATE → JOB INTELLIGENCE", customerAnswers, history,
+  // A reply that defines the work must reach the fallback planner too.
+  const refreshRuleDraft = Object.keys(submittedAnswers).length === 0
+    && savedFallback?.audit.pipeline?.startsWith("RULE-BASED PLANNER");
+  const reuseSavedPlan = changed.task_details === undefined && !refreshRuleDraft ? savedFallback : null;
+  const savedIntelligence = reuseSavedPlan && deterministicAudit(
+    reuseSavedPlan, "SAVED PLAN CONTINUITY → RULES GATE → JOB INTELLIGENCE", customerAnswers, history,
   );
-  const continueQueue = savedIntelligence && canContinueIntake(savedIntelligence, savedFallback, changed);
-  let analysis: ReturnType<typeof fallbackAnalysis> = savedFallback || fallback;
-  let pipeline = savedFallback ? "SAVED PLAN CONTINUITY" : "RULE-BASED PLANNER";
-  let mode = continueQueue ? "saved-plan-intake" : savedFallback ? "saved-plan-fallback" : "safe-fallback";
+  const continueQueue = savedIntelligence && canContinueIntake(savedIntelligence, reuseSavedPlan, changed);
+  let analysis: ReturnType<typeof fallbackAnalysis> = reuseSavedPlan || fallback;
+  let pipeline = reuseSavedPlan ? "SAVED PLAN CONTINUITY" : "RULE-BASED PLANNER";
+  let mode = continueQueue ? "saved-plan-intake" : reuseSavedPlan ? "saved-plan-fallback" : "safe-fallback";
 
   if (!continueQueue) {
     if (!process.env.GEMINI_API_KEY) architectNotes.push("Gemini skipped: GEMINI_API_KEY not set");

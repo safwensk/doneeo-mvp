@@ -268,6 +268,56 @@ test("misspelled refrigerator and schedule are normalized before questions", () 
   assert.ok(!result.questions.some(question => /when|schedule|date|time/i.test(`${question.id} ${question.label}`)));
 });
 
+test("misspelled cleaning request retains the original words, address, and timing", () => {
+  const request = "Need somone clena my kithcen and 2 bathroms at 100 Example Avenue, Toronto tomorow at 10 a.m.";
+  const fallback = fallbackAnalysis(request);
+  const result = plan(request);
+  const questions = result.questions.map(question => question.id);
+
+  assert.equal(fallback.sourceText, request);
+  assert.equal(result.category, "cleaning");
+  assert.deepEqual(extractStreetAddresses(request), ["100 Example Avenue"]);
+  assert.deepEqual(fallback.stops, ["100 Example Avenue"]);
+  assert.equal(result.routeNodes.length, 0);
+  assert.equal(result.scheduleWindow?.arrivalLabel, "Tomorrow at 10:00 AM");
+  assert.ok(questions.includes("cleaning_depth"));
+  assert.ok(!questions.some(id => ["cleaning_scope", "service_address", "item", "schedule"].includes(id)));
+});
+
+test("fallback cleaning asks about unknown areas and level without suppressing material product questions", () => {
+  const draft = fallbackAnalysis("Please send someone to clean at 100 Example Avenue on Friday at 10 a.m.");
+  const questions = [
+    ...draft.questions,
+    { id: "product_instructions", label: "What cleaning products must be avoided on the marble?", type: "text" as const, required: true },
+  ];
+  const result = enforceSafety({ ...draft, questions });
+  const ids = result.questions.map(question => question.id);
+
+  assert.ok(ids.includes("cleaning_scope"));
+  assert.ok(ids.includes("cleaning_depth"));
+  assert.ok(ids.includes("product_instructions"));
+  const specified = fallbackAnalysis("I need a standard clean of the kitchen at 100 Example Avenue on Friday at 10 a.m.");
+  assert.ok(!specified.questions.some(question => ["cleaning_scope", "cleaning_depth"].includes(question.id)));
+});
+
+test("known arrival time does not answer the leak history or a completion deadline", () => {
+  const original = fallbackAnalysis("Repair the leak under my kitchen sink at 100 Example Avenue on Friday at 10 a.m.");
+  const questions = [
+    { id: "arrival_window", label: "What arrival window works best?", type: "text" as const, required: true },
+    { id: "leak_start", label: "When did the leak start?", type: "text" as const, required: true },
+    { id: "deadline", label: "What time must the work be completed?", type: "text" as const, required: true },
+  ];
+  const result = enforceSafety({ ...original, questions });
+
+  assert.deepEqual(result.questions.map(question => question.id), ["leak_start", "deadline"]);
+});
+
+test("a vague request opens with a scope question instead of assuming there is a task", () => {
+  const result = plan("Could someone help me with something?");
+  assert.equal(result.questions[0]?.id, "task_details");
+  assert.equal(result.rulesGate?.status, "needs_information");
+});
+
 test("supplied refrigerator facts remove only the questions they answer", () => {
   const result = plan("Saturday at 10 a.m., pick up a new factory-boxed refrigerator, model RF28, 36 x 34 x 70 inches and 310 lb, paid and ready at Costco Anjou, and deliver it to 12385 Test Avenue. Measurements checked. Carry in and place only. No existing refrigerator to move.");
   const concepts = questionConcepts(result);
