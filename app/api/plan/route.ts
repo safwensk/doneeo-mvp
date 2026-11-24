@@ -1,7 +1,7 @@
 import { derivePreparationStart, enforceSafety, fallbackAnalysis, type JobCategory } from "../../../lib/planner";
 import { applyDoneeoRulesGate } from "../../../lib/rules-gate";
 import { applyCustomerAnswers, buildJobIntelligence } from "../../../lib/job-intelligence";
-import { savedPlanningFallback } from "../../../lib/planning-continuity";
+import { canContinueIntake, rememberClarifications, retainKnownIntakeFacts, savedPlanningFallback } from "../../../lib/planning-continuity";
 import { architecturePosition } from "../../../lib/canonical-architecture";
 import { augmentWithHouseholdKnowledge } from "../../../lib/work-ontology";
 import {
@@ -19,6 +19,8 @@ import {
 export const runtime = "edge";
 
 const allowedCategories = new Set<JobCategory>(["moving", "installation", "cleaning", "elder_support", "general"]);
+const architectDeadlineMs = 10_000;
+const reviewDeadlineMs = 3_500;
 
 const systemPrompt = `You are Doneeo's universal job architect for real-world household and physical services. Understand the whole customer outcome before classifying it; an incidental word such as "deliver" must not turn grocery support into moving. Treat category as only a primary display label, never as a limit on the work order. Decompose every request into all independent service domains and dependent outcomes it contains: physical handling and delivery, organizing/decluttering, cleaning, appliance installation, plumbing, electrical, painting, lawn/garden work, mounting, furniture assembly, general maintenance and practical elder support. A single request may require several domains and several separately eligible executors. Preserve every fact the customer already gave. Moving items between rooms, floors, a basement, garage or attic within the same property is one on-site handling location: do not invent driving stops, travel time, vehicle access, pickup/delivery questions or recurrence. Recurrence is true only when the customer explicitly states a repeating cadence.
 
@@ -110,15 +112,21 @@ function normalizeAnalysis(text: string, fallback: ReturnType<typeof fallbackAna
   });
 }
 
-function deterministicAudit(analysis: ReturnType<typeof fallbackAnalysis>, pipeline = "RULE-BASED PLANNER → RULES GATE", customerAnswers: Record<string, string | boolean> = {}) {
+function deterministicAudit(
+  analysis: ReturnType<typeof fallbackAnalysis>,
+  pipeline: string,
+  customerAnswers: Record<string, string | boolean>,
+  history: ReturnType<typeof rememberClarifications>,
+) {
   const issues: string[] = [...(analysis.audit?.issues || [])];
   if (!analysis.tasks.length) issues.push("No execution tasks were produced");
   if (!analysis.equipment.length && analysis.category !== "elder_support") issues.push("No equipment or materials were identified");
   if (analysis.recommendedTeamSize < 1 || analysis.recommendedTeamSize > 4) issues.push("Team size is outside operating limits");
   const answered = applyCustomerAnswers(augmentWithHouseholdKnowledge(analysis), customerAnswers);
-  const normalized = enforceSafety({ ...answered, recommendedTeamSize: Math.max(1, Math.min(4, answered.recommendedTeamSize)) });
+  const known = retainKnownIntakeFacts(answered, customerAnswers, history);
+  const normalized = enforceSafety({ ...known, recommendedTeamSize: Math.max(1, Math.min(4, known.recommendedTeamSize)) });
   const firstGate = applyDoneeoRulesGate(normalized);
-  const finalAnalysis = applyDoneeoRulesGate(enforceSafety(firstGate));
+  const finalAnalysis = applyDoneeoRulesGate(retainKnownIntakeFacts(enforceSafety(firstGate), customerAnswers, history));
   issues.push(...finalAnalysis.rulesGate!.issues.filter(issue => issue.severity !== "information").map(issue => issue.title));
   return buildJobIntelligence({ ...finalAnalysis, audit: {
     status: analysis.audit?.status || "deterministic" as const,
@@ -168,6 +176,7 @@ async function claudeFinalCheck(userRequest: string, intelligence: ReturnType<ty
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
+      signal: AbortSignal.timeout(reviewDeadlineMs),
       headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
       body: JSON.stringify({
         model: process.env.CLAUDE_MODEL || "claude-sonnet-5",
@@ -199,6 +208,7 @@ async function grokFinalCheck(userRequest: string, intelligence: ReturnType<type
   try {
     const response = await fetch("https://api.x.ai/v1/chat/completions", {
       method: "POST",
+      signal: AbortSignal.timeout(reviewDeadlineMs),
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: process.env.GROK_MODEL || "grok-4.5",
@@ -226,6 +236,7 @@ async function openAIFinalCheck(userRequest: string, intelligence: ReturnType<ty
   try {
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
+      signal: AbortSignal.timeout(reviewDeadlineMs),
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-5-mini",
@@ -301,9 +312,10 @@ async function analyzeWithGemini(userRequest: string, fallback: ReturnType<typeo
   // budget and the JSON comes back truncated mid-string. Give the schema real
   // headroom and cap the reasoning depth. Never send thinkingLevel together
   // with the legacy thinkingBudget — the request is rejected outright.
-  const thinkingLevel = process.env.GEMINI_THINKING_LEVEL || "medium";
+  const thinkingLevel = process.env.GEMINI_THINKING_LEVEL || "low";
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
     method: "POST",
+    signal: AbortSignal.timeout(architectDeadlineMs),
     headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: systemPrompt }] },
@@ -525,9 +537,12 @@ export async function POST(request: Request) {
         : clientRequest) || clientRequest;
   }
 
-  const storedAnswers = requestedWorkCaseId
-    ? await workCaseStore.getConfirmedAnswers(requestedWorkCaseId)
-    : {};
+  const [storedAnswers, previousSnapshot] = requestedWorkCaseId
+    ? await Promise.all([
+        workCaseStore.getConfirmedAnswers(requestedWorkCaseId),
+        workCaseStore.getLatestAnalysis(requestedWorkCaseId),
+      ])
+    : [{}, null] as const;
 
   const submittedAnswers =
     body.answers && typeof body.answers === "object"
@@ -536,7 +551,7 @@ export async function POST(request: Request) {
             ([key, value]) =>
               /^[a-z0-9_]{1,64}$/i.test(key) &&
               (typeof value === "boolean" ||
-                (typeof value === "string" && value.trim().length <= 300)),
+                (typeof value === "string" && value.trim().length > 0 && value.trim().length <= 300)),
           ),
         ) as Record<string, string | boolean>
       : {};
@@ -546,15 +561,19 @@ export async function POST(request: Request) {
     ...submittedAnswers,
   };
 
+  const savedFallback = savedPlanningFallback(previousSnapshot, authoritativeRequest);
+  const history = rememberClarifications(savedFallback, customerAnswers);
+  const labels = new Map(history.map(question => [question.id, question.label]));
+
   const answerLines = Object.entries(customerAnswers).map(
     ([key, value]) =>
-      `${key}: ${
+      `${labels.has(key) ? `${labels.get(key)} [${key}]` : key}: ${
         typeof value === "boolean" ? (value ? "Yes" : "No") : value
       }`,
   );
 
   const planningRequest = answerLines.length
-    ? `${authoritativeRequest}\n\nCUSTOMER ANSWERS COLLECTED AFTER THE ORIGINAL REQUEST:\n${answerLines.join("\n")}\nTreat these as confirmed facts. Do not ask them again. Recalculate the job and ask only the next missing operational details.`
+    ? `${authoritativeRequest}\n\nCUSTOMER ANSWERS COLLECTED AFTER THE ORIGINAL REQUEST:\n${answerLines.join("\n")}\nTreat these as confirmed facts. Do not ask them again under any wording or ID. Keep the IDs of any remaining questions.`
     : authoritativeRequest;
 
   const fallback = fallbackAnalysis(authoritativeRequest);
@@ -568,38 +587,41 @@ export async function POST(request: Request) {
     );
   };
 
-  const savedFallback = requestedWorkCaseId
-    ? savedPlanningFallback(await workCaseStore.getLatestAnalysis(requestedWorkCaseId), authoritativeRequest)
-    : null;
+  const stored = storedAnswers as Record<string, string | boolean>;
+  const changed = Object.fromEntries(Object.entries(submittedAnswers).filter(([key, value]) => stored[key] !== value));
+  const savedIntelligence = savedFallback && deterministicAudit(
+    savedFallback, "SAVED PLAN CONTINUITY → RULES GATE → JOB INTELLIGENCE", customerAnswers, history,
+  );
+  const continueQueue = savedIntelligence && canContinueIntake(savedIntelligence, savedFallback, changed);
   let analysis: ReturnType<typeof fallbackAnalysis> = savedFallback || fallback;
   let pipeline = savedFallback ? "SAVED PLAN CONTINUITY" : "RULE-BASED PLANNER";
-  let mode = savedFallback ? "saved-plan-fallback" : "safe-fallback";
+  let mode = continueQueue ? "saved-plan-intake" : savedFallback ? "saved-plan-fallback" : "safe-fallback";
 
-  if (!process.env.GEMINI_API_KEY) {
-    architectNotes.push("Gemini skipped: GEMINI_API_KEY not set");
-  }
-
-  try {
-    const geminiAnalysis = await analyzeWithGemini(planningRequest, fallback);
-    if (geminiAnalysis) {
-      analysis = geminiAnalysis;
-      pipeline = "GEMINI ARCHITECT";
-      mode = "gemini-architect";
+  if (!continueQueue) {
+    if (!process.env.GEMINI_API_KEY) architectNotes.push("Gemini skipped: GEMINI_API_KEY not set");
+    try {
+      const geminiAnalysis = await analyzeWithGemini(planningRequest, fallback);
+      if (geminiAnalysis) {
+        analysis = geminiAnalysis;
+        pipeline = "GEMINI ARCHITECT";
+        mode = "gemini-architect";
+      }
+    } catch (error) {
+      noteFailure("Gemini", error);
     }
-  } catch (error) {
-    noteFailure("Gemini", error);
   }
 
-  const intelligence = deterministicAudit(
+  const intelligence = continueQueue && savedIntelligence ? savedIntelligence : deterministicAudit(
     analysis,
     `${pipeline} → RULES GATE → JOB INTELLIGENCE`,
     customerAnswers,
+    history,
   );
 
-  const finalChecked = await runIndependentValidation(
-    planningRequest,
-    intelligence,
-  );
+  // Review the completed intake, not each question on the way there.
+  const finalChecked = intelligence.rulesGate?.status === "cleared"
+    ? await runIndependentValidation(planningRequest, intelligence)
+    : intelligence;
 
   const withDiagnostics =
     mode.includes("fallback") && architectNotes.length
@@ -629,7 +651,7 @@ export async function POST(request: Request) {
     return Response.json({
       analysis: withDiagnostics,
       answers: customerAnswers,
-      mode: `${mode}+rules-gate+job-intelligence+independent-validation`,
+      mode: `${mode}+rules-gate+job-intelligence${finalChecked !== intelligence ? "+independent-validation" : ""}`,
       architectNotes,
       workCaseId: control.workCaseId,
       jobOrderId: control.jobOrderId,

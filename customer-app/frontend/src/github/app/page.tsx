@@ -496,8 +496,6 @@ export default function Workspace({ accountId, initialRequest, onStarted, onSign
       return false;
     }
 
-    const nextAnswers = { ...answers, [question.id]: value };
-
     setAnswerState("validating");
     setError("");
 
@@ -515,7 +513,7 @@ export default function Workspace({ accountId, initialRequest, onStarted, onSign
           expectedStateVersion: planControl.stateVersion,
           correlationId: planControl.correlationId,
           operationId,
-          answers: nextAnswers,
+          answers: { [question.id]: value },
           discussionQuestionId: question.id,
         }),
       });
@@ -523,6 +521,7 @@ export default function Workspace({ accountId, initialRequest, onStarted, onSign
       const data = (await response.json()) as Record<string, unknown> & {
         error?: string;
         analysis?: PlannerAnalysis;
+        answers?: Answers;
         discussion?: DiscussionMessage[];
       };
 
@@ -542,8 +541,9 @@ export default function Workspace({ accountId, initialRequest, onStarted, onSign
       setMode(typeof data.mode === "string" ? data.mode : "");
       setAnswers(current => ({
         ...current,
-        [question.id]: value,
         ...(data.analysis?.extractedAnswers || {}),
+        [question.id]: value,
+        ...data.answers,
       }));
 
       return true;
@@ -570,7 +570,7 @@ export default function Workspace({ accountId, initialRequest, onStarted, onSign
           workCaseId: planControl.workCaseId,
           expectedStateVersion: planControl.stateVersion,
           correlationId: planControl.correlationId,
-          operationId: crypto.randomUUID(), answers,
+          operationId: crypto.randomUUID(),
         }),
       });
       const data = await response.json();

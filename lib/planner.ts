@@ -37,6 +37,7 @@ export type PlannerAnalysis = {
   summary: string;
   safetyNote: string;
   questions: PlannerQuestion[];
+  answeredQuestions?: Pick<PlannerQuestion, "id" | "label">[];
   extractedAnswers: Record<string, string | boolean>;
   tasks: string[];
   stops: string[];
