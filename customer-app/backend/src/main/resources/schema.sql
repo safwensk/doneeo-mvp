@@ -5,6 +5,11 @@ CREATE TABLE IF NOT EXISTS customer_accounts (
     password_hash VARCHAR(100) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS executor_profiles (
+    account_id VARCHAR(36) PRIMARY KEY REFERENCES customer_accounts(id),
+    profile_json CLOB NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS customer_conversations (
     id VARCHAR(36) PRIMARY KEY,
     account_id VARCHAR(36) NOT NULL REFERENCES customer_accounts(id),
@@ -49,3 +54,4 @@ CREATE TABLE IF NOT EXISTS customer_work_orders (
     account_id VARCHAR(36) NOT NULL REFERENCES customer_accounts(id),
     work_case_id VARCHAR(100) NOT NULL REFERENCES customer_workspaces(work_case_id)
 );
+

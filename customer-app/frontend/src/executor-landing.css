@@ -68,7 +68,6 @@
 .executor-join { margin:22px 0 15px; padding:20px 24px; border:1px solid #e0f0ef; border-radius:26px; background:#effaf8; }
 .executor-join h2 { font-size:clamp(27px,3.3vw,40px); }
 .executor-join-copy { font-size:16px; line-height:1.45; margin:8px 0 15px; max-width:620px; }
-.executor-profile-status { font-size:13px; margin:10px 0 0; }
 .executor-footer { min-height:66px; display:flex; align-items:center; gap:38px; padding-block:15px; }
 .executor-footer img { display:block; width:119px; height:auto; }
 .executor-footer>a { flex:none; font-size:13px; font-weight:800; }
@@ -226,3 +225,4 @@
   html:has(.executor-page) { scroll-behavior:auto; }
   .executor-page .primary { transition:none; }
 }
+

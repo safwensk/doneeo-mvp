@@ -2,10 +2,11 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { ArrowRight, LockKeyhole, X } from 'lucide-react';
 import { authenticate, type Customer } from '../lib/api';
 
-export default function AuthPanel({ request, onClose, onSuccess }: {
+export default function AuthPanel({ request, onClose, onSuccess, purpose = 'customer' }: {
   request: string;
-  onClose: () => void;
+  onClose?: () => void;
   onSuccess: (customer: Customer) => void;
+  purpose?: 'customer' | 'executor';
 }) {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [name, setName] = useState('');
@@ -14,8 +15,11 @@ export default function AuthPanel({ request, onClose, onSuccess }: {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const panel = useRef<HTMLElement>(null);
+  const isExecutor = purpose === 'executor';
+  const Heading = isExecutor ? 'h1' : 'h2';
 
   useEffect(() => {
+    if (isExecutor) return;
     const previous = document.activeElement as HTMLElement | null;
     document.body.classList.add('no-scroll');
     panel.current?.querySelector<HTMLInputElement>('input')?.focus();
@@ -23,7 +27,7 @@ export default function AuthPanel({ request, onClose, onSuccess }: {
       document.body.classList.remove('no-scroll');
       previous?.focus();
     };
-  }, []);
+  }, [isExecutor]);
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -39,12 +43,13 @@ export default function AuthPanel({ request, onClose, onSuccess }: {
     }
   }
 
-  return <div className="auth-overlay" onMouseDown={event => {
-    if (event.target === event.currentTarget && !busy) onClose();
+  return <div className={isExecutor ? 'executor-auth' : 'auth-overlay'} onMouseDown={event => {
+    if (!isExecutor && event.target === event.currentTarget && !busy) onClose?.();
   }}>
-    <section ref={panel} className="auth-panel" role="dialog" aria-modal="true"
+    <section ref={panel} className="auth-panel" role={isExecutor ? undefined : 'dialog'} aria-modal={isExecutor ? undefined : true}
       aria-labelledby="auth-title" onKeyDown={event => {
-        if (event.key === 'Escape' && !busy) onClose();
+        if (isExecutor) return;
+        if (event.key === 'Escape' && !busy) onClose?.();
         if (event.key === 'Tab') {
           const controls = panel.current?.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled)');
           if (!controls?.length) return;
@@ -59,12 +64,13 @@ export default function AuthPanel({ request, onClose, onSuccess }: {
           }
         }
       }}>
-      <button className="auth-close icon-button" aria-label="Close login" onClick={onClose} disabled={busy}><X /></button>
-      <LockKeyhole className="auth-symbol" size={28} />
-      <h2 id="auth-title">{mode === 'login' ? 'Let’s get your plan started.' : 'Your Doneeo account.'}</h2>
-      <p>{request
-        ? 'I can help you work through this. Log in to keep your request and continue with Doneeo.'
-        : 'Log in to start a request or continue your saved plan.'}</p>
+      {!isExecutor && <button className="auth-close icon-button" aria-label="Close login" onClick={onClose} disabled={busy}><X /></button>}
+      {!isExecutor && <LockKeyhole className="auth-symbol" size={28} />}
+      <Heading id="auth-title">{isExecutor ? 'Create your Doneeo profile'
+        : mode === 'login' ? 'Let’s get your plan started.' : 'Your Doneeo account.'}</Heading>
+      <p>{isExecutor ? (mode === 'login' ? 'Sign in or create an account to get started.' : 'Create your account to choose your Doneeo role.')
+        : request ? 'I can help you work through this. Log in to keep your request and continue with Doneeo.'
+          : 'Log in to start a request or continue your saved plan.'}</p>
       {request && <blockquote>{request}</blockquote>}
       <form onSubmit={event => void submit(event)}>
         {mode === 'register' && <label>Your name
@@ -83,7 +89,7 @@ export default function AuthPanel({ request, onClose, onSuccess }: {
         {mode === 'register' && <small>Use at least 12 characters.</small>}
         {error && <p className="form-error" role="alert">{error}</p>}
         <button className="primary" type="submit" disabled={busy}>
-          {busy ? 'Continuing…' : mode === 'register' ? 'Create account and continue' : 'Log in and continue'}
+          {busy ? 'Continuing…' : mode === 'register' ? 'Create account and continue' : isExecutor ? 'Sign in' : 'Log in and continue'}
           <ArrowRight size={17} />
         </button>
       </form>
@@ -91,7 +97,8 @@ export default function AuthPanel({ request, onClose, onSuccess }: {
         setMode(mode === 'login' ? 'register' : 'login');
         setError('');
         setPassword('');
-      }}>{mode === 'login' ? 'New to Doneeo? Create an account' : 'Already have an account? Log in'}</button>
+      }}>{mode === 'login' ? 'New to Doneeo? Create an account' : isExecutor ? 'Already have an account? Sign in' : 'Already have an account? Log in'}</button>
     </section>
   </div>;
 }
+

@@ -225,6 +225,59 @@ class CustomerFlowTest {
         assertEquals(beforeBadTurn, calls.get());
     }
 
+    @Test
+    void executorProfilesStayPrivateAndValidateAvailabilityAndQualifications() throws Exception {
+        String path = "/api/executor/profile";
+        Client owner = new Client();
+        assertEquals(401, owner.request("GET", path, null, false).statusCode());
+        owner.refreshCsrf();
+        var credentials = Map.of("name", "Preview worker", "email", UUID.randomUUID() + "@example.test",
+                "password", "A-test-only-password-2026");
+        var account = owner.request("POST", "/api/auth/register", credentials, true);
+        assertEquals(200, account.statusCode(), account.body());
+        String accountId = json.readTree(account.body()).path("id").asText();
+        owner.refreshCsrf();
+        assertEquals(204, owner.request("GET", path, null, false).statusCode());
+
+        var profile = json.createObjectNode().put("role", "helper").put("serviceArea", " Toronto ")
+                .put("skills", "Assembly and lifting").put("equipment", "Hand tools").put("timeZone", "America/Toronto");
+        var monday = profile.putArray("availability").addObject().put("day", "MONDAY")
+                .put("start", "09:00").put("end", "08:00");
+        var update = Map.of("accountId", accountId, "profile", profile);
+        assertEquals(403, owner.request("POST", path, update, false).statusCode());
+        assertEquals(400, owner.request("POST", path, update, true).statusCode());
+        monday.put("end", "17:00");
+        var saved = owner.request("POST", path, update, true);
+        assertEquals(200, saved.statusCode(), saved.body());
+        assertEquals("Toronto", json.readTree(saved.body()).path("serviceArea").asText());
+
+        Client other = new Client();
+        other.refreshCsrf();
+        assertEquals(200, other.request("POST", "/api/auth/register", Map.of("name", "Another worker",
+                "email", UUID.randomUUID() + "@example.test", "password", "A-test-only-password-2026"), true).statusCode());
+        other.refreshCsrf();
+        assertEquals(204, other.request("GET", path, null, false).statusCode());
+        assertEquals(409, other.request("POST", path, update, true).statusCode());
+
+        assertEquals(204, owner.request("POST", "/api/auth/logout", Map.of(), true).statusCode());
+        assertEquals(401, owner.request("GET", path, null, false).statusCode());
+        owner.refreshCsrf();
+        assertEquals(200, owner.request("POST", "/api/auth/login", credentials, true).statusCode());
+        owner.refreshCsrf();
+        assertEquals(json.readTree(saved.body()), json.readTree(owner.request("GET", path, null, false).body()));
+
+        profile.put("role", "professional");
+        profile.putArray("availability");
+        assertEquals(400, owner.request("POST", path, update, true).statusCode());
+        profile.putObject("qualifications").put("trade", "Electrician").put("region", "Ontario");
+        var upgraded = owner.request("POST", path, update, true);
+        assertEquals(200, upgraded.statusCode(), upgraded.body());
+        var reloaded = json.readTree(owner.request("GET", path, null, false).body());
+        assertEquals("professional", reloaded.path("role").asText());
+        assertEquals("Electrician", reloaded.path("qualifications").path("trade").asText());
+        assertEquals(0, reloaded.path("availability").size());
+    }
+
     private class Client {
         private final HttpClient client = HttpClient.newBuilder()
                 .cookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_ALL)).build();
@@ -247,3 +300,4 @@ class CustomerFlowTest {
         }
     }
 }
+

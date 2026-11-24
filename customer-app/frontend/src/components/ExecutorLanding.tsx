@@ -23,19 +23,12 @@ const organizedSteps = [
 export default function ExecutorLanding() {
   const [menuOpen, setMenuOpen] = useState(false);
   const planDialog = useRef<HTMLDialogElement>(null);
-  const profileDialog = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
     document.title = 'Work with Doneeo — Bring your skills';
     document.querySelector('meta[name="description"]')?.setAttribute('content',
       'Bring your skills. Doneeo matches suitable job requests to local helpers and licensed professionals, with clear plans and calendar-based availability.');
   }, []);
-
-  function openProfilePreview() {
-    setMenuOpen(false);
-    planDialog.current?.close();
-    profileDialog.current?.showModal();
-  }
 
   return <div className="executor-page">
     <a className="skip" href="#executor-main">Skip to content</a>
@@ -51,7 +44,7 @@ export default function ExecutorLanding() {
         </nav>
         <div className="executor-nav-actions">
           <a className="executor-customer-link" href="/">For customers</a>
-          <button className="primary" type="button" aria-haspopup="dialog" onClick={openProfilePreview}>Start my profile</button>
+          <a className="primary" href="/executors/profile">Start my profile</a>
           <button className="executor-menu-toggle" type="button" onClick={() => setMenuOpen(open => !open)}
             aria-expanded={menuOpen} aria-controls="executor-mobile-menu" aria-label={menuOpen ? 'Close menu' : 'Open menu'}>
             {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
@@ -72,7 +65,7 @@ export default function ExecutorLanding() {
           <span className="executor-eyebrow"><UsersRound size={21} aria-hidden="true" />Work with Doneeo</span>
           <h1 id="executor-heading">Bring your skills.<br /><em>We match you with<br className="executor-heading-break" /> work that fits.</em></h1>
           <p>Set up your profile and tell us when you’re available. Doneeo sends you work that fits your skills and calendar. Review the plan and accept the jobs that suit you.</p>
-          <button className="primary executor-start" type="button" aria-haspopup="dialog" onClick={openProfilePreview}>Start my Doneeo profile <ArrowRight size={24} aria-hidden="true" /></button>
+          <a className="primary executor-start" href="/executors/profile">Start my Doneeo profile <ArrowRight size={24} aria-hidden="true" /></a>
         </div>
 
         <div className="executor-request-card">
@@ -139,10 +132,9 @@ export default function ExecutorLanding() {
       <section className="executor-join" id="join-doneeo" aria-labelledby="executor-join-heading">
         <h2 id="executor-join-heading">Create your Doneeo profile</h2>
         <p className="executor-join-copy">Sign in or create an account, then choose Local helper or Licensed professional.</p>
-        <button className="primary executor-start" type="button" aria-haspopup="dialog" aria-describedby="executor-profile-status" onClick={openProfilePreview}>
+        <a className="primary executor-start" href="/executors/profile">
           Start my Doneeo profile <ArrowRight size={24} aria-hidden="true" />
-        </button>
-        <p className="executor-profile-status" id="executor-profile-status">Worker registration is coming soon.</p>
+        </a>
       </section>
     </main>
 
@@ -164,18 +156,8 @@ export default function ExecutorLanding() {
         <li><strong>Accept, then follow the plan</strong><span>Once accepted, the agreed scope, role, rate and schedule are confirmed. Follow coordination and progress through completion.</span></li>
       </ol>
       <p className="executor-dialog-note">This example has no live job, price or payment. No work is booked from this preview.</p>
-      <button className="primary" type="button" aria-haspopup="dialog" onClick={openProfilePreview}>Start my Doneeo profile <ArrowRight size={20} aria-hidden="true" /></button>
-    </dialog>
-
-    <dialog className="executor-plan-dialog" ref={profileDialog} aria-labelledby="executor-profile-heading" aria-describedby="executor-registration-note">
-      <form method="dialog"><button className="executor-dialog-close" aria-label="Close profile preview"><X size={23} aria-hidden="true" /></button></form>
-      <h2 id="executor-profile-heading">Create your Doneeo profile</h2>
-      <p id="executor-registration-note">Worker registration is coming soon. Here’s how you’ll get started.</p>
-      <ol className="executor-example-plan">
-        <li><strong>Sign in or create an account</strong><span>Start with your Doneeo account.</span></li>
-        <li><strong>Choose your role</strong><span>Join as a Local helper or Licensed professional.</span></li>
-        <li><strong>Complete your profile</strong><span>Add your skills, service area, availability and equipment. Include your qualifications for licensed work.</span></li>
-      </ol>
+      <a className="primary" href="/executors/profile">Start my Doneeo profile <ArrowRight size={20} aria-hidden="true" /></a>
     </dialog>
   </div>;
 }
+
