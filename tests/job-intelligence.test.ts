@@ -144,6 +144,41 @@ test("dishwasher delivery and installation remains a composite work order", () =
   assert.ok(!result.questions.some(question => ["retailer_pickup_status", "dishwasher_connection_scope", "old_dishwasher"].includes(question.id)));
 });
 
+test("informal dishwasher pickup and installation asks for missing route and technical facts", () => {
+  const request = "i wantyou to pick up dishwasher and unstal it in to y appartement";
+  const result = plan(request);
+  assert.equal(result.sourceText, request);
+  assert.deepEqual(result.routeNodes, []);
+  assert.equal(result.rulesGate?.status, "needs_information");
+  const questionIds = result.questions.filter(question => question.required !== false).map(question => question.id);
+  assert.deepEqual(questionIds.slice(0, 4), ["pickup_address", "service_address", "stop_2_floor", "stop_2_elevator"]);
+  for (const id of ["dishwasher_model", "dishwasher_connection_scope", "dishwasher_power_connection", "dishwasher_parts", "old_dishwasher"]) {
+    assert.ok(questionIds.includes(id), id);
+  }
+  assert.ok(!questionIds.includes("old_dishwasher_removal"));
+  assert.ok(!questionIds.includes("dishwasher_details"));
+});
+
+test("confirmed dishwasher locations build the route and an existing unit branches to disposition", () => {
+  const result = plan("Pick up a dishwasher and install it in my apartment.", {
+    pickup_address: "100 Example Avenue, Toronto",
+    service_address: "200 Sample Road, Toronto, apartment 5",
+    stop_2_floor: "Ground floor",
+    old_dishwasher: true,
+  });
+  assert.deepEqual(result.routeNodes.map(node => node.location), ["100 Example Avenue, Toronto", "200 Sample Road, Toronto, apartment 5"]);
+  const questionIds = result.questions.map(question => question.id);
+  assert.ok(questionIds.includes("old_dishwasher_removal"));
+  assert.ok(questionIds.includes("dishwasher_parts"));
+  assert.ok(!questionIds.some(id => ["pickup_address", "service_address", "stop_2_floor", "stop_2_elevator", "old_dishwasher"].includes(id)));
+});
+
+test("a delivery-only dishwasher request respects the explicit installation exclusion", () => {
+  const result = plan("Pick up a dishwasher and deliver it to my apartment. Do not install it.");
+  assert.ok(!result.intelligence?.domains?.some(domain => domain.id === "appliance_installation"));
+  assert.ok(!result.questions.some(question => ["dishwasher_parts", "dishwasher_connection_scope", "old_dishwasher"].includes(question.id)));
+});
+
 test("Costco refrigerator delivery uses item-specific intelligence without inventing installation", () => {
   const result = plan("Saturday at 10 a.m., pick up a fridge from Costco Anjou and deliver it to my apartment at 12385 Test Avenue.");
   const concepts = questionConcepts(result);

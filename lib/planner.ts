@@ -238,8 +238,8 @@ export function normalizeIntakeForInference(sourceText: string) {
     .replace(/\bplz\b/gi, "please")
     .replace(/\bpreferblu\b/gi, "preferably")
     .replace(/\bmu(?=\s+apartment\b)/gi, "my")
-    .replace(/\bthe\s+unstall\b/gi, "then install")
-    .replace(/\bunstall\b/gi, "install")
+    .replace(/\bthe\s+unstall?\b/gi, "then install")
+    .replace(/\bunstall?\b/gi, "install")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -639,45 +639,64 @@ function providedStreetAddresses(sourceText: string) {
   return extractStreetAddresses(sourceText);
 }
 
-function compositeDishwasherRequest(sourceText: string) {
-  const text = sourceText.toLowerCase();
-  const dishwasher = /dish\s*washer/.test(text);
-  // Accept common intake misspellings such as “unstall” as installation intent.
-  // The other signals still have to identify a dishwasher and an external
-  // pickup/delivery, so this cannot turn an unrelated sentence into an install.
-  const installation = /\b(?:install|instal|unstall|connect|hook\s*up|fit)\b/.test(text);
-  const transport = /\b(?:pick\s*up|collect|deliver|bring|transport|move)\b|\bfrom\b.{0,180}\bto\b|\b(?:costco|ikea|store|shop|retailer)\b.{0,180}\bto\b/.test(text);
-  return dishwasher && installation && transport;
+export function isCompositeDishwasherRequest(sourceText: string) {
+  const text = normalizeIntakeForInference(sourceText).toLowerCase();
+  const dishwasher = /\bdish\s*washer\b/.test(text);
+  const installation = /\b(?:install|connect|hook\s*up|fit)\b/.test(text)
+    && !/\b(?:no installation|(?:do not|don't) install)\b/.test(text);
+  const transport = /\b(?:pick\s*up|collect|deliver|bring|transport)\b|\bfrom\b.{0,180}\bto\b/.test(text);
+  const pickupWithinProperty = /\b(?:pick\s*up|collect|bring|move)\b[^.;]{0,90}\bfrom\s+(?:(?:my|our|the)\s+)?(?:garage|basement|kitchen|storage room|upstairs|downstairs)\b/.test(text)
+    && !/\b(?:another|different)\s+(?:property|building|house|apartment)\b/.test(text)
+    && extractStreetAddresses(sourceText).length < 2;
+  return dishwasher && installation && transport && !pickupWithinProperty;
 }
 
-function compositeDishwasherRoute(sourceText: string, existing: RouteNode[]) {
+function dishwasherLocation(value: unknown, pickup = false) {
+  if (typeof value !== "string") return "";
+  const location = cleanRouteText(value);
+  if (!location || isTimingFragment(location)) return "";
+  if (extractStreetAddresses(location).length) return location;
+  const generic = /^(?:(?:my|our|the|a|an)\s+)?(?:apartment|house|home|store|shop|seller|retailer|warehouse|pickup|destination|location|address)(?:\s+(?:#\s*)?\d{1,5})?$/i;
+  return pickup && !generic.test(location) && /\p{L}+\s+\p{L}+/u.test(location) ? location : "";
+}
+
+function dishwasherDeliveryIndex(nodes: RouteNode[]) {
+  return nodes.map(node => node.actions.some(action => /^(?:deliver|install)\b/i.test(action))).lastIndexOf(true);
+}
+
+function compositeDishwasherRoute(sourceText: string, existing: RouteNode[], answers: Record<string, string | boolean>) {
   sourceText = normalizeIntakeForInference(sourceText);
-  const nodes = existing.map(node => ({ ...node, actions: [...node.actions] }));
+  const external = existing.filter(node => extractStreetAddresses(node.location).length
+    || /\b(?:costco|ikea|walmart|home depot|rona|store|shop|retailer|warehouse)\b/i.test(node.location));
+  if (external.length > 2) return external;
+  const nodes = existing.filter(node => !/^(?:(?:my|our|the)\s+)?(?:garage|basement|kitchen|bedroom|storage room)\b/i.test(node.location)
+    || extractStreetAddresses(node.location).length);
   const pickupMatch = sourceText.match(/\b(?:pick\s*up|collect)\s+(?:a\s+|the\s+)?dish\s*washer\s+(?:from|at)\s+(.+?)(?=\s+(?:and\s+)?(?:bring|deliver|transport)\s+(?:it|the\s+dish\s*washer)\s+to|,\s*(?:deliver|bring|transport)|\s+to\s+(?:my\s+)?(?:apartment|home|house))/i)
-    || sourceText.match(/\bfrom\s+(.+?)(?=,\s*(?:deliver|bring|transport)|\s+to\s+(?:my\s+)?(?:apartment|home|house))/i)
-    || sourceText.match(/^\s*(.+?)\s+to\s+(?:my\s+)?(?:apartment|home|house)\b/i);
+    || sourceText.match(/\b(?:pick\s*up|collect)[^.;]{0,120}?\bdish\s*washer\b[^.;]{0,90}?\s+(?:from|at)\s+(.+?)(?=\s*,?\s+(?:and\s+)?(?:then\s+)?(?:install|deliver|bring|transport)\b|\s+(?:today|tomorrow)\b|[.;]|$)/i);
   const destinationMatch = sourceText.match(/\b(?:deliver|bring|transport)(?:\s+(?:the\s+)?dish\s*washer|\s+it)?\s+to\s+(?:my\s+)?(?:apartment|home|house)?\s*(?:in|at)?\s*(.+?)(?=,?\s+(?:and\s+)?(?:then\s+)?(?:install|instal|unstall|connect|hook)|[.;]|$)/i)
-    || sourceText.match(/\bto\s+(?:my\s+)?(?:apartment|home|house)\s*(?:in|at)?\s*(.+?)(?=,?\s+(?:and\s+)?(?:then\s+)?(?:install|instal|unstall|connect|hook)|[.;]|$)/i);
-  const pickup = cleanRouteText(pickupMatch?.[1] || "");
-  const destination = cleanRouteText(destinationMatch?.[1] || "");
-  if (pickup && destination) {
-    nodes.splice(0, nodes.length,
-      { location: pickup, actions: ["Pick up dishwasher"] },
-      { location: destination, actions: ["Deliver dishwasher"] },
-    );
-  }
-  if (nodes.length) {
-    const destination = nodes[nodes.length - 1];
-    if (!destination.actions.some(action => /install|connect|hook/i.test(action))) destination.actions.push("Install and test dishwasher");
-  }
-  return nodes;
+    || sourceText.match(/\b(?:to|in|inside|into|install\s+(?:it|the\s+dish\s*washer)\s+at)\s+(?:(?:my|our|the)\s+)?(?:(?:apartment|home|house)\s+(?:(?:at|in)\s+)?)?(\d{1,6}\s+.+?)(?=,?\s+(?:and\s+)?(?:then\s+)?(?:install|connect|hook|on the)\b|[.;]|$)/i);
+  const pickupNode = nodes.find(node => node.actions.some(action => /^pick\s*up\b/i.test(action)));
+  const destinationNode = nodes[dishwasherDeliveryIndex(nodes)];
+  const pickup = dishwasherLocation(answers.pickup_address, true) || dishwasherLocation(pickupMatch?.[1], true)
+    || dishwasherLocation(pickupNode?.location, true);
+  const destination = dishwasherLocation(answers.service_address) || dishwasherLocation(answers.delivery_address)
+    || dishwasherLocation(destinationMatch?.[1]) || dishwasherLocation(destinationNode?.location);
+  return [
+    ...(pickup ? [{ location: pickup, actions: ["Pick up dishwasher"] }] : []),
+    ...(destination ? [{ location: destination, actions: ["Deliver dishwasher", "Install and test dishwasher"] }] : []),
+  ];
 }
 
 function enrichCompositeRequest(analysis: PlannerAnalysis): PlannerAnalysis {
-  if (!compositeDishwasherRequest(analysis.sourceText)) return analysis;
+  if (!isCompositeDishwasherRequest(analysis.sourceText)) return analysis;
   const alreadyStructuredByOntology = analysis.tasks.some(task => /^Pick up the dishwasher at\b/i.test(task));
-  const source = analysis.sourceText.toLowerCase();
-  const routeNodes = compositeDishwasherRoute(analysis.sourceText, analysis.routeNodes || []);
+  const source = normalizeIntakeForInference(analysis.sourceText).toLowerCase();
+  const extractedAnswers = { ...analysis.extractedAnswers };
+  const routeNodes = compositeDishwasherRoute(analysis.sourceText, analysis.routeNodes || [], extractedAnswers);
+  const pickup = routeNodes.findIndex(node => node.actions.some(action => /^pick\s*up\b/i.test(action)));
+  const delivery = dishwasherDeliveryIndex(routeNodes);
+  const destination = routeNodes[delivery]?.location || "The delivery address";
+  const simpleRoute = routeNodes.length <= 2;
   const equipment: EquipmentRequirement[] = equipmentList([
     ...equipmentFor("moving", analysis.sourceText),
     { id: "appliance_dolly", name: "Appliance dolly", purpose: "Move the dishwasher safely between the vehicle and apartment", required: true, rentalEstimate: 22 },
@@ -686,71 +705,87 @@ function enrichCompositeRequest(analysis: PlannerAnalysis): PlannerAnalysis {
     { id: "leak_protection", name: "Leak protection and test supplies", purpose: "Protect the work area and verify the completed water connection", required: true, rentalEstimate: 8, supplyType: "consumable" },
   ]).filter((item, index, all) => all.findIndex(candidate => candidate.id === item.id) === index);
   const irrelevantTemplateQuestion = (question: PlannerQuestion) =>
-    ["service_address", "item", "mounting", "utilities", "materials", "instructions", "mounting_materials", "site_access"].includes(question.id)
-    || question.id.startsWith("stop_")
-    || /shelf|bracket|anchor|wall or ceiling|assembled or installed/i.test(`${question.id} ${question.label}`);
-  const destination = routeNodes[routeNodes.length - 1]?.location || "the apartment";
+    ["pickup_address", "service_address", "delivery_address", "dishwasher_details", "item", "mounting", "utilities", "materials", "instructions", "fasteners", "mounting_materials", "site_access"].includes(question.id)
+    || (simpleRoute && question.id.startsWith("stop_"));
+  if (/\b(?:already\s+)?paid\b[^.]{0,100}\bready\b|\bready\b[^.]{0,100}\bpaid\b/.test(source)) extractedAnswers.retailer_pickup_status ??= "Paid and ready";
+  if (/\bexisting\b[^.]{0,100}\b(?:water|drain|electrical|power)\b[^.]{0,120}\b(?:connection|hookup|supply)/.test(source) || /\bexisting (?:accessible )?(?:water,?\s*drain and (?:electrical|power)|connections?)\b/.test(source)) extractedAnswers.dishwasher_connection_scope ??= "Yes — existing connections";
+  if (/\b(?:new|modified|relocat(?:e|ed|ing))\b[^.]{0,100}\b(?:water|drain|electrical|connection|hookup)/.test(source)) extractedAnswers.dishwasher_connection_scope = "New or modified connections";
+  if (/\b(?:no|without)\s+(?:old|existing)\s+dish\s*washer\b|\b(?:old|existing)\s+dish\s*washer\s+(?:is\s+)?not\s+installed\b/.test(source)) extractedAnswers.old_dishwasher ??= false;
+  else if (/\b(?:old|existing)\s+dish\s*washer\s+(?:is\s+)?(?:installed|onsite|in place)\b/.test(source)) extractedAnswers.old_dishwasher ??= true;
+  if (/\b(?:all|required|installation)\s+(?:parts|fittings|hardware|kit)\s+(?:are\s+|is\s+)?(?:included|available|ready)\b/.test(source)) extractedAnswers.dishwasher_parts ??= "Yes — all included";
+  if (/\b(?:building|condo|landlord)\s+(?:permission|approval)\s+(?:is\s+)?(?:confirmed|approved|not required)\b/.test(source)) extractedAnswers.building_permission ??= "Yes — approved";
+  if (/\b(?:hardwired|hard-wired|hard wired)\b/.test(source)) extractedAnswers.dishwasher_power_connection = "Hardwired";
+  else if (/\b(?:regular|standard)\s+(?:wall\s+)?(?:plug|outlet)\b|\bplug(?:s)? into\b/.test(source)) extractedAnswers.dishwasher_power_connection ??= "Plug-in outlet";
+  if (extractedAnswers.old_dishwasher === true && /\b(?:haul|take)\b[^.;]{0,65}\b(?:old|existing) (?:dishwasher|unit)\b[^.;]{0,35}\baway\b|\b(?:recycle|dispose of)\s+(?:the\s+)?(?:old|existing) (?:dishwasher|unit)\b/.test(source)) extractedAnswers.old_dishwasher_removal ??= "Take it away for recycling";
+  const accessQuestions: PlannerQuestion[] = [
+    { id: "stop_1_vehicle_access", label: "Can the pickup team park or load close to the dishwasher?", help: "Include curbside pickup, a loading bay or parking restrictions.", type: "choice", options: ["Yes — close access", "Limited access", "No — remote parking", "Not sure"], required: true },
+    { id: "stop_2_floor", label: "Which floor is the delivery unit on?", help: `${destination} — the apartment number does not necessarily identify the floor.`, type: "choice", options: ["Basement", "Ground floor", "2nd floor", "3rd floor", "4th+ floor"], required: true },
+    { id: "stop_2_elevator", label: "Is there a usable elevator at the delivery building?", help: "If the unit is upstairs, this affects the crew, equipment and time needed.", type: "boolean", required: true },
+    { id: "stop_2_vehicle_access", label: "Can the delivery vehicle stop close to the entrance?", help: "Consider loading zones, parking restrictions and carrying distance.", type: "choice", options: ["Yes — close access", "Limited access", "No — remote parking"], required: true },
+  ];
   const questions: PlannerQuestion[] = [
-    { id: "retailer_pickup_status", label: "Is the dishwasher paid for and ready for pickup at the retailer?", help: "This prevents assigning travel before the order can actually be released.", type: "choice", options: ["Paid and ready", "Ordered — not ready yet", "Not sure"], required: true },
-    { id: "retailer_release_details", label: "What will the executor need to collect the dishwasher?", help: "Add the pickup name, order or confirmation reference, and any retailer pickup instructions.", type: "text", required: true },
-    { id: "dishwasher_model", label: "What is the dishwasher model or its exact dimensions?", help: "A model number or product photo confirms fit, required parts and installation instructions.", type: "text", required: true },
-    { id: "dishwasher_connection_scope", label: "Is this a replacement using existing accessible water, drain and electrical connections?", help: "New or modified plumbing/electrical work changes provider eligibility and may require a licensed professional.", type: "choice", options: ["Yes — existing connections", "New or modified connections", "Not sure"], required: true },
-    { id: "dishwasher_parts", label: "Are all model-required installation parts included?", help: "Examples include the supply line, drain fittings, power component and mounting hardware.", type: "choice", options: ["Yes — all included", "No — parts needed", "Not sure"], required: true },
-    { id: "old_dishwasher", label: "Is an old dishwasher currently installed?", help: "If yes, Doneeo adds safe disconnection, removal and disposal or relocation to the work order.", type: "boolean", required: true },
+    ...(pickup < 0 ? [{ id: "pickup_address", label: "Where should we pick up the dishwasher?", help: "Enter a street address or the store name and branch.", type: "text" as const, required: true }] : []),
+    ...(delivery < 0 ? [{ id: "service_address", label: "What is the delivery and installation address?", help: "Include the apartment or unit number if applicable.", type: "text" as const, required: true }] : []),
+    ...(simpleRoute ? accessQuestions.slice(1, 3) : []),
+    { id: "retailer_pickup_status", label: "Is the dishwasher ready and cleared for pickup?", help: "This prevents assigning travel before it can be released.", type: "choice", options: ["Ready for pickup", "Not ready yet", "Not sure"], required: true },
+    { id: "retailer_release_details", label: "What will the team need to collect the dishwasher?", help: "Include an order reference, pickup instructions or the pickup contact.", type: "text", required: true },
+    { id: "dishwasher_model", label: "What is the dishwasher model?", help: "Share a model number or product link. If you do not have it, enter the dimensions and approximate weight so we can plan transport and fit.", type: "text", required: true },
+    { id: "dishwasher_connection_scope", label: "Are water, drain and electrical hookups already in place for the new dishwasher?", help: "Added or changed hookups can require an appropriately licensed professional.", type: "choice", options: ["Yes — existing connections", "New or modified connections", "Not sure"], required: true },
+    { id: "dishwasher_power_connection", label: "Does the dishwasher use a plug-in outlet or a hardwired connection?", help: "Choose “Not sure” if the installer needs to verify it.", type: "choice", options: ["Plug-in outlet", "Hardwired", "Not sure"], required: true },
+    { id: "dishwasher_parts", label: "Is the installation kit for this dishwasher already available?", help: "This can include the supply line, drain fittings, power component and mounting hardware.", type: "choice", options: ["Yes — all included", "No — parts needed", "Not sure"], required: true },
+    { id: "old_dishwasher", label: "Is there an existing dishwasher already installed?", help: "Doneeo needs to plan safe disconnection and confirm what to do with the old unit.", type: "boolean", required: true },
+    ...(extractedAnswers.old_dishwasher === true ? [{
+      id: "old_dishwasher_removal", label: "What should we do with the old dishwasher after disconnecting it?", type: "choice" as const,
+      options: ["Leave it in the apartment", "Move it elsewhere in the building", "Take it away for recycling"], required: true,
+    }] : []),
+    ...(extractedAnswers.old_dishwasher === true && extractedAnswers.old_dishwasher_removal === "Move it elsewhere in the building" ? [{
+      id: "old_dishwasher_destination", label: "Where in the building should we leave the old dishwasher?", type: "text" as const, required: true,
+    }] : []),
     { id: "building_permission", label: "Does the building allow this appliance installation at the requested time?", help: "Include elevator reservations, working-hour rules or required proof of insurance if applicable.", type: "choice", options: ["Yes — approved", "Permission required", "Not sure"], required: true },
-    { id: "stop_1_vehicle_access", label: "RETAILER PICKUP · Is there a designated loading area?", help: `${routeNodes[0]?.location || "Retailer"} — include curbside, warehouse bay or parking restrictions.`, type: "choice", options: ["Yes — loading area", "Regular parking only", "Not sure"], required: true },
-    { id: "stop_2_floor", label: "APARTMENT · Which floor is the unit on?", help: `${destination} — the apartment number does not necessarily identify the floor.`, type: "choice", options: ["Ground floor", "2nd floor", "3rd floor", "4th+ floor"], required: true },
-    { id: "stop_2_elevator", label: "APARTMENT · Is there a usable elevator?", help: "This question disappears when the apartment is confirmed as ground floor.", type: "boolean", required: true },
-    { id: "stop_2_vehicle_access", label: "APARTMENT · Can the vehicle stop close to the entrance?", help: "Consider loading zones, parking restrictions and carrying distance.", type: "choice", options: ["Yes — close access", "Limited access", "No — remote parking"], required: true },
+    ...(simpleRoute ? [accessQuestions[0], accessQuestions[3]] : []),
     ...analysis.questions.filter(question => !irrelevantTemplateQuestion(question)),
   ];
   const tasks = [
-    "Pick up dishwasher from the retailer",
-    "Transport and deliver dishwasher to the apartment",
+    pickup < 0 ? "Pick up dishwasher from the confirmed collection location" : `Pick up the dishwasher at ${routeNodes[pickup].location}`,
+    delivery < 0 ? "Transport and deliver dishwasher to the installation address" : `Transport and deliver the dishwasher to ${routeNodes[delivery].location}`,
     "Install dishwasher using the verified connection scope",
     "Test operation and check for leaks",
   ];
   const skillRequirements = ["Safe appliance handling and load securement", "Dishwasher installation", "Water, drain and electrical connection assessment", "Leak and operation testing"]
     .filter((skill, index, all) => all.findIndex(candidate => candidate.toLowerCase() === skill.toLowerCase()) === index);
   const executionSteps = [
-    "Verify retailer pickup readiness, dishwasher model and dimensions",
-    "Confirm apartment access, connection scope, included parts and building permission",
+    "Verify pickup readiness, dishwasher model and dimensions",
+    "Confirm delivery access, connection scope, included parts and building permission",
     "Match the transport team and appropriately qualified installer; combine roles only when one provider is eligible for both",
     "Collect, protect and transport the dishwasher",
     "Deliver, position, install and test the dishwasher",
     "Record installation evidence and customer completion validation",
   ];
-  const extractedAnswers = { ...analysis.extractedAnswers };
-  if (/\b(?:already\s+)?paid\b[^.]{0,100}\bready\b|\bready\b[^.]{0,100}\bpaid\b/.test(source)) extractedAnswers.retailer_pickup_status = "Paid and ready";
-  if (/\bexisting\b[^.]{0,100}\b(?:water|drain|electrical|power)\b[^.]{0,120}\b(?:connection|hookup|supply)/.test(source) || /\bexisting (?:accessible )?(?:water,?\s*drain and (?:electrical|power)|connections?)\b/.test(source)) extractedAnswers.dishwasher_connection_scope = "Yes — existing connections";
-  if (/\b(?:new|modified|relocat(?:e|ed|ing))\b[^.]{0,100}\b(?:water|drain|electrical|connection|hookup)/.test(source)) extractedAnswers.dishwasher_connection_scope = "New or modified connections";
-  if (/\b(?:no|without)\s+(?:old|existing)\s+dish\s*washer\b|\b(?:old|existing)\s+dish\s*washer\s+(?:is\s+)?not\s+installed\b/.test(source)) extractedAnswers.old_dishwasher = false;
-  else if (/\b(?:old|existing)\s+dish\s*washer\s+(?:is\s+)?(?:installed|onsite|in place)\b/.test(source)) extractedAnswers.old_dishwasher = true;
-  if (/\b(?:all|required|installation)\s+(?:parts|fittings|hardware)\s+(?:are\s+)?(?:included|available|ready)\b/.test(source)) extractedAnswers.dishwasher_parts = "Yes — all included";
-  if (/\b(?:building|condo|landlord)\s+(?:permission|approval)\s+(?:is\s+)?(?:confirmed|approved|not required)\b/.test(source)) extractedAnswers.building_permission = "Yes — approved";
   return {
     ...analysis,
+    category: "installation",
     title: alreadyStructuredByOntology ? analysis.title : "Dishwasher pickup, delivery and installation",
-    summary: alreadyStructuredByOntology ? analysis.summary : "Doneeo identified one connected order with two distinct services: retailer pickup and delivery, followed by on-site dishwasher installation and testing.",
+    summary: alreadyStructuredByOntology ? analysis.summary : "Doneeo will coordinate dishwasher pickup, delivery, installation and testing in one work order.",
     tasks: alreadyStructuredByOntology ? analysis.tasks : tasks,
     routeNodes,
     extractedAnswers,
-    stops: routeNodes.length ? routeNodes.map(node => node.location) : analysis.stops,
+    stops: routeNodes.map(node => node.location),
     items: analysis.items.some(item => /dish\s*washer/i.test(item)) ? analysis.items : [...analysis.items, "dishwasher"],
     equipment: alreadyStructuredByOntology ? analysis.equipment : equipment,
-    questions: alreadyStructuredByOntology ? analysis.questions : questions.filter((question, index, all) => all.findIndex(candidate => candidate.id === question.id) === index),
+    questions: questions.filter((question, index, all) => all.findIndex(candidate => candidate.id === question.id) === index),
     recommendedTeamSize: alreadyStructuredByOntology ? analysis.recommendedTeamSize : Math.max(2, analysis.recommendedTeamSize),
     skillRequirements: alreadyStructuredByOntology ? analysis.skillRequirements : skillRequirements,
     executionSteps: alreadyStructuredByOntology ? analysis.executionSteps : executionSteps,
     safetyNote: alreadyStructuredByOntology ? analysis.safetyNote : "Doneeo separates transport eligibility from installation eligibility. Any new or modified plumbing or electrical work is routed to an appropriately licensed professional.",
     estimate: alreadyStructuredByOntology ? analysis.estimate : { ...analysis.estimate, materialsSummary: equipment.map(item => item.name).join(", ") },
-    understoodFacts: [...analysis.understoodFacts, "Dishwasher must be collected from the retailer", "Dishwasher must be delivered to the apartment", "Dishwasher installation is required at the destination"]
+    understoodFacts: [...analysis.understoodFacts, "Dishwasher pickup, delivery and installation are requested"]
       .filter((fact, index, all) => all.findIndex(candidate => candidate.toLowerCase() === fact.toLowerCase()) === index),
   };
 }
 
 function requestProvidesAddressForQuestion(question: PlannerQuestion, sourceText: string, category: JobCategory) {
   const concept = `${question.id} ${question.label}`.toLowerCase();
+  if (["pickup_address", "service_address", "delivery_address"].includes(question.id) && isCompositeDishwasherRequest(sourceText)) return false;
   const isAccessQuestion = /(floor|elevator|stairs|loading|parking|access|entrance|door|gate)/.test(concept);
   const isAddressQuestion = !isAccessQuestion && /(address|where (?:is|will|should)|(?:work|service|installation|cleaning|pickup|delivery) location)/.test(concept);
   if (!isAddressQuestion) return false;
@@ -974,15 +1009,14 @@ export function enforceSafety(analysis: PlannerAnalysis): PlannerAnalysis {
     const value = answered[question.id];
     return !(typeof value === "boolean" || (typeof value === "string" && value.trim().length > 1));
   });
-  const derivedRoute = deriveRouteNodes(normalizedSource);
-  const deterministicRoute = compositeDishwasherRequest(normalizedSource)
-    ? compositeDishwasherRoute(normalizedSource, derivedRoute)
-    : derivedRoute;
-  const routeNodes = deterministicRoute.length >= 2 ? deterministicRoute : (analysis.routeNodes || []);
+  const dishwasherDelivery = isCompositeDishwasherRequest(normalizedSource);
+  const derivedRoute = dishwasherDelivery ? analysis.routeNodes : deriveRouteNodes(normalizedSource);
+  const routeNodes = dishwasherDelivery || derivedRoute.length >= 2 ? derivedRoute : (analysis.routeNodes || []);
   const stops = routeNodes.length ? routeNodes.map(node => node.location) : analysis.stops;
   const scheduleWindow = extractScheduleWindow(analysis.sourceText) || analysis.scheduleWindow || null;
-  const requiredStopAccess = routeNodes.length >= 2 ? stopAccessQuestions(stops) : [];
-  const requiredStopAddresses: PlannerQuestion[] = routeNodes.flatMap((node, index) => {
+  const useNumberedStops = !dishwasherDelivery || routeNodes.length > 2;
+  const requiredStopAccess = useNumberedStops && routeNodes.length >= 2 ? stopAccessQuestions(stops) : [];
+  const requiredStopAddresses: PlannerQuestion[] = (useNumberedStops ? routeNodes : []).flatMap((node, index) => {
     const location = node.location.trim();
     const hasStreetNumber = /\b\d{1,6}\s+[A-Za-zÀ-ÖØ-öø-ÿ]/.test(location);
     const isNamedRetailer = /\b(?:costco|ikea|walmart|home depot|rona|store|shop|retailer|warehouse)\b/i.test(location)

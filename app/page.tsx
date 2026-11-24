@@ -204,25 +204,15 @@ export default function Home() {
   const exactRouteAddresses = routeStops.length >= 2 ? routeStops : answeredEndpoints;
   const googleMapsUrl = exactRouteAddresses.length >= 2 ? `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(exactRouteAddresses[0])}&destination=${encodeURIComponent(exactRouteAddresses[exactRouteAddresses.length - 1])}${exactRouteAddresses.length > 2 ? `&waypoints=${encodeURIComponent(exactRouteAddresses.slice(1, -1).join("|"))}` : ""}&travelmode=driving` : "";
   const progress = ((stage + 1) / 4) * 100;
-  const visibleQuestions = (analysis?.questions || []).filter(question => {
-    const concept = `${question.id} ${question.label}`.toLowerCase();
-    if (question.required === false) return false;
-    if (!hasDrivingRoute && (/^stop_\d+_(?:floor|elevator|vehicle_access)$/.test(question.id) || /pickup|final delivery|delivery address|loading area|vehicle access|usable elevator/.test(concept))) return false;
-    if (!analysis?.recurrence.recurring && /frequency|how often|recurr|repeat|same provider each/.test(concept)) return false;
-    const elevatorMatch = question.id.match(/^stop_(\d+)_elevator$/);
-    if (elevatorMatch && answers[`stop_${elevatorMatch[1]}_floor`] === "Ground floor") return false;
-    return true;
-  });
+  // The planner can require route details before it can build the route.
+  const visibleQuestions = analysis?.questions.filter(question => question.required !== false) ?? [];
   const questionAnswered = (question: PlannerQuestion) => {
     const value = answers[question.id];
     return typeof value === "boolean" || (typeof value === "string" && value.trim().length > 1);
   };
   const nextUnansweredId = visibleQuestions.find(question => !questionAnswered(question))?.id;
   const displayedQuestions = visibleQuestions.filter(question => question.id === nextUnansweredId);
-  const requiredComplete = visibleQuestions.filter(question => question.required).every(question => {
-    const value = answers[question.id];
-    return typeof value === "boolean" || (typeof value === "string" && value.trim().length > 1);
-  });
+  const requiredComplete = visibleQuestions.every(questionAnswered);
   // Reusable operating equipment belongs to the matched provider or rental
   // workflow. Customer equipment declarations are useful but never block the
   // customer from seeing matching options.
@@ -598,8 +588,7 @@ export default function Home() {
       return;
     }
 
-    const remaining = visibleQuestions.filter(question => question.required !== false && !questionAnswered(question));
-    if (remaining.length) {
+    if (!requiredComplete) {
       setError("Please complete the visible operational detail before matching.");
       return;
     }

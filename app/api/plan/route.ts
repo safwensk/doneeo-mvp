@@ -1,4 +1,4 @@
-import { derivePreparationStart, enforceSafety, fallbackAnalysis, type JobCategory } from "../../../lib/planner";
+import { derivePreparationStart, enforceSafety, fallbackAnalysis, isCompositeDishwasherRequest, type JobCategory } from "../../../lib/planner";
 import { applyDoneeoRulesGate } from "../../../lib/rules-gate";
 import { applyCustomerAnswers, buildJobIntelligence } from "../../../lib/job-intelligence";
 import { canContinueIntake, rememberClarifications, retainKnownIntakeFacts, savedPlanningFallback } from "../../../lib/planning-continuity";
@@ -29,6 +29,8 @@ You are not limited to the domains listed above or to any fixed catalog of job t
 
 Interpret spelling mistakes, informal grammar and incomplete sentences in context without asking for a rewrite. Preserve names, addresses, numbers and stated constraints. If two plausible readings would change the work, ask one focused question that distinguishes them. A partial answer to a combined question establishes only what was actually stated. Keep any remaining detail that matters to scope, safety, access, price or matching; do not mark it as confirmed from an assumption.
 
+For a dishwasher pickup and installation, separate the pickup address from the installation address. A request can require both even before either location is supplied. Ask for missing apartment floor and elevator access, the model or fit information, the existing water, drain and electrical connections, the installation kit, and whether there is an existing appliance and how it should be handled. Preserve this checklist regardless of whether the origin is a retailer or another pickup point. Never invent an address or treat a technical assumption as confirmed.
+
 Return JSON only with: category, title, summary, safetyNote, tasks, stops, routeNodes, scheduleWindow, preparation, items, customerCanHelp, extractedAnswers, questions, equipment, recurrence, recommendedTeamSize, skillRequirements, executionSteps, understoodFacts, and estimate. routeNodes is the ordered execution route as [{location,actions}], where actions lists every pickup, delivery, handoff or service performed at that exact location. scheduleWindow is {dateLabel,arrivalTime,deadlineTime,arrivalLabel,deadlineLabel}; keep the arrival/start commitment separate from the completion deadline. If a request says “Tomorrow at 9 a.m.” and “finish before 1 p.m.”, arrivalTime is 9:00 AM and deadlineTime is 1:00 PM—the deadline must never replace the start. When “then take the old item to X” follows a delivery at Y, Y has both “Deliver new item” and “Pick up old item,” while X has “Deliver old item.” Preserve this chain even when the customer uses pronouns such as it or them.
 
 A stated time is when the customer is owed someone ON SITE, never when the executor's day begins. Any work that must happen before arriving — collecting equipment, buying materials, picking up a rental — goes in preparation as [{step,kind,durationMinutes,billable}], where kind is equipment, materials or rental. Never fold preparation into executionSteps, never push arrivalTime later to make room for it, and never add travel to the job's service time to cover it: the start time the customer gave stays exactly as they gave it. Only list preparation the job genuinely requires. Set billable true only when the customer asked for that purchase or rental, because billable steps are the ones shown to the customer as part of what they are paying for; an executor fetching their own tools is not billable. executionSteps covers only work from arrival onward, and is the same plan the customer approves and the executor receives — preparation is the executor's earlier prefix, not a different plan.
@@ -40,7 +42,18 @@ For recurring support, useful missing details may include exact address, preferr
 function normalizeAnalysis(text: string, fallback: ReturnType<typeof fallbackAnalysis>) {
   const parsed = JSON.parse(text.replace(/^```json\s*|\s*```$/g, ""));
   const category = allowedCategories.has(parsed.category) ? parsed.category : fallback.category;
-  const extracted = parsed.extractedAnswers && typeof parsed.extractedAnswers === "object" ? { ...fallback.extractedAnswers, ...parsed.extractedAnswers } : fallback.extractedAnswers;
+  const modelAnswers = parsed.extractedAnswers && typeof parsed.extractedAnswers === "object" ? parsed.extractedAnswers : {};
+  const extracted = { ...fallback.extractedAnswers, ...modelAnswers };
+  const dishwasherPickupAndInstall = isCompositeDishwasherRequest(fallback.sourceText);
+  if (dishwasherPickupAndInstall) {
+    // A model draft cannot establish missing route or installation facts.
+    // The intake rules and confirmed replies supply them during the audit.
+    for (const id of Object.keys(extracted)) {
+      if (!/^(?:pickup_address$|service_address$|delivery_address$|stop_\d+_|dishwasher_|old_dishwasher|retailer_|building_permission$)/.test(id)) continue;
+      if (Object.hasOwn(fallback.extractedAnswers, id)) extracted[id] = fallback.extractedAnswers[id];
+      else delete extracted[id];
+    }
+  }
   const customerCanHelp = typeof parsed.customerCanHelp === "boolean" ? parsed.customerCanHelp : fallback.customerCanHelp;
   if (customerCanHelp !== null) extracted.customer_help = customerCanHelp;
   const modelRouteNodes = Array.isArray(parsed.routeNodes) ? parsed.routeNodes
@@ -51,7 +64,8 @@ function normalizeAnalysis(text: string, fallback: ReturnType<typeof fallbackAna
       actions: Array.isArray(node.actions) ? node.actions.filter((action: unknown) => typeof action === "string").slice(0, 6).map((action: string) => action.slice(0, 180)) : [],
     }))
     .filter((node: { location: string; actions: string[] }) => node.location && node.actions.length) : [];
-  const routeNodes = fallback.routeNodes.length >= 2 ? fallback.routeNodes : modelRouteNodes.length ? modelRouteNodes : fallback.routeNodes;
+  const routeNodes = dishwasherPickupAndInstall || fallback.routeNodes.length >= 2
+    ? fallback.routeNodes : modelRouteNodes.length ? modelRouteNodes : fallback.routeNodes;
   const parsedSchedule = parsed.scheduleWindow && typeof parsed.scheduleWindow === "object" ? {
     dateLabel: typeof parsed.scheduleWindow.dateLabel === "string" ? parsed.scheduleWindow.dateLabel.slice(0, 60) : "Requested date",
     arrivalTime: typeof parsed.scheduleWindow.arrivalTime === "string" ? parsed.scheduleWindow.arrivalTime.slice(0, 30) : "",
@@ -90,7 +104,7 @@ function normalizeAnalysis(text: string, fallback: ReturnType<typeof fallbackAna
     })) : fallback.questions,
     extractedAnswers: extracted,
     tasks: Array.isArray(parsed.tasks) ? parsed.tasks.filter((v: unknown) => typeof v === "string").slice(0, 8) : fallback.tasks,
-    stops: routeNodes.length ? routeNodes.map((node: { location: string }) => node.location) : Array.isArray(parsed.stops) ? parsed.stops.filter((v: unknown) => typeof v === "string").slice(0, 8) : fallback.stops,
+    stops: dishwasherPickupAndInstall ? fallback.stops : routeNodes.length ? routeNodes.map((node: { location: string }) => node.location) : Array.isArray(parsed.stops) ? parsed.stops.filter((v: unknown) => typeof v === "string").slice(0, 8) : fallback.stops,
     routeNodes,
     scheduleWindow: scheduleWithPreparation,
     preparation,

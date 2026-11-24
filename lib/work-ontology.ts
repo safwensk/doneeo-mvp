@@ -1,4 +1,4 @@
-import { extractScheduleWindow, extractStreetAddresses, normalizeIntakeForInference, schedulingQuestionTopic, type EquipmentRequirement, type PlannerAnalysis, type PlannerQuestion, type TaskPrimitive } from "./planner";
+import { extractScheduleWindow, extractStreetAddresses, isCompositeDishwasherRequest, normalizeIntakeForInference, schedulingQuestionTopic, type EquipmentRequirement, type PlannerAnalysis, type PlannerQuestion, type TaskPrimitive } from "./planner";
 import { catalogKnowledgeFacts, catalogResourceIds, questionsForRecognizedItems, recognizeHouseholdItems } from "./household-catalog";
 
 export type WorkDomain =
@@ -149,7 +149,7 @@ function isInternalPropertyMove(text: string) {
 
 function isRouteTransport(analysis: PlannerAnalysis) {
   const text = analysis.sourceText;
-  if (streetAddressCount(text) >= 2) return true;
+  if (streetAddressCount(text) >= 2 || isCompositeDishwasherRequest(text)) return true;
   // An external retailer pickup takes precedence over a later internal move.
   // A mixed request can legitimately contain both an outside route and an
   // apartment-to-garage task; the latter must never erase the driving leg.
@@ -375,7 +375,8 @@ function phasesFor(analysis: PlannerAnalysis, domains: WorkDomain[]): TaskPrimit
         : range ? analysis.extractedAnswers.range_connection_scope || "" : "");
       const rangeEnergy = String(analysis.extractedAnswers.range_energy_source || "");
       const modifiedConnections = /new|modified/i.test(connectionScope);
-      const licensedConnection = modifiedConnections
+      const powerConnection = String(analysis.extractedAnswers.dishwasher_power_connection || "");
+      const licensedConnection = modifiedConnections || (dishwasher && /hardwired/i.test(powerConnection))
         || (range && /gas|dual fuel/i.test(`${rangeEnergy} ${connectionScope}`))
         || ((range || dishwasher) && analysis.rulesGate?.providerClass === "licensed_professional");
       const partsMissing = /no|needed|purchase/i.test(String(dishwasher
@@ -384,7 +385,14 @@ function phasesFor(analysis: PlannerAnalysis, domains: WorkDomain[]): TaskPrimit
       const suffix = repeatedInstallations ? `_${target.item.id}_${target.occurrence}` : "";
       const metadata = { workAction: "installation" as const, itemId: target.item.id, occurrence: target.occurrence };
 
-      if (oldInstalled) add({ id: `disconnect_old_appliance${suffix}`, domain: "appliance_installation", label: "Disconnect and remove existing dishwasher", low: 30, likely: 50, high: 90, qualification: "skilled_executor", dependencies: ["safe isolation", "removal plan"], locationIndex: target.locationIndex, ...metadata });
+      if (oldInstalled) {
+        const removal = analysis.extractedAnswers.old_dishwasher_removal;
+        add({ id: `disconnect_old_appliance${suffix}`, domain: "appliance_installation", label: "Disconnect and remove existing dishwasher from its opening", low: 30, likely: 50, high: 90, qualification: licensedConnection ? "licensed_professional" : "skilled_executor", dependencies: ["safe isolation", "removal plan"], locationIndex: target.locationIndex, ...metadata });
+        if (removal === "Move it elsewhere in the building" || removal === "Take it away for recycling") {
+          const label = removal === "Take it away for recycling" ? "Load the old dishwasher for approved recycling" : "Move the old dishwasher to the confirmed area in the building";
+          add({ id: `handle_old_appliance${suffix}`, domain: "appliance_installation", label, low: 15, likely: 30, high: 60, minimumCrew: 2, recommendedCrew: 2, dependencies: ["approved destination", "clear carrying path"], locationIndex: target.locationIndex, ...metadata });
+        }
+      }
       add({ id: `inspect_appliance_fit${suffix}`, domain: "appliance_installation", label: dishwasher ? "Inspect opening, model, services and required parts" : range ? "Verify stove model, clearances, energy supply and anti-tip requirements" : refrigeratorTarget ? "Verify refrigerator model, fit, power and requested water connection" : `Inspect ${itemName} location and required connections`, low: 15, likely: 25, high: 45, qualification: "skilled_executor", dependencies: ["model", "dimensions", "connection scope"], locationIndex: target.locationIndex, ...metadata });
       if (partsMissing) add({ id: `source_appliance_parts${suffix}`, domain: "appliance_installation", label: `Source and verify model-compatible ${itemName} installation parts`, low: 20, likely: 40, high: 90, qualification: "skilled_executor", dependencies: ["model", "approved purchase"], locationIndex: target.locationIndex, ...metadata });
       add({ id: `position_level_appliance${suffix}`, domain: "appliance_installation", label: `Position and level ${itemName}`, low: 15, likely: 25, high: 45, minimumCrew: 2, recommendedCrew: 2, qualification: "skilled_executor", dependencies: ["clear opening", "floor protection"], locationIndex: target.locationIndex, ...metadata });
@@ -499,7 +507,8 @@ export function buildHouseholdWorkModel(analysis: PlannerAnalysis) {
     ? rawDetected.filter(definition => definition.id !== "transport_handling")
     : rawDetected;
   const applianceDetected = contextFiltered.some(definition => definition.id === "appliance_installation");
-  const applianceServiceIntent = /\b(?:install|instal|unstall|connect|hook\s*up|set\s*up|commission|repair|replace|disconnect)\b/i.test(analysis.sourceText);
+  const applianceServiceIntent = /\b(?:install|instal|unstall|connect|hook\s*up|set\s*up|commission|repair|replace|disconnect)\b/i.test(analysis.sourceText)
+    && !/\b(?:no installation|(?:do not|don't) install)\b/i.test(analysis.sourceText);
   const transportOnlyAppliance = applianceDetected && isRouteTransport(analysis) && !applianceServiceIntent;
   const standalonePlumbing = /faucet|\btap\b|toilet|sink|\bpipe\b|clog|blocked drain|water heater|plumbing repair/i.test(analysis.sourceText);
   const standaloneElectrical = /outlet|socket|switch|breaker|circuit|panel|new wiring|light fixture|ceiling light|\blamp\b|\bbulb\b/i.test(analysis.sourceText);
