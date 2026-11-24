@@ -20,6 +20,7 @@ export const runtime = "edge";
 
 const allowedCategories = new Set<JobCategory>(["moving", "installation", "cleaning", "elder_support", "general"]);
 const architectDeadlineMs = 25_000;
+const firstQuestionDeadlineMs = 5_000;
 const reviewDeadlineMs = 3_500;
 
 const systemPrompt = `You are Doneeo's universal job architect for real-world household and physical services. Understand the whole customer outcome before classifying it; an incidental word such as "deliver" must not turn grocery support into moving. Treat category as only a primary display label, never as a limit on the work order. Decompose every request into all independent service domains and dependent outcomes it contains: physical handling and delivery, organizing/decluttering, cleaning, appliance installation, plumbing, electrical, painting, lawn/garden work, mounting, furniture assembly, general maintenance and practical elder support. A single request may require several domains and several separately eligible executors. Preserve every fact the customer already gave. Moving items between rooms, floors, a basement, garage or attic within the same property is one on-site handling location: do not invent driving stops, travel time, vehicle access, pickup/delivery questions or recurrence. Recurrence is true only when the customer explicitly states a repeating cadence.
@@ -305,7 +306,7 @@ async function describeHttpFailure(response: Response) {
   return `HTTP ${response.status}${apiMessage ? ` — ${String(apiMessage).slice(0, 160)}` : ""}`;
 }
 
-async function analyzeWithGemini(userRequest: string, fallback: ReturnType<typeof fallbackAnalysis>) {
+async function analyzeWithGemini(userRequest: string, fallback: ReturnType<typeof fallbackAnalysis>, deadlineMs: number) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return null;
   const model = process.env.GEMINI_MODEL || "gemini-3.6-flash";
@@ -317,7 +318,7 @@ async function analyzeWithGemini(userRequest: string, fallback: ReturnType<typeo
   const thinkingLevel = process.env.GEMINI_THINKING_LEVEL || "medium";
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
     method: "POST",
-    signal: AbortSignal.timeout(architectDeadlineMs),
+    signal: AbortSignal.timeout(deadlineMs),
     headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: systemPrompt }] },
@@ -604,6 +605,19 @@ export async function POST(request: Request) {
     reuseSavedPlan, "SAVED PLAN CONTINUITY → RULES GATE → JOB INTELLIGENCE", customerAnswers, history,
   );
   const continueQueue = savedIntelligence && canContinueIntake(savedIntelligence, reuseSavedPlan, changed);
+  const firstIntake = !requestedWorkCaseId ? deterministicAudit(
+    fallback, "RULE-BASED PLANNER → RULES GATE → JOB INTELLIGENCE", customerAnswers, history,
+  ) : null;
+  const domains = firstIntake?.intelligence?.domains;
+  // Only shorten the wait when the rules can already ask a focused question.
+  // Scope changes and completed intakes still give the architect its full budget.
+  const canAskEarly = firstIntake?.rulesGate?.status === "needs_information"
+    && firstIntake.rulesGate.riskLevel === "standard"
+    && domains?.length === 1
+    && domains[0].id !== "general_maintenance"
+    && firstIntake.questions.some(question => question.required !== false
+      && !["service_address", "schedule", "task_details"].includes(question.id))
+    && !/\b(?:damage[d]?|flood\w*|leak\w*|mou?ld|broken|smoke|urgent|emergency|not sure)\b/i.test(authoritativeRequest);
   let analysis: ReturnType<typeof fallbackAnalysis> = reuseSavedPlan || fallback;
   let pipeline = reuseSavedPlan ? "SAVED PLAN CONTINUITY" : "RULE-BASED PLANNER";
   let mode = continueQueue ? "saved-plan-intake" : reuseSavedPlan ? "saved-plan-fallback" : "safe-fallback";
@@ -611,7 +625,9 @@ export async function POST(request: Request) {
   if (!continueQueue) {
     if (!process.env.GEMINI_API_KEY) architectNotes.push("Gemini skipped: GEMINI_API_KEY not set");
     try {
-      const geminiAnalysis = await analyzeWithGemini(planningRequest, fallback);
+      const geminiAnalysis = await analyzeWithGemini(
+        planningRequest, fallback, canAskEarly ? firstQuestionDeadlineMs : architectDeadlineMs,
+      );
       if (geminiAnalysis) {
         analysis = geminiAnalysis;
         pipeline = "GEMINI ARCHITECT";
@@ -622,7 +638,8 @@ export async function POST(request: Request) {
     }
   }
 
-  const intelligence = continueQueue && savedIntelligence ? savedIntelligence : deterministicAudit(
+  const carriedIntelligence = continueQueue ? savedIntelligence : mode === "safe-fallback" ? firstIntake : null;
+  const intelligence = carriedIntelligence ?? deterministicAudit(
     analysis,
     `${pipeline} → RULES GATE → JOB INTELLIGENCE`,
     customerAnswers,
