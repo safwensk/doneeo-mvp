@@ -22,14 +22,14 @@ type Props = {
   error: string;
   onRequest: () => Promise<boolean>;
   onAnswer: (question: PlannerQuestion, value: string | boolean) => Promise<boolean>;
-  onContinue: () => void;
+  onReviewPlan: () => void;
   onNewRequest: () => void;
   onRecheck: () => Promise<void>;
 };
 
 export function ConversationScreen({
   request, setRequest, analysis, messages, question, busy, restoring, ready,
-  blocked, error, onRequest, onAnswer, onContinue, onNewRequest, onRecheck,
+  blocked, error, onRequest, onAnswer, onReviewPlan, onNewRequest, onRecheck,
 }: Props) {
   const [answer, setAnswer] = useState("");
   const [pending, setPending] = useState("");
@@ -38,6 +38,7 @@ export function ConversationScreen({
   const composer = useRef<HTMLTextAreaElement>(null);
   const bottom = useRef<HTMLDivElement>(null);
   const hasPlan = analysis !== null;
+  const taskBlock = analysis?.taskBlocks?.find(block => block.id === question?.taskBlockId);
   const canType = !busy && !restoring && (!hasPlan || Boolean(question));
   const draft = hasPlan ? answer : request;
 
@@ -124,6 +125,7 @@ export function ConversationScreen({
       {!hasPlan && busy && !restoring && !pending && request && <div className={userClass}><strong className="sr-only">You</strong><p className="whitespace-pre-wrap">{request}</p></div>}
       {hasPlan && question && <div className={assistantClass}>
         <strong className="mb-2 block text-xs text-brand-600-r">Doneeo</strong>
+        {taskBlock && <p className="mb-2 text-xs font-semibold text-muted-r">Task {taskBlock.sequence} · {taskBlock.title}</p>}
         <p className="font-semibold">{question.label}</p>
         {question.help && <p className="mt-2 text-xs text-muted-r">{question.help}</p>}
         {question.type !== "text" && <div className="mt-4 flex flex-wrap gap-2">
@@ -138,8 +140,8 @@ export function ConversationScreen({
         <strong className="mb-2 block text-xs text-brand-600-r">Doneeo</strong>
         <p>{blocked
           ? analysis.rulesGate?.summary || analysis.safetyNote || "This request needs review before I can offer an execution plan."
-          : ready ? "I have what I need. Let’s compare your planning options."
-          : "I’m checking the last details before building your options."}</p>
+          : ready ? "Your plan is ready to review."
+          : "I’m checking the last details before preparing your plan."}</p>
       </div>}
     </div>
 
@@ -163,7 +165,7 @@ export function ConversationScreen({
         <Button type="submit" disabled={!draft.trim()}>Send <Send size={15} aria-hidden="true" /></Button>
       </div>
     </form>}
-    {ready && !question && !blocked && !busy && <Button className="mt-6" size="lg" onClick={onContinue}>Continue to planning options</Button>}
+    {ready && !question && !blocked && !busy && <Button className="mt-6" size="lg" onClick={onReviewPlan}>Review plan</Button>}
     {hasPlan && !busy && <details className="mt-4 rounded-xl-r border border-line-r p-4 text-sm text-muted-r">
       <summary className="cursor-pointer font-semibold text-ink-r">Request summary</summary>
       <p className="mt-3 leading-relaxed">{analysis.summary}</p>

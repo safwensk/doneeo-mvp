@@ -8,6 +8,7 @@ import { householdCatalogStats } from "../lib/household-catalog";
 import { AppHeader } from "./_components/AppHeader";
 import { HeroIntake } from "./_components/HeroIntake";
 import { AnalysisScreen } from "./_components/AnalysisScreen";
+import { PlanReview, type PlanReviewEditor } from "./_components/PlanReview";
 import { MatchingScreen } from "./_components/MatchingScreen";
 import { TrackingScreen } from "./_components/TrackingScreen";
 import { assignmentCoversTask, optionsFor, recalculateJob, serviceForTask } from "./_domain/plan-options";
@@ -30,6 +31,7 @@ type PlanControlState = {
   currentLayerId: string;
   correlationId: string;
   requirementReady: boolean;
+  planConfirmed: boolean;
   requirementContractRef: string | null;
   requirementContractVersion: number | null;
 };
@@ -56,6 +58,7 @@ function controlFromPlanResponse(
     currentLayerId: data.currentLayerId,
     correlationId: data.correlationId,
     requirementReady: data.requirementReady === true,
+    planConfirmed: data.planConfirmed === true,
     requirementContractRef:
       typeof data.requirementContractRef === "string"
         ? data.requirementContractRef
@@ -104,6 +107,9 @@ export default function Home() {
   const [routeState, setRouteState] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [answerState, setAnswerState] = useState<"idle" | "validating">("idle");
   const [planControl, setPlanControl] = useState<PlanControlState | null>(null);
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const [reviewBusy, setReviewBusy] = useState(false);
+  const [reviewEditor, setReviewEditor] = useState<PlanReviewEditor | null>(null);
   const intakeAttemptRef = useRef<IntakeAttempt | null>(null);
 
   useEffect(() => {
@@ -151,6 +157,7 @@ export default function Home() {
 
         setPlanControl(control);
         setAnalysis(data.analysis);
+        setReviewOpen(control.requirementReady);
         setAnswers({
           ...(data.analysis.extractedAnswers || {}),
           ...(data.answers || {}),
@@ -218,6 +225,7 @@ export default function Home() {
   // customer from seeing matching options.
   const equipmentComplete = true;
   const gateBlocked = analysis?.rulesGate?.status === "blocked";
+  const canReviewPlan = Boolean(planControl?.requirementReady) && requiredComplete && equipmentComplete && !gateBlocked;
   const liveGateStatus = gateBlocked ? "blocked" : requiredComplete && equipmentComplete ? "cleared" : "needs_information";
   const providerClassLabel = analysis?.rulesGate ? ({
     general_helper: "General helper",
@@ -441,6 +449,8 @@ export default function Home() {
     setPlannerState("thinking");
     setError("");
     setTextDrafts({});
+    setReviewOpen(false);
+    setReviewEditor(null);
     setPlanControl(null);
     window.localStorage.removeItem("doneeo.activeWorkCase");
 
@@ -479,6 +489,7 @@ export default function Home() {
       intakeAttemptRef.current = null;
       setPlanControl(control);
       setAnalysis(data.analysis);
+      setReviewOpen(control.requirementReady);
       setAnswers(data.analysis.extractedAnswers || {});
       setPlannerState("ready");
       setStage(1);
@@ -509,12 +520,6 @@ export default function Home() {
       return;
     }
 
-    const nextAnswers = { ...answers, [question.id]: value };
-
-    if (question.type !== "text") {
-      setAnswers(nextAnswers);
-    }
-
     setAnswerState("validating");
     setError("");
 
@@ -532,13 +537,14 @@ export default function Home() {
           expectedStateVersion: planControl.stateVersion,
           correlationId: planControl.correlationId,
           operationId,
-          answers: nextAnswers,
+          answers: { [question.id]: value },
         }),
       });
 
       const data = (await response.json()) as Record<string, unknown> & {
         error?: string;
         analysis?: PlannerAnalysis;
+        answers?: Answers;
       };
 
       if (!response.ok || !data.analysis) {
@@ -553,10 +559,12 @@ export default function Home() {
         JSON.stringify(control),
       );
       setAnalysis(data.analysis);
+      setReviewOpen(control.requirementReady);
       setAnswers(current => ({
         ...current,
-        [question.id]: value,
         ...(data.analysis?.extractedAnswers || {}),
+        [question.id]: value,
+        ...data.answers,
       }));
 
       if (question.type === "text") {
@@ -577,33 +585,72 @@ export default function Home() {
     }
   };
 
-  const buildMatchedOptions = async () => {
-    if (!analysis) return;
+  const updateReview = async (command: { planEdit: PlanReviewEditor } | { confirmPlan: true }) => {
+    if (!planControl || reviewBusy) return null;
+    setReviewBusy(true);
     setError("");
-
-    if (!planControl?.requirementReady) {
-      setError(
-        "Doneeo is still resolving the work requirements. Matching cannot start until the Requirement Contract is ready.",
-      );
-      return;
+    const operationId = stableOperationId(
+      `review-${planControl.workCaseId}-v${planControl.stateVersion}`,
+      JSON.stringify(command),
+    );
+    try {
+      const response = await fetch("/api/plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          workCaseId: planControl.workCaseId,
+          expectedStateVersion: planControl.stateVersion,
+          correlationId: planControl.correlationId,
+          operationId,
+          ...command,
+        }),
+      });
+      const data = (await response.json()) as Record<string, unknown> & {
+        error?: string;
+        analysis?: PlannerAnalysis;
+        answers?: Answers;
+      };
+      if (!response.ok || !data.analysis) {
+        throw new Error(data.error || "Doneeo could not update the plan.");
+      }
+      const control = controlFromPlanResponse(data);
+      setPlanControl(control);
+      setAnalysis(data.analysis);
+      setAnswers({ ...data.analysis.extractedAnswers, ...data.answers });
+      setReviewOpen(control.requirementReady);
+      if ("planEdit" in command) {
+        setGoogleRoute(null);
+        setRouteState("idle");
+      }
+      window.localStorage.setItem("doneeo.activeWorkCase", JSON.stringify(control));
+      return { control, analysis: data.analysis };
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Doneeo could not update the plan.");
+      return null;
+    } finally {
+      setReviewBusy(false);
     }
+  };
 
-    if (!requiredComplete) {
-      setError("Please complete the visible operational detail before matching.");
-      return;
-    }
-    // The request has already been recalculated after every committed answer.
-    // Do not ask an AI architect to regenerate the intake here: that could add
-    // a new, invisible question after the UI said the intake was complete.
-    setSelected(analysis.intelligence?.fulfillment.mode === "coordinated_specialists" ? "budget" : "recommended");
+  const editPlanStep = async (stepId: string, revision: string) =>
+    (await updateReview({ planEdit: { stepId, revision } })) !== null;
+
+  const confirmJobPlan = async () => {
+    if (!analysis || !planControl?.requirementReady || !requiredComplete || gateBlocked) return;
+    const reviewed = planControl.planConfirmed
+      ? { control: planControl, analysis }
+      : await updateReview({ confirmPlan: true });
+    if (!reviewed?.control.planConfirmed) return;
+    setSelected(reviewed.analysis.intelligence?.fulfillment.mode === "coordinated_specialists" ? "budget" : "recommended");
     setStage(2);
-    if (hasDrivingRoute) calculateGoogleRoute(analysis.routeNodes.map(node => node.location));
+    const locations = reviewed.analysis.routeNodes.map(node => node.location);
+    if (locations.length > 1) void calculateGoogleRoute(locations);
   };
 
   const persistConfirmedWorkOrder = async () => {
     if (!analysis || !chosen) return;
-    if (!planControl?.requirementReady || !planControl.requirementContractRef) {
-      setError("The canonical Requirement Contract must be ready before this work order can be created.");
+    if (!planControl?.requirementReady || !planControl.planConfirmed || !planControl.requirementContractRef) {
+      setError("Confirm the job plan before creating the work order.");
       return;
     }
     const reference = createWorkOrderReference();
@@ -783,7 +830,7 @@ export default function Home() {
     }
   };
 
-  const restart = () => { setStage(0); setAnalysis(null); setAnswers({}); setTextDrafts({}); setSelected("recommended"); setBookingState("idle"); setSavedReference(""); setError(""); setProtection("none"); setProviderStatus("not_sent"); setPaymentState("unpaid"); setDispatchAttempt(1); setIncidentNote(""); setNotification(""); setAlternateTimesVisible(false); setMilestoneDurations({}); setDelayMinutes(0); setMaterialsReady(false); setProviderArrived(false); setActiveCheckpoint(0); setTaskGateConfirmations({}); setGoogleRoute(null); setRouteState("idle"); };
+  const restart = () => { setStage(0); setReviewOpen(false); setReviewEditor(null); setAnalysis(null); setAnswers({}); setTextDrafts({}); setSelected("recommended"); setBookingState("idle"); setSavedReference(""); setError(""); setProtection("none"); setProviderStatus("not_sent"); setPaymentState("unpaid"); setDispatchAttempt(1); setIncidentNote(""); setNotification(""); setAlternateTimesVisible(false); setMilestoneDurations({}); setDelayMinutes(0); setMaterialsReady(false); setProviderArrived(false); setActiveCheckpoint(0); setTaskGateConfirmations({}); setGoogleRoute(null); setRouteState("idle"); };
 
   return <main className="mx-auto min-h-screen w-full max-w-[1120px] bg-surface-r shadow-[0_0_50px_rgba(23,53,43,0.09)]">
     <AppHeader stage={stage} progress={progress} />
@@ -797,7 +844,7 @@ export default function Home() {
       />
     )}
 
-    {stage === 1 && analysis && (
+    {stage === 1 && analysis && (!reviewOpen || !canReviewPlan) && (
       <AnalysisScreen
         analysis={analysis}
         setStage={setStage}
@@ -819,12 +866,28 @@ export default function Home() {
         equipmentComplete={equipmentComplete}
         gateBlocked={gateBlocked}
         requirementReady={Boolean(planControl?.requirementReady)}
-        buildMatchedOptions={buildMatchedOptions}
+        onReview={() => { setError(""); setReviewOpen(true); }}
         error={error}
       />
     )}
 
-    {stage === 2 && analysis && (
+    {stage === 1 && analysis && reviewOpen && canReviewPlan && (
+      <div className="mx-auto max-w-[720px] px-[7%] pb-16 pt-10">
+        <PlanReview
+          analysis={analysis}
+          busy={reviewBusy}
+          error={error}
+          confirmed={planControl?.planConfirmed}
+          editor={reviewEditor}
+          setEditor={setReviewEditor}
+          onBack={() => { setError(""); setReviewOpen(false); }}
+          onEdit={editPlanStep}
+          onConfirm={confirmJobPlan}
+        />
+      </div>
+    )}
+
+    {stage === 2 && analysis && planControl?.planConfirmed && (
       <MatchingScreen
         analysis={analysis}
         setStage={setStage}

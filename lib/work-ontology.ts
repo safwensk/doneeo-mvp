@@ -163,22 +163,28 @@ function isRouteTransport(analysis: PlannerAnalysis) {
   return analysis.routeNodes.length > 1 && /\bfrom\b.{2,160}\bto\b|\btake\b.{2,120}\bto\b|\bbring\b.{2,120}\bto\b|\bdeliver\b/i.test(text);
 }
 
-function hasInternalBoxMove(text: string) {
-  const normalized = normalizeIntakeForInference(text);
-  return /\b(?:take|move|carry|bring|put)\b.{0,120}\b(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|twenty)\s+box(?:es)?\b.{0,180}\b(?:garage|basement|storage|bedroom|room|apartment|house|home)\b/i.test(normalized)
-    || /\b(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|twenty)\s+box(?:es)?\b.{0,180}\b(?:from|to|into)\b.{0,100}\b(?:garage|basement|storage|bedroom|room|apartment|house|home)\b/i.test(normalized);
+const countedBoxes = /\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|twenty[- ]five)\s+box(?:es)?\b/i;
+const internalRoom = String.raw`apartment|house|home|basement|garage|storage(?: room)?|bedroom|living room|kitchen|main floor|ground floor|upstairs|downstairs|attic`;
+
+function internalBoxClause(text: string) {
+  const clauses = normalizeIntakeForInference(text).toLowerCase()
+    .split(/\b(?:after (?:this|that)|before leaving|then|next)\b|[.!?;]\s+(?=[a-z])/i);
+  return clauses.find(clause => countedBoxes.test(clause)
+    && /\b(?:take|taken|move|moved|carry|carried|bring|brought|put|from|into)\b/.test(clause)
+    && new RegExp(String.raw`\b(?:from|to|into)\s+(?:(?:the|my|our)\s+)?(?:${internalRoom})\b`).test(clause)
+    && extractStreetAddresses(clause).length < 2) || "";
 }
 
 function internalBoxLocations(text: string) {
-  const normalized = normalizeIntakeForInference(text).toLowerCase();
-  const boxIndex = normalized.search(/\b(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|twenty)\s+box(?:es)?\b/i);
-  const boxClause = boxIndex >= 0 ? normalized.slice(boxIndex, boxIndex + 320) : normalized;
-  const room = String.raw`apartment|house|home|basement|garage|storage(?: room)?|bedroom|living room|kitchen|main floor|ground floor|upstairs|downstairs`;
-  const origin = boxClause.match(new RegExp(String.raw`\bfrom\s+(?:(?:the|my|our)\s+)?(${room})\b`, "i"))?.[1] || "confirmed origin";
-  const basementGarage = /\bgarage\b.{0,35}\bbasement\b|\bbasement\s+garage\b/i.test(boxClause);
+  const boxClause = internalBoxClause(text);
+  const boxIndex = boxClause.search(countedBoxes);
+  const locations = boxIndex >= 0 ? boxClause.slice(boxIndex) : boxClause;
+  const origin = locations.match(new RegExp(String.raw`\bfrom\s+(?:(?:the|my|our)\s+)?(${internalRoom})\b`))?.[1] || "confirmed origin";
+  const destinationClause = locations.match(/\b(?:to|into)\s+(?:the|my|our)\b.+/)?.[0] || locations;
+  const basementGarage = /\bgarage\b.{0,35}\bbasement\b|\bbasement\s+garage\b/.test(destinationClause);
   const destination = basementGarage
     ? "basement garage"
-    : boxClause.match(new RegExp(String.raw`\b(?:to|into)\s+(?:(?:the|my|our)\s+)?(${room})\b`, "i"))?.[1] || "confirmed destination";
+    : destinationClause.match(new RegExp(String.raw`\b(?:to|into)\s+(?:(?:the|my|our)\s+)?(${internalRoom})\b`))?.[1] || "confirmed destination";
   return { origin, destination };
 }
 
@@ -199,22 +205,28 @@ function hasApplianceInstallationIntent(text: string) {
 }
 
 function requestedApplianceLocation(text: string) {
-  return normalizeIntakeForInference(text).match(/\b(?:install|instal|connect|hook\s*up|fit|set\s*up)\b.{0,90}\b(?:in|inside)\s+(?:(?:the|my|our)\s+)?(kitchen|laundry room|utility room|basement|garage)\b/i)?.[1]?.toLowerCase() || "confirmed installation location";
+  const clauses = normalizeIntakeForInference(text).split(/\b(?:after (?:this|that)|before leaving|then|next)\b|[.!?;]+/i);
+  return clauses.map(clause => clause.match(/\b(?:install|instal|connect|hook\s*up|fit|set\s*up)\b.{0,90}?\b(?:in|inside)\s+(?:(?:the|my|our)\s+)?(kitchen|laundry room|utility room|basement|garage)\b/i)?.[1].toLowerCase())
+    .find(Boolean);
 }
 
 function hasStreetAddress(text: string) {
   return extractStreetAddresses(text).length > 0;
 }
 
-function questionsForDomains(domains: WorkDomain[], text: string): PlannerQuestion[] {
+function questionsForDomains(domains: WorkDomain[], text: string, routeTransport: boolean): PlannerQuestion[] {
   const questions: PlannerQuestion[] = [];
   const add = (question: PlannerQuestion, covered = false) => { if (!covered && !questions.some(item => item.id === question.id)) questions.push(question); };
-  if (domains.includes("transport_handling") && isInternalPropertyMove(text)) {
-    add({ id: "service_address", label: "Where will the lifting or on-site moving happen?", type: "text", required: true }, hasStreetAddress(text));
-    add({ id: "handling_destination", label: "Exactly which room or area should receive the items?", help: "A destination such as the living room, garage or main floor is enough.", type: "text", required: true }, /\bto\s+(?:the |my |our )?(?:apartment|house|home|basement|living room|garage|bedroom|kitchen|storage room|main floor|ground floor|upstairs|downstairs|attic)\b/i.test(text));
-    add({ id: "handling_access", label: "What is the carrying path between the two areas?", help: "Include flights of stairs, narrow turns or doors, and whether the path is clear.", type: "text", required: true }, /\b(?:no stairs?|\d+|one|two|three)\s+flights?\b|\b(?:stairs?|path|hallway)\s+(?:is|are)\s+(?:clear|wide)|\belevator\b/i.test(text));
-    add({ id: "handling_size_weight", label: "What are the approximate size and weight of the heaviest item?", type: "text", required: true }, /\b\d+\s*(?:kg|lb)|lightweight|heavy|large/i.test(text));
-    if (/\bbox(?:es)?\b/i.test(text)) add({ id: "handling_contents", label: "Do any boxes need special handling?", help: "This identifies protection and safety needs without asking for a full inventory.", type: "choice", options: ["Ordinary household items", "Some fragile or valuable items", "Some unusually heavy, liquid or sharp items", "Mixed or not sure"], required: true }, /ordinary household|fragile|valuable|books|clothes|liquid|sharp|hazard/i.test(text));
+  const boxClause = internalBoxClause(text);
+  if (domains.includes("transport_handling") && (boxClause || isInternalPropertyMove(text))) {
+    const handlingScope = boxClause || text;
+    const boxLocations = boxClause ? internalBoxLocations(text) : null;
+    const boxTask = routeTransport && boxLocations ? { taskBlockId: "onsite_boxes" } : {};
+    if (!routeTransport) add({ id: "service_address", label: "Where will the lifting or on-site moving happen?", type: "text", required: true }, hasStreetAddress(text));
+    add({ ...boxTask, id: "handling_destination", label: "Exactly which room or area should receive the items?", help: "A destination such as the living room, garage or main floor is enough.", type: "text", required: true }, boxLocations ? boxLocations.destination !== "confirmed destination" : /\bto\s+(?:the |my |our )?(?:apartment|house|home|basement|living room|garage|bedroom|kitchen|storage room|main floor|ground floor|upstairs|downstairs|attic)\b/i.test(handlingScope));
+    add({ ...boxTask, id: "handling_access", label: boxLocations ? `What is the path for carrying the boxes from the ${boxLocations.origin} to the ${boxLocations.destination}?` : "What is the carrying path between the two areas?", help: "Include flights of stairs, any elevator used on this path, narrow turns or doors, and whether the path is clear.", type: "text", required: true }, /\b(?:no stairs?|(?:\d+|one|two|three)\s+flights?)\b|\b(?:stairs?|path|hallway)\s+(?:is|are)\s+(?:clear|wide)|\belevator\b/i.test(handlingScope));
+    add({ ...boxTask, id: "handling_size_weight", label: boxLocations ? "What are the approximate size and weight of the heaviest box?" : "What are the approximate size and weight of the heaviest item?", type: "text", required: true }, /\b\d+\s*(?:kg|lb)|lightweight|heavy|large/i.test(handlingScope));
+    if (/\bbox(?:es)?\b/i.test(handlingScope)) add({ ...boxTask, id: "handling_contents", label: "Do any boxes need special handling?", help: "This identifies protection and safety needs without asking for a full inventory.", type: "choice", options: ["Ordinary household items", "Some fragile or valuable items", "Some unusually heavy, liquid or sharp items", "Mixed or not sure"], required: true }, /ordinary household|fragile|valuable|books|clothes|liquid|sharp|hazard/i.test(handlingScope));
   }
   if (domains.includes("organization")) {
     add({ id: "organization_size", label: "How large and full is the area to organize?", help: "For example: one-car garage half full, or approximate number of boxes and large items.", type: "text", required: true }, /\b(?:one|two|three|\d)[ -]car garage|\b\d+\s+boxes|half full|fully packed/i.test(text));
@@ -291,8 +303,9 @@ function phasesFor(analysis: PlannerAnalysis, domains: WorkDomain[]): TaskPrimit
   const add = (item: PhaseInput) => { if (!phases.some(existing => existing.id === item.id)) phases.push(phase(item)); };
 
   if (domains.includes("transport_handling")) {
-    const boxes = numberFor(text, /\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|twenty[- ]five)\s+box(?:es)?\b/, 0);
-    const boxLocations = internalBoxLocations(text);
+    const boxClause = internalBoxClause(analysis.sourceText);
+    const boxes = numberFor(boxClause || analysis.sourceText, countedBoxes, 0);
+    const boxLocations = internalBoxLocations(analysis.sourceText);
     const bulky = /dish\s*washer|washer|dryer|refrigerator|fridge|freezer|couch|sofa|\blarge\b|\bheavy\b|wardrobe|appliance/.test(text)
       || recognizedItems.some(item => item.traits.some(trait => ["bulky", "heavy", "two_person"].includes(trait)));
     if (isRouteTransport(analysis)) {
@@ -317,9 +330,18 @@ function phasesFor(analysis: PlannerAnalysis, domains: WorkDomain[]): TaskPrimit
       }
       // A mixed outside/inside order retains the later on-property move as its
       // own execution segment instead of folding the boxes into delivery.
-      if (boxes && hasInternalBoxMove(analysis.sourceText)) {
+      if (boxes && boxClause) {
+        const boxWeight = `${boxClause} ${analysis.extractedAnswers.handling_size_weight || ""}`;
+        const boxAccess = `${boxClause} ${analysis.extractedAnswers.handling_access || ""}`;
+        const heavyBox = Number(boxWeight.match(/\b(\d+(?:\.\d+)?)\s*kg\b/i)?.[1] || 0) >= 23
+          || Number(boxWeight.match(/\b(\d+(?:\.\d+)?)\s*(?:lbs?|pounds?)\b/i)?.[1] || 0) >= 50;
+        const difficultCarry = /\b(?:two|three|[2-9])\s+flights?\b|\b(?:narrow|tight turn|steep|no elevator)\b/i.test(boxAccess);
+        const needsExtraHandling = /fragile|valuable|unusually heavy|liquid|sharp|mixed or not sure/i
+          .test(`${boxClause} ${analysis.extractedAnswers.handling_contents || ""}`);
+        const handlingFactor = (difficultCarry ? 1.3 : 1) * (heavyBox || needsExtraHandling ? 1.2 : 1);
+        const moveMinutes = (minimum: number, minutesPerBox: number) => Math.ceil(Math.max(minimum, boxes * minutesPerBox) * handlingFactor);
         add({ id: "onsite_box_assess", domain: "transport_handling", label: `Inspect boxes and clear the ${boxLocations.origin}-to-${boxLocations.destination} path`, low: 10, likely: 15, high: 30, minimumCrew: 1, dependencies: ["origin", "destination access", "final placement"], locationIndex: lastStop });
-        add({ id: "onsite_box_move", domain: "transport_handling", label: `Carry ${boxes} boxes from the ${boxLocations.origin} to the ${boxLocations.destination}`, low: Math.max(20, boxes * 2), likely: Math.max(35, boxes * 3), high: Math.max(60, boxes * 6), minimumCrew: 1, recommendedCrew: boxes >= 10 ? 2 : 1, parallelizable: true, dependencies: ["box weight", "elevator or stairs", "clear path"], locationIndex: lastStop });
+        add({ id: "onsite_box_move", domain: "transport_handling", label: `Carry ${boxes} boxes from the ${boxLocations.origin} to the ${boxLocations.destination}`, low: moveMinutes(20, 2), likely: moveMinutes(35, 3), high: moveMinutes(60, 6), minimumCrew: heavyBox ? 2 : 1, recommendedCrew: boxes >= 10 || heavyBox || difficultCarry ? 2 : 1, parallelizable: true, dependencies: ["box weight", "elevator or stairs", "clear path"], locationIndex: lastStop });
         add({ id: "onsite_box_finish", domain: "transport_handling", label: `Verify ${boxLocations.destination} placement and leave the path clear`, low: 5, likely: 10, high: 20, dependencies: ["customer placement approval"], locationIndex: lastStop });
       }
     } else {
@@ -520,7 +542,7 @@ export function buildHouseholdWorkModel(analysis: PlannerAnalysis) {
   const domains = detected.length ? detected.map(item => item.id) : ["general_maintenance" as const];
   const primitives = phasesFor(analysis, domains);
   const equipment = resourceIds(domains, analysis).map(id => RESOURCE_CATALOG[id]).filter(Boolean);
-  const questions = questionsForDomains(domains, analysis.sourceText);
+  const questions = questionsForDomains(domains, analysis.sourceText, isRouteTransport(analysis));
   const minimumCrew = Math.max(1, ...primitives.map(item => item.minimumCrew || 1));
   const recommendedCrew = Math.max(minimumCrew, ...primitives.map(item => item.recommendedCrew || 1));
   const qualifications = Array.from(new Set(primitives.map(item => item.qualification || "general_helper")));
@@ -562,6 +584,7 @@ export function augmentWithHouseholdKnowledge(analysis: PlannerAnalysis): Planne
   const recognizedItems = recognizeHouseholdItems(source);
   const transportDetected = model.domains.includes("transport_handling");
   const routeTransport = transportDetected && isRouteTransport(inferenceAnalysis);
+  const dishwasherComposite = isCompositeDishwasherRequest(source);
   const recurring = explicitRecurrence(source);
   const compatibleBaseEquipment = analysis.equipment.filter(item => {
     if (!routeTransport && ["vehicle", "straps", "blankets"].includes(item.id)) return false;
@@ -596,7 +619,7 @@ export function augmentWithHouseholdKnowledge(analysis: PlannerAnalysis): Planne
     if (transportDetected && !routeTransport && (["pickup_address", "service_address", "delivery_address", "item", "pickup_contact_help", "customer_help", "floor", "elevator", "vehicle", "straps"].includes(question.id)
       || /^stop_\d+_(?:floor|elevator|vehicle_access)$/.test(question.id)
       || /pickup|final delivery|delivery address|loading area|vehicle|elevator/.test(concept))) return false;
-    if (routeTransport && recognizedItems.some(item => item.traits.includes("two_person")) && ["handling_destination", "handling_access", "handling_size_weight", "pickup_contact_help", "customer_help"].includes(question.id)) return false;
+    if (routeTransport && !question.taskBlockId && recognizedItems.some(item => item.traits.includes("two_person")) && ["handling_destination", "handling_access", "handling_size_weight", "pickup_contact_help", "customer_help"].includes(question.id)) return false;
     if (!recurring && /frequency|how often|recurr|repeat|same provider each|preferred provider/.test(concept)) return false;
     if (!/shel/i.test(analysis.sourceText) && question.id === "fasteners") return false;
     return true;
@@ -615,12 +638,13 @@ export function augmentWithHouseholdKnowledge(analysis: PlannerAnalysis): Planne
   const steps = model.primitives.map(item => item.label);
   const category = analysis.category === "moving" && !routeTransport ? "general" : analysis.category;
   const domainTitle = model.domainDetails.length === 1 ? model.domainDetails[0].label : model.domainDetails.map(domain => domain.label).join(" + ");
-  const onsiteBoxCount = numberFor(source, /\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|twenty[- ]five)\s+box(?:es)?\b/, 0);
+  const boxClause = internalBoxClause(source);
+  const onsiteBoxCount = numberFor(boxClause || source, countedBoxes, 0);
   const primaryItemName = recognizedItems.find(item => item.id !== "boxes")?.name.toLowerCase();
   const recognizedAppliances = recognizedItems.filter(item => item.family === "major_appliance");
   const routeApplianceName = recognizedAppliances.length === 1 ? recognizedAppliances[0].name.toLowerCase() : undefined;
   const oneRecognizedRouteItem = recognizedItems.filter(item => item.id !== "boxes").length === 1 ? primaryItemName : undefined;
-  const routeNodes = routeTransport ? analysis.routeNodes.map((node, index, nodes) => oneRecognizedRouteItem
+  const routeNodes = routeTransport ? analysis.routeNodes.map((node, index, nodes) => oneRecognizedRouteItem && !dishwasherComposite
     ? { ...node, actions: index === 0 ? [`Pick up ${oneRecognizedRouteItem}`] : index === nodes.length - 1 ? [`Deliver ${oneRecognizedRouteItem}`] : node.actions }
     : node) : [];
   const stops = routeTransport ? routeNodes.map(node => node.location) : [];
@@ -647,13 +671,24 @@ export function augmentWithHouseholdKnowledge(analysis: PlannerAnalysis): Planne
   const boxLocations = internalBoxLocations(source);
   const mountLocation = requestedMountLocation(source);
   const externalAppliance = hasExternalAppliancePickup(source) && Boolean(routeApplianceName) && routeNodes.length >= 2;
-  const coordinatedCompositeTasks = externalAppliance ? [
-    `Pick up the ${routeApplianceName} at ${routeNodes[0].location}`,
-    `Transport and deliver the ${routeApplianceName} to ${routeNodes.at(-1)!.location}`,
-    ...(hasApplianceInstallationIntent(source) ? [`Install, connect and test the ${routeApplianceName} in the ${requestedApplianceLocation(source)}`] : []),
-    ...(model.domains.includes("mounting") ? [`Wall-mount the television in the ${mountLocation}, level it and verify the finished installation`] : []),
-    ...(onsiteBoxCount && hasInternalBoxMove(source) ? [`Carry ${onsiteBoxCount} boxes from the ${boxLocations.origin} to the ${boxLocations.destination}`] : []),
+  const pickupNode = routeNodes.find(node => node.actions.some(action => /^pick\s*up\b/i.test(action)));
+  const deliveryNode = [...routeNodes].reverse().find(node => node.actions.some(action => /^deliver\b/i.test(action)));
+  const installationRoom = requestedApplianceLocation(source);
+  const applianceTasks = externalAppliance || dishwasherComposite ? [
+    `Pick up the ${routeApplianceName} at ${pickupNode?.location || "the pickup location"}`,
+    `Transport and deliver the ${routeApplianceName} to ${deliveryNode?.location || "the installation address"}`,
+    ...(hasApplianceInstallationIntent(source) ? [`Install, connect and test the ${routeApplianceName} ${installationRoom ? `in the ${installationRoom}` : "at the installation address"}`] : []),
   ] : [];
+  const boxTask = onsiteBoxCount && boxClause ? `Carry ${onsiteBoxCount} boxes from the ${boxLocations.origin} to the ${boxLocations.destination}` : "";
+  const coordinatedCompositeTasks = applianceTasks.length ? [
+    { position: source.indexOf(routeApplianceName === "kitchen range" ? "stove" : routeApplianceName || ""), tasks: applianceTasks },
+    ...model.domains.filter(domain => !["transport_handling", "appliance_installation"].includes(domain))
+      .map(domain => ({
+        position: source.search(DOMAIN_DEFINITIONS.find(definition => definition.id === domain)!.pattern),
+        tasks: [domain === "mounting" ? `Wall-mount the television in the ${mountLocation}, level it and verify the finished installation` : taskForDomain(domain)],
+      })),
+    ...(boxTask ? [{ position: source.indexOf(boxClause) + boxClause.search(countedBoxes), tasks: [boxTask] }] : []),
+  ].sort((left, right) => left.position - right.position).flatMap(group => group.tasks) : [];
   const recognizedRouteTasks = routeTransport && oneRecognizedRouteItem && routeNodes.length >= 2 ? [
     `Pick up the ${oneRecognizedRouteItem} at ${routeNodes[0].location}`,
     `Transport and deliver the ${oneRecognizedRouteItem} to ${routeNodes.at(-1)!.location}`,
@@ -681,7 +716,7 @@ export function augmentWithHouseholdKnowledge(analysis: PlannerAnalysis): Planne
     .filter(domain => !representedRouteDomains.has(domain))
     .map(taskForDomain)
     .filter(task => !(onsiteBoxCount && /pick up, transport and place/i.test(task)));
-  if (onsiteBoxCount && hasInternalBoxMove(source)) supplementalMultiTasks.push(`Carry ${onsiteBoxCount} boxes from the ${boxLocations.origin} to the ${boxLocations.destination}`);
+  if (boxTask) supplementalMultiTasks.push(boxTask);
   const genericMultiTasks = multiWorkflowRoute ? [...canonicalRouteTasks, ...supplementalMultiTasks] : [];
   const tasks = genericMultiTasks.length ? genericMultiTasks : coordinatedCompositeTasks.length ? coordinatedCompositeTasks : recognizedRouteTasks.length ? recognizedRouteTasks : routeTasks.length ? routeTasks : detectedTasks.length ? detectedTasks : analysis.tasks;
   const compatibleBaseSkills = analysis.skillRequirements.filter(skill => {

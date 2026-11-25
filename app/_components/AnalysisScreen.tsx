@@ -123,7 +123,7 @@ function RulesGatePanel({
     >
       <p className="text-xs leading-relaxed text-muted-r">
         {liveGateStatus === "cleared"
-          ? `All required customer facts are complete. Doneeo may now calculate ${hasDrivingRoute ? "route, " : ""}time, price, provider equipment coverage and matching options.`
+          ? `All required customer facts are complete. Review the job plan before Doneeo calculates ${hasDrivingRoute ? "the route and " : ""}your available options.`
           : gate.summary}
       </p>
 
@@ -507,6 +507,7 @@ function AdaptiveQuestions({
   displayedQuestions,
   questionAnswered,
   workstreams,
+  taskBlocks,
   answers,
   textDrafts,
   setTextDrafts,
@@ -517,6 +518,7 @@ function AdaptiveQuestions({
   displayedQuestions: PlannerQuestion[];
   questionAnswered: (question: PlannerQuestion) => boolean;
   workstreams: Workstream[];
+  taskBlocks: NonNullable<PlannerAnalysis["taskBlocks"]>;
   answers: Answers;
   textDrafts: Record<string, string>;
   setTextDrafts: Dispatch<SetStateAction<Record<string, string>>>;
@@ -543,7 +545,7 @@ function AdaptiveQuestions({
 
       <div className="grid gap-3">
         {displayedQuestions.map(question => {
-          const task = workstreams.find(stream =>
+          const task = taskBlocks.find(block => block.id === question.taskBlockId) ?? workstreams.find(stream =>
             question.id.startsWith("handling_") || question.id.startsWith("refrigerator_")
               ? stream.domain === "transport_handling"
               : ["mounted_item", "wall_type", "mount_hardware_status"].includes(question.id)
@@ -607,7 +609,7 @@ export function AnalysisScreen({
   equipmentComplete,
   gateBlocked,
   requirementReady,
-  buildMatchedOptions,
+  onReview,
   error,
 }: {
   analysis: PlannerAnalysis;
@@ -630,7 +632,7 @@ export function AnalysisScreen({
   equipmentComplete: boolean;
   gateBlocked: boolean;
   requirementReady: boolean;
-  buildMatchedOptions: () => void | Promise<void>;
+  onReview: () => void;
   error: string;
 }) {
   return (
@@ -679,6 +681,7 @@ export function AnalysisScreen({
           displayedQuestions={displayedQuestions}
           questionAnswered={questionAnswered}
           workstreams={workstreams}
+          taskBlocks={analysis.taskBlocks ?? []}
           answers={answers}
           textDrafts={textDrafts}
           setTextDrafts={setTextDrafts}
@@ -690,7 +693,7 @@ export function AnalysisScreen({
           variant="primary"
           size="lg"
           disabled={answerState === "validating" || gateBlocked || !requiredComplete || !equipmentComplete || !requirementReady}
-          onClick={buildMatchedOptions}
+          onClick={onReview}
         >
           {gateBlocked
             ? "Request blocked by Doneeo Rules Gate"
@@ -698,7 +701,7 @@ export function AnalysisScreen({
               ? "Validating the work order…"
               : !requirementReady
                 ? "Finalizing Requirement Contract…"
-                : "Build matched work options"}
+                : "Review job plan"}
           <span aria-hidden="true">→</span>
         </Button>
         {error && (

@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { Check, ChevronDown, CircleUserRound, LogOut, Plus } from "lucide-react";
 import { ProgressBar } from "./ui/ProgressBar";
 
-const STEPS = ["Conversation", "Planning options", "Progress"];
+const STEPS = ["Conversation", "Review plan", "Planning options", "Progress"];
 const TOOLS = [
   { href: "/architecture", label: "Architecture" },
   { href: "/track", label: "Live tracking" },
@@ -44,7 +44,7 @@ export function AppHeader({ stage, progress, onSignOut, onNewRequest }: {
   return <div className="sticky top-0 z-40 bg-surface-r">
     <header className="flex h-[72px] items-center justify-between gap-4 border-b border-line-r px-5 sm:px-[5%]">
       <img className="block h-auto w-[138px] sm:w-[156px]" src="/brand/doneeo-logo.png" alt="Doneeo" />
-      <nav className="hidden sm:block" aria-label="Your request progress">
+      <nav className="hidden md:block" aria-label="Your request progress">
         <ol className="flex items-center gap-5">
           {STEPS.map((label, index) => <li key={label} aria-current={index === stage ? "step" : undefined}
             className={`flex items-center gap-2 text-xs ${index === stage ? "font-semibold text-brand-600-r" : "text-muted-r"}`}>
@@ -55,7 +55,7 @@ export function AppHeader({ stage, progress, onSignOut, onNewRequest }: {
           </li>)}
         </ol>
       </nav>
-      <span className="text-xs text-muted-r sm:hidden">{stage + 1} of 3</span>
+      <span className="text-xs text-muted-r md:hidden">{stage + 1} of {STEPS.length}</span>
       <details ref={account} className="relative shrink-0">
         <summary ref={trigger} aria-label="Account menu" className="flex cursor-pointer list-none items-center gap-2 rounded-full p-2 text-muted-r hover:bg-canvas-r focus-visible:outline-2 focus-visible:outline-brand-500-r [&::-webkit-details-marker]:hidden">
           <CircleUserRound size={22} aria-hidden="true" />
@@ -75,6 +75,6 @@ export function AppHeader({ stage, progress, onSignOut, onNewRequest }: {
         </div>
       </details>
     </header>
-    <ProgressBar percent={progress} label={`Step ${stage + 1} of 3: ${STEPS[stage]}`} />
+    <ProgressBar percent={progress} label={`Step ${stage + 1} of ${STEPS.length}: ${STEPS[stage]}`} />
   </div>;
 }

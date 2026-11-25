@@ -8,6 +8,7 @@ import { extractScheduleWindow, extractStreetAddresses, type PlannerAnalysis, ty
 import { AppHeader } from "./_components/AppHeader";
 import { ServiceStatus } from "./_components/ServiceStatus";
 import { ConversationScreen, type DiscussionMessage } from "./_components/ConversationScreen";
+import { PlanReview, type PlanReviewEditor as PlanEdit } from "@doneeo/plan-review";
 import { MatchingScreen } from "./_components/MatchingScreen";
 import { TrackingScreen } from "./_components/TrackingScreen";
 import { assignmentCoversTask, optionsFor, recalculateJob, serviceForTask } from "./_domain/plan-options";
@@ -28,8 +29,16 @@ type PlanControlState = {
   currentLayerId: string;
   correlationId: string;
   requirementReady: boolean;
+  planConfirmed: boolean;
   requirementContractRef: string | null;
   requirementContractVersion: number | null;
+};
+
+type PlanResponse = Record<string, unknown> & {
+  error?: string;
+  analysis?: PlannerAnalysis;
+  answers?: Answers;
+  discussion?: DiscussionMessage[];
 };
 
 function controlFromPlanResponse(
@@ -54,6 +63,7 @@ function controlFromPlanResponse(
     currentLayerId: data.currentLayerId,
     correlationId: data.correlationId,
     requirementReady: data.requirementReady === true,
+    planConfirmed: data.planConfirmed === true,
     requirementContractRef:
       typeof data.requirementContractRef === "string"
         ? data.requirementContractRef
@@ -114,6 +124,8 @@ export default function Workspace({ accountId, initialRequest, onStarted, onSign
   const [routeState, setRouteState] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [answerState, setAnswerState] = useState<"idle" | "validating">("idle");
   const [planControl, setPlanControl] = useState<PlanControlState | null>(null);
+  const [reviewDismissed, setReviewDismissed] = useState(false);
+  const [reviewEditor, setReviewEditor] = useState<PlanEdit | null>(null);
   const intakeAttemptRef = useRef<IntakeAttempt | null>(pendingIntake);
 
   useEffect(() => {
@@ -174,21 +186,18 @@ export default function Workspace({ accountId, initialRequest, onStarted, onSign
   const answeredEndpoints = [String(answers.pickup_address || "").trim(), String(answers.service_address || "").trim()].filter(value => value.length > 4);
   const exactRouteAddresses = routeStops.length >= 2 ? routeStops : answeredEndpoints;
   const googleMapsUrl = exactRouteAddresses.length >= 2 ? `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(exactRouteAddresses[0])}&destination=${encodeURIComponent(exactRouteAddresses[exactRouteAddresses.length - 1])}${exactRouteAddresses.length > 2 ? `&waypoints=${encodeURIComponent(exactRouteAddresses.slice(1, -1).join("|"))}` : ""}&travelmode=driving` : "";
-  const progress = ((Math.max(0, stage - 1) + 1) / 3) * 100;
   // The planner can require route details before it can build the route.
   const visibleQuestions = analysis?.questions.filter(question => question.required !== false) ?? [];
   const questionAnswered = (question: PlannerQuestion) => {
     const value = answers[question.id];
     return typeof value === "boolean" || (typeof value === "string" && value.trim().length > 1);
   };
-  const nextUnansweredId = visibleQuestions.find(question => !questionAnswered(question))?.id;
-  const displayedQuestions = visibleQuestions.filter(question => question.id === nextUnansweredId);
-  const requiredComplete = visibleQuestions.every(questionAnswered);
-  // Reusable operating equipment belongs to the matched provider or rental
-  // workflow. Customer equipment declarations are useful but never block the
-  // customer from seeing matching options.
-  const equipmentComplete = true;
+  const nextQuestion = visibleQuestions.find(question => !questionAnswered(question));
   const gateBlocked = analysis?.rulesGate?.status === "blocked";
+  const readyToReview = Boolean(analysis && planControl?.requirementReady && !nextQuestion && !gateBlocked);
+  const showReview = stage === 1 && readyToReview && !reviewDismissed;
+  const headerStage = stage >= 2 ? stage : showReview ? 1 : 0;
+  const progress = (headerStage + 1) * 25;
   const providerClassLabel = analysis?.rulesGate ? ({
     general_helper: "General helper",
     skilled_executor: "Skilled executor",
@@ -508,33 +517,14 @@ export default function Workspace({ accountId, initialRequest, onStarted, onSign
         }),
       });
 
-      const data = (await response.json()) as Record<string, unknown> & {
-        error?: string;
-        analysis?: PlannerAnalysis;
-        answers?: Answers;
-        discussion?: DiscussionMessage[];
-      };
+      const data = (await response.json()) as PlanResponse;
 
       if (!response.ok || !data.analysis) {
         throw new Error(data.error || "Could not validate this answer");
       }
 
-      const control = controlFromPlanResponse(data);
-
-      setPlanControl(control);
-      window.localStorage.setItem(
-        storageKey,
-        JSON.stringify(control),
-      );
-      setAnalysis(data.analysis);
-      setDiscussion(data.discussion || []);
-      setMode(typeof data.mode === "string" ? data.mode : "");
-      setAnswers(current => ({
-        ...current,
-        ...(data.analysis?.extractedAnswers || {}),
-        [question.id]: value,
-        ...data.answers,
-      }));
+      acceptPlanUpdate(data, data.analysis);
+      setReviewDismissed(false);
 
       return true;
     } catch (caught) {
@@ -549,59 +539,76 @@ export default function Workspace({ accountId, initialRequest, onStarted, onSign
     }
   };
 
-  const recheckRequirements = async () => {
-    if (!planControl || answerState === "validating") return;
+  function acceptPlanUpdate(data: PlanResponse, updatedAnalysis: PlannerAnalysis) {
+    const control = controlFromPlanResponse(data);
+    setPlanControl(control);
+    setAnalysis(updatedAnalysis);
+    setDiscussion(data.discussion || []);
+    setAnswers({ ...updatedAnalysis.extractedAnswers, ...data.answers });
+    setMode(typeof data.mode === "string" ? data.mode : "");
+    window.localStorage.setItem(storageKey, JSON.stringify(control));
+    return control;
+  }
+
+  async function updatePlan(action: { planEdit: PlanEdit } | { confirmPlan: true } | null, failure: string) {
+    if (!planControl || answerState === "validating") return null;
     setAnswerState("validating");
     setError("");
     try {
+      const command = action && "planEdit" in action ? "edit-plan" : action ? "confirm-plan" : "recheck-plan";
       const response = await fetch("/api/plan", {
         method: "POST",
         body: JSON.stringify({
           workCaseId: planControl.workCaseId,
           expectedStateVersion: planControl.stateVersion,
           correlationId: planControl.correlationId,
-          operationId: crypto.randomUUID(),
+          operationId: action
+            ? stableOperationId(`${command}-${planControl.workCaseId}-v${planControl.stateVersion}`, JSON.stringify(action))
+            : crypto.randomUUID(),
+          ...action,
         }),
       });
-      const data = await response.json();
-      if (!response.ok || !data.analysis) throw new Error(data.error || "Could not check the plan.");
-      setPlanControl(controlFromPlanResponse(data));
-      setAnalysis(data.analysis);
-      setDiscussion(data.discussion || []);
-      setAnswers({ ...data.analysis.extractedAnswers, ...data.answers });
-      setMode(data.mode || "");
+      const data = (await response.json()) as PlanResponse;
+      if (!response.ok || !data.analysis) throw new Error(data.error || failure);
+      return { control: acceptPlanUpdate(data, data.analysis), analysis: data.analysis };
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Could not check the plan.");
+      setError(caught instanceof Error ? caught.message : failure);
+      return null;
     } finally { setAnswerState("idle"); }
-  };
+  }
 
-  const buildMatchedOptions = async () => {
-    if (!analysis) return;
-    setError("");
+  async function recheckRequirements() {
+    if (await updatePlan(null, "Could not check the plan.")) setReviewDismissed(false);
+  }
 
-    if (!planControl?.requirementReady) {
-      setError(
-        "Doneeo is still resolving the work requirements. Matching cannot start until the Requirement Contract is ready.",
-      );
+  async function editReviewedStep(stepId: string, revision: string) {
+    if (!readyToReview) return false;
+    const updated = await updatePlan({ planEdit: { stepId, revision } }, "Could not save the plan change.");
+    if (!updated) return false;
+    setReviewDismissed(false);
+    setReviewEditor(null);
+    return true;
+  }
+
+  async function confirmReviewedPlan() {
+    if (!analysis || !readyToReview || reviewEditor || answerState === "validating") return;
+    const updated = planControl?.planConfirmed
+      ? { control: planControl, analysis }
+      : await updatePlan({ confirmPlan: true }, "Could not confirm the plan.");
+    if (!updated) return;
+    if (!updated.control.planConfirmed || !updated.control.requirementReady) {
+      setError("Review and confirm the current plan before viewing the options.");
       return;
     }
-
-    if (!requiredComplete) {
-      setError("Please complete the visible operational detail before matching.");
-      return;
-    }
-    // The request has already been recalculated after every committed answer.
-    // Do not ask an AI architect to regenerate the intake here: that could add
-    // a new, invisible question after the UI said the intake was complete.
-    setSelected(analysis.intelligence?.fulfillment.mode === "coordinated_specialists" ? "budget" : "recommended");
+    setSelected(updated.analysis.intelligence?.fulfillment.mode === "coordinated_specialists" ? "budget" : "recommended");
     setStage(2);
-    if (hasDrivingRoute) calculateGoogleRoute(analysis.routeNodes.map(node => node.location));
-  };
+    if (hasDrivingRoute) calculateGoogleRoute(updated.analysis.routeNodes.map(node => node.location));
+  }
 
   const persistConfirmedWorkOrder = async () => {
     if (!analysis || !chosen) return;
-    if (!planControl?.requirementReady || !planControl.requirementContractRef) {
-      setError("The canonical Requirement Contract must be ready before this work order can be created.");
+    if (!planControl?.planConfirmed || !planControl.requirementReady || !planControl.requirementContractRef) {
+      setError("Review and confirm the plan before creating this work order.");
       return;
     }
     const reference = createWorkOrderReference();
@@ -781,7 +788,12 @@ export default function Workspace({ accountId, initialRequest, onStarted, onSign
     }
   };
 
-  const restart = () => { setStage(0); setPlanControl(null); intakeAttemptRef.current = null; sessionStorage.removeItem(attemptKey); window.localStorage.removeItem(storageKey); setAnalysis(null); setAnswers({}); setDiscussion([]); setRequest(""); setMode(""); setSelected("recommended"); setBookingState("idle"); setSavedReference(""); setError(""); setProtection("none"); setProviderStatus("not_sent"); setPaymentState("unpaid"); setDispatchAttempt(1); setIncidentNote(""); setNotification(""); setAlternateTimesVisible(false); setMilestoneDurations({}); setDelayMinutes(0); setMaterialsReady(false); setProviderArrived(false); setActiveCheckpoint(0); setTaskGateConfirmations({}); setGoogleRoute(null); setRouteState("idle"); };
+  const restart = () => {
+    if (answerState === "validating") return;
+    setReviewEditor(null);
+    setReviewDismissed(false);
+    setStage(0); setPlanControl(null); intakeAttemptRef.current = null; sessionStorage.removeItem(attemptKey); window.localStorage.removeItem(storageKey); setAnalysis(null); setAnswers({}); setDiscussion([]); setRequest(""); setMode(""); setSelected("recommended"); setBookingState("idle"); setSavedReference(""); setError(""); setProtection("none"); setProviderStatus("not_sent"); setPaymentState("unpaid"); setDispatchAttempt(1); setIncidentNote(""); setNotification(""); setAlternateTimesVisible(false); setMilestoneDurations({}); setDelayMinutes(0); setMaterialsReady(false); setProviderArrived(false); setActiveCheckpoint(0); setTaskGateConfirmations({}); setGoogleRoute(null); setRouteState("idle");
+  };
 
   useEffect(() => {
     if (!startingRequest || initialStarted.current) return;
@@ -794,22 +806,42 @@ export default function Workspace({ accountId, initialRequest, onStarted, onSign
     setError("");
   }, [stage]);
 
+  useEffect(() => {
+    if (showReview) window.scrollTo(0, 0);
+  }, [showReview]);
+
   return <main className="mx-auto min-h-screen w-full max-w-[1120px] bg-surface-r shadow-[0_0_50px_rgba(23,53,43,0.09)]">
-    <AppHeader stage={Math.max(0, stage - 1)} progress={progress} onSignOut={onSignOut} onNewRequest={restart} />
+    <AppHeader stage={headerStage} progress={progress} onSignOut={onSignOut} onNewRequest={restart} />
     <ServiceStatus mode={mode} />
-    {stage <= 1 && <ConversationScreen
+    {stage <= 1 && !showReview && <ConversationScreen
       request={request} setRequest={setRequest} analysis={analysis}
-      messages={discussion} question={displayedQuestions[0]}
+      messages={discussion} question={nextQuestion}
       busy={(plannerState === "thinking" && !restoring) || answerState === "validating"}
       restoring={restoring}
-      ready={Boolean(analysis) && Boolean(planControl?.requirementReady) && requiredComplete && equipmentComplete}
+      ready={readyToReview}
       blocked={Boolean(gateBlocked)} error={error}
       onRequest={analyzeRequest} onAnswer={validateAnswer}
-      onContinue={() => void buildMatchedOptions()}
+      onReviewPlan={() => setReviewDismissed(false)}
       onNewRequest={restart} onRecheck={recheckRequirements}
     />}
 
-    {stage === 2 && analysis && (
+    {showReview && analysis && <PlanReview
+      analysis={analysis}
+      busy={answerState === "validating"}
+      error={error}
+      confirmed={planControl?.planConfirmed}
+      editor={reviewEditor}
+      setEditor={setReviewEditor}
+      onEdit={editReviewedStep}
+      onConfirm={confirmReviewedPlan}
+      onBack={() => {
+        setReviewEditor(null);
+        setReviewDismissed(true);
+        setError("");
+      }}
+    />}
+
+    {stage === 2 && analysis && planControl?.planConfirmed && (
       <MatchingScreen
         analysis={analysis}
         setStage={setStage}

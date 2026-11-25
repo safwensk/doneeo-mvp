@@ -1,4 +1,5 @@
-import { derivePreparationStart, enforceSafety, fallbackAnalysis, isCompositeDishwasherRequest, type JobCategory } from "../../../lib/planner";
+import { derivePreparationStart, enforceSafety, fallbackAnalysis, isCompositeDishwasherRequest, type JobCategory, type PlannerAnalysis } from "../../../lib/planner";
+import { attachPlanEdits, planEditFor, revisePlanSource, revisedBoxDestination } from "../../../lib/customer-plan-review";
 import { applyDoneeoRulesGate } from "../../../lib/rules-gate";
 import { applyCustomerAnswers, buildJobIntelligence } from "../../../lib/job-intelligence";
 import { canContinueIntake, rememberClarifications, retainKnownIntakeFacts, savedPlanningFallback } from "../../../lib/planning-continuity";
@@ -139,7 +140,10 @@ function deterministicAudit(
   if (!analysis.tasks.length) issues.push("No execution tasks were produced");
   if (!analysis.equipment.length && analysis.category !== "elder_support") issues.push("No equipment or materials were identified");
   if (analysis.recommendedTeamSize < 1 || analysis.recommendedTeamSize > 4) issues.push("Team size is outside operating limits");
-  const known = retainKnownIntakeFacts(augmentWithHouseholdKnowledge(analysis), customerAnswers, history);
+  const draft = isCompositeDishwasherRequest(analysis.sourceText)
+    ? enforceSafety({ ...analysis, extractedAnswers: { ...analysis.extractedAnswers, ...customerAnswers } })
+    : analysis;
+  const known = retainKnownIntakeFacts(augmentWithHouseholdKnowledge(draft), customerAnswers, history);
   const answered = applyCustomerAnswers(known, customerAnswers);
   const normalized = enforceSafety({ ...answered, recommendedTeamSize: Math.max(1, Math.min(4, answered.recommendedTeamSize)) });
   const firstGate = applyDoneeoRulesGate(normalized);
@@ -387,6 +391,11 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
 
   const requestedWorkCaseId = cleanIdentifier(body.workCaseId);
+  const confirmingPlan = body.confirmPlan === true;
+  const editingPlan = body.planEdit !== undefined;
+  if ((confirmingPlan || editingPlan) && (!requestedWorkCaseId || body.resume === true || body.answers || (confirmingPlan && editingPlan))) {
+    return Response.json({ error: "Send one change or confirmation for the current plan." }, { status: 400 });
+  }
   const clientRequest =
     typeof body.request === "string"
       ? body.request.trim().slice(0, 2000)
@@ -445,6 +454,7 @@ export async function POST(request: Request) {
       analysis,
       answers,
       mode: "read-only-resume",
+      planConfirmed: (analysis as PlannerAnalysis).planConfirmed === true,
       architectNotes: [],
       workCaseId: current.workCaseId,
       jobOrderId: current.jobOrderId,
@@ -561,6 +571,28 @@ export async function POST(request: Request) {
       ])
     : [{}, null] as const;
 
+  if (confirmingPlan) {
+    const reference = workCase.current.requirementContractRef;
+    if (!reference) return Response.json({ error: "Complete and review the current job plan before confirming it." }, { status: 409 });
+    const analysis = await workCaseStore.confirmCurrentPlan(workCase.workCaseId, expectedAnalysisVersion);
+    if (!analysis) return Response.json({ error: "Complete and review the current job plan before confirming it." }, { status: 409 });
+    return Response.json({
+      analysis, answers: storedAnswers, mode: "plan-confirmed", architectNotes: [],
+      workCaseId: workCase.workCaseId, jobOrderId: workCase.jobOrderId,
+      state: workCase.state, stateVersion: workCase.stateVersion,
+      currentLayerId: workCase.currentLayerId, architecture: architecturePosition(workCase.currentLayerId),
+      correlationId, requirementReady: true, planConfirmed: true, requirementContractRef: reference,
+      requirementContractVersion: Number(reference.slice(reference.lastIndexOf("@") + 1)),
+    });
+  }
+
+  const newEdit = editingPlan && planEditFor(previousSnapshot as PlannerAnalysis | null, body.planEdit);
+  if (editingPlan && (!newEdit || workCase.state !== "REQUIREMENT_READY" || workCase.currentLayerId !== "L02")) {
+    return Response.json({ error: "Open the current plan and enter a change of 3 to 300 characters for that step." }, { status: 400 });
+  }
+  const previousEdits = (previousSnapshot as PlannerAnalysis | null)?.planEdits ?? [];
+  const planEdits = newEdit ? [...previousEdits.filter(edit => edit.stepId !== newEdit.stepId), newEdit] : previousEdits;
+
   const submittedAnswers =
     body.answers && typeof body.answers === "object"
       ? Object.fromEntries(
@@ -580,9 +612,14 @@ export async function POST(request: Request) {
 
   const confirmedScope = customerAnswers.task_details;
   const scopeClarification = typeof confirmedScope === "string" ? confirmedScope.trim() : "";
-  const clarifiedRequest = scopeClarification
+  const clarifiedRequest = revisePlanSource(scopeClarification
     ? `${authoritativeRequest}\n\n${scopeClarification}`
-    : authoritativeRequest;
+    : authoritativeRequest, planEdits);
+  if (newEdit && revisedBoxDestination(newEdit) !== revisedBoxDestination(previousEdits.find(edit => edit.stepId === newEdit.stepId))) {
+    // A different destination changes the path and equipment requirements.
+    delete customerAnswers.handling_access;
+    delete customerAnswers.handling_destination;
+  }
   const savedFallback = savedPlanningFallback(previousSnapshot, clarifiedRequest);
   const history = rememberClarifications(savedFallback, customerAnswers);
   const labels = new Map(history.map(question => [question.id, question.label]));
@@ -594,9 +631,11 @@ export async function POST(request: Request) {
       }`,
   );
 
-  const planningRequest = answerLines.length
-    ? `${authoritativeRequest}\n\nCUSTOMER ANSWERS COLLECTED AFTER THE ORIGINAL REQUEST:\n${answerLines.join("\n")}\nPreserve what each answer actually confirms. Do not repeat answered details under any wording or ID. Keep the IDs of remaining questions unless narrowing a partially answered question to the detail still needed.`
-    : authoritativeRequest;
+  const answerContext = answerLines.length
+    ? `\n\nCUSTOMER ANSWERS COLLECTED AFTER THE ORIGINAL REQUEST:\n${answerLines.join("\n")}\nPreserve what each answer actually confirms. Do not repeat answered details under any wording or ID. Keep the IDs of remaining questions unless narrowing a partially answered question to the detail still needed.` : "";
+  const reviewContext = planEdits.length
+    ? `\n\nCUSTOMER REVISIONS TO THE JOB PLAN:\n${planEdits.map(edit => `${edit.title}: ${edit.revision}`).join("\n")}\nApply each change to its step. Preserve the other requested outcomes, their order and any required safety and completion checks.` : "";
+  const planningRequest = `${clarifiedRequest}${answerContext}${reviewContext}`;
 
   const fallback = fallbackAnalysis(clarifiedRequest);
 
@@ -612,13 +651,14 @@ export async function POST(request: Request) {
   const stored = storedAnswers as Record<string, string | boolean>;
   const changed = Object.fromEntries(Object.entries(submittedAnswers).filter(([key, value]) => stored[key] !== value));
   // A reply that defines the work must reach the fallback planner too.
-  const refreshRuleDraft = Object.keys(submittedAnswers).length === 0
+  const refreshRuleDraft = !newEdit && Object.keys(submittedAnswers).length === 0
     && savedFallback?.audit.pipeline?.startsWith("RULE-BASED PLANNER");
-  const reuseSavedPlan = changed.task_details === undefined && !refreshRuleDraft ? savedFallback : null;
+  const editChangesScope = newEdit && clarifiedRequest !== (previousSnapshot as PlannerAnalysis | null)?.sourceText;
+  const reuseSavedPlan = changed.task_details === undefined && !refreshRuleDraft && !editChangesScope ? savedFallback : null;
   const savedIntelligence = reuseSavedPlan && deterministicAudit(
     reuseSavedPlan, "SAVED PLAN CONTINUITY → RULES GATE → JOB INTELLIGENCE", customerAnswers, history,
   );
-  const continueQueue = savedIntelligence && canContinueIntake(savedIntelligence, reuseSavedPlan, changed);
+  const continueQueue = !newEdit && savedIntelligence && canContinueIntake(savedIntelligence, reuseSavedPlan, changed);
   const firstIntake = !requestedWorkCaseId ? deterministicAudit(
     fallback, "RULE-BASED PLANNER → RULES GATE → JOB INTELLIGENCE", customerAnswers, history,
   ) : null;
@@ -653,12 +693,12 @@ export async function POST(request: Request) {
   }
 
   const carriedIntelligence = continueQueue ? savedIntelligence : mode === "safe-fallback" ? firstIntake : null;
-  const intelligence = carriedIntelligence ?? deterministicAudit(
+  const intelligence = attachPlanEdits(carriedIntelligence ?? deterministicAudit(
     analysis,
     `${pipeline} → RULES GATE → JOB INTELLIGENCE`,
     customerAnswers,
     history,
-  );
+  ), planEdits);
 
   // Review the completed intake, not each question on the way there.
   const finalChecked = intelligence.rulesGate?.status === "cleared"
@@ -695,6 +735,7 @@ export async function POST(request: Request) {
       answers: customerAnswers,
       mode: `${mode}+rules-gate+job-intelligence${finalChecked !== intelligence ? "+independent-validation" : ""}`,
       architectNotes,
+      planConfirmed: false,
       workCaseId: control.workCaseId,
       jobOrderId: control.jobOrderId,
       state: control.state,

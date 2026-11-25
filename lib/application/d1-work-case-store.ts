@@ -88,6 +88,22 @@ export class D1WorkCaseStore implements WorkCaseStore {
     }
   }
 
+  async confirmCurrentPlan(workCaseId: string, expectedVersion: number): Promise<unknown | null> {
+    const row = await this.db.prepare(
+      `UPDATE intelligence_requests
+       SET latest_analysis_json = json_set(latest_analysis_json, '$.planConfirmed', json('true'))
+       WHERE work_case_id = ? AND latest_analysis_json IS NOT NULL
+         AND EXISTS (
+           SELECT 1 FROM work_cases
+           WHERE work_case_id = intelligence_requests.work_case_id AND state_version = ?
+             AND state = 'REQUIREMENT_READY' AND current_layer_id = 'L02'
+             AND current_requirement_ref IS NOT NULL
+         )
+       RETURNING latest_analysis_json`,
+    ).bind(workCaseId, expectedVersion).first<{ latest_analysis_json: string }>();
+    return row ? JSON.parse(row.latest_analysis_json) as unknown : null;
+  }
+
   async getTasks(workCaseId: string): Promise<TaskIdentity[]> {
     const { results } = await this.db.prepare(
       `SELECT work_case_id, task_id, semantic_key, ordinal, title, domain, status

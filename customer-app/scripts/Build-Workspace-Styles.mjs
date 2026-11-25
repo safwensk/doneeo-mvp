@@ -11,7 +11,7 @@ const tailwind = require('@tailwindcss/postcss');
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const original = resolve(plannerDirectory, 'app/globals.css');
-const source = await readFile(original, 'utf8');
+const source = `${await readFile(original, 'utf8')}\n@source "./_components/PlanReview.tsx";\n`;
 const result = await postcss([tailwind({ base: resolve(root, 'frontend/src/github'), optimize: true })])
   .process(source, { from: original, to: resolve(root, 'frontend/public/workspace.css') });
 // Global page tokens and the reset belong to the workspace's shadow host.

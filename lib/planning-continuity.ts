@@ -25,7 +25,7 @@ export function savedPlanningFallback(
 }
 
 type Answer = string | boolean;
-type QuestionRef = Pick<PlannerQuestion, "id" | "label">;
+type QuestionRef = Pick<PlannerQuestion, "id" | "label" | "taskBlockId">;
 
 const aliases: Record<string, string> = {
   standard_or_deep_clean: "cleaning_depth",
@@ -136,7 +136,11 @@ const supplied = (value: unknown): value is Answer => typeof value === "boolean"
 export function rememberClarifications(previous: PlannerAnalysis | null, answers: Record<string, Answer>): QuestionRef[] {
   const questions = new Map<string, QuestionRef>();
   for (const question of [...(previous?.answeredQuestions || []), ...(previous?.questions || [])]) {
-    if (supplied(answers[question.id])) questions.set(question.id, { id: question.id, label: question.label });
+    if (supplied(answers[question.id])) questions.set(question.id, {
+      id: question.id,
+      label: question.label,
+      ...(question.taskBlockId ? { taskBlockId: question.taskBlockId } : {}),
+    });
   }
   return [...questions.values()].slice(-40);
 }

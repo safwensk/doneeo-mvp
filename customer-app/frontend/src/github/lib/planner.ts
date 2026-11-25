@@ -7,6 +7,7 @@ export type PlannerQuestion = {
   type: "text" | "choice" | "boolean";
   options?: string[];
   required?: boolean;
+  taskBlockId?: string;
 };
 
 export type RulesGateDomain = "request" | "scope" | "locations" | "people" | "equipment" | "safety" | "schedule" | "routing" | "commercial" | "execution";
@@ -56,6 +57,8 @@ export type PlannerAnalysis = {
   audit: { status: "verified" | "corrected" | "deterministic"; issues: string[]; checks: string[]; pipeline?: string };
   rulesGate?: RulesGateResult;
   intelligence?: JobIntelligence;
+  taskBlocks?: Array<{ id: string; sequence: number; title: string; workstreamIds: string[] }>;
+  planEdits?: Array<{ stepId: string; title: string; revision: string }>;
 };
 
 export type JobFact = {

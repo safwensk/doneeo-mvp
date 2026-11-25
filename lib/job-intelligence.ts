@@ -1,4 +1,4 @@
-import type { JobFact, JobIntelligence, PlannerAnalysis, PlannerQuestion, ResourceGap, TaskPrimitive } from "./planner";
+import { isCompositeDishwasherRequest, type CustomerTaskBlock, type JobFact, type JobIntelligence, type PlannerAnalysis, type PlannerQuestion, type ResourceGap, type TaskPrimitive } from "./planner";
 import { recognizeHouseholdItems } from "./household-catalog";
 import { buildHouseholdWorkModel } from "./work-ontology";
 
@@ -139,6 +139,57 @@ export function applyCustomerAnswers(analysis: PlannerAnalysis, answers: Record<
   };
 }
 
+function questionDomain(id: string) {
+  if (/^(?:wall_type|mounted_item|mount_|concealed_services)/.test(id)) return "mounting";
+  if (/^(?:furniture_|parts_complete|packaging_)/.test(id)) return "furniture_assembly";
+  if (/^(?:handling_|stop_|pickup_address|delivery_address)/.test(id)) return "transport_handling";
+  if (/^(?:dishwasher_|old_dishwasher|range_|refrigerator_)/.test(id)) return "appliance_installation";
+  if (/^(?:cleaning_|home_access|surface_notes|pets$)/.test(id)) return "cleaning";
+  if (/^(?:water_shutoff|plumbing_)/.test(id)) return "plumbing";
+  if (/^(?:electrical_|fixture_parts|work_height)/.test(id)) return "electrical";
+  if (/^(?:paint_|painting_|surface_condition)/.test(id)) return "painting";
+  if (/^yard_/.test(id)) return "yard_garden";
+  if (/^(?:organization_|sorting_decisions|disposal_scope)/.test(id)) return "organization";
+  if (/^maintenance_/.test(id)) return "general_maintenance";
+}
+
+function groupTaskIntake(analysis: PlannerAnalysis, workstreams: JobIntelligence["workstreams"]) {
+  const dishwasherComposite = isCompositeDishwasherRequest(analysis.sourceText);
+  const dishwasherBlockId = "dishwasher_pickup_installation";
+  const boxBlockId = "onsite_boxes";
+  const blocks = new Map<string, CustomerTaskBlock>();
+  const firstBlockForDomain = new Map<string, string>();
+  for (const stream of workstreams) {
+    const dishwasher = dishwasherComposite && /\bdishwasher\b/i.test(stream.title);
+    const boxes = stream.phaseIds.includes("onsite_box_move");
+    const id = dishwasher ? dishwasherBlockId : boxes ? boxBlockId : stream.id;
+    const block = blocks.get(id);
+    if (block) block.workstreamIds.push(stream.id);
+    else blocks.set(id, {
+      id,
+      sequence: blocks.size + 1,
+      title: dishwasher ? "Pick up, deliver, and install the dishwasher" : stream.title,
+      workstreamIds: [stream.id],
+    });
+    if (!firstBlockForDomain.has(stream.domain)) firstBlockForDomain.set(stream.domain, id);
+  }
+  const taskBlocks = [...blocks.values()];
+  if (!taskBlocks.length) return { taskBlocks, questions: analysis.questions };
+
+  const questions = analysis.questions.map(question => {
+    const domain = questionDomain(question.id);
+    const dishwasherQuestion = /^(?:dishwasher_|old_dishwasher|retailer_|stop_\d+_|pickup_address$|service_address$|delivery_address$|building_permission$)/.test(question.id);
+    const boxQuestion = blocks.has(boxBlockId) && (/^(?:handling_|(?:onsite_)?box_)/.test(question.id)
+      || /\bbox(?:es)?\b/i.test(question.label) && !/packaging|dishwasher/i.test(question.label));
+    const taskBlockId = question.taskBlockId && blocks.has(question.taskBlockId) ? question.taskBlockId
+      : boxQuestion ? boxBlockId
+        : blocks.has(dishwasherBlockId) && dishwasherQuestion ? dishwasherBlockId
+          : domain ? firstBlockForDomain.get(domain) : undefined;
+    return { ...question, taskBlockId: taskBlockId || taskBlocks[0].id };
+  }).sort((left, right) => blocks.get(left.taskBlockId)!.sequence - blocks.get(right.taskBlockId)!.sequence);
+  return { taskBlocks, questions };
+}
+
 export function buildJobIntelligence(analysis: PlannerAnalysis): PlannerAnalysis {
   const householdModel = buildHouseholdWorkModel(analysis);
   const primitives = buildPrimitives(analysis);
@@ -243,6 +294,7 @@ export function buildJobIntelligence(analysis: PlannerAnalysis): PlannerAnalysis
       handoffRequired: serviceGroup === "transport" && analysis.tasks.slice(index + 1).some(task => /install|mount|boxes?|garage/i.test(task)),
     };
   });
+  const { taskBlocks, questions } = groupTaskIntake(analysis, workstreams);
   const transportTaskSequences = workstreams.filter(stream => stream.serviceGroup === "transport").map(stream => stream.sequence);
   const inHomeTaskSequences = workstreams.filter(stream => stream.serviceGroup === "in_home").map(stream => stream.sequence);
   const coordinatedSpecialists = analysis.routeNodes.length > 1 && transportTaskSequences.length > 0 && inHomeTaskSequences.length > 0;
@@ -279,12 +331,13 @@ export function buildJobIntelligence(analysis: PlannerAnalysis): PlannerAnalysis
   };
   const execution = elapsedFor(recommended);
   const route = analysis.routeNodes.length > 1 ? analysis.estimate.travelMinutes : 0;
+  const routePending = analysis.routeNodes.length < 2 && isCompositeDishwasherRequest(analysis.sourceText);
   const uncertaintyRatio = householdModel.domains.some(domain => ["plumbing", "electrical", "general_maintenance"].includes(domain)) ? 0.2 : 0.15;
   const buffer = Math.max(15, Math.ceil((execution + route) * uncertaintyRatio / 5) * 5);
   const total = execution + route + buffer;
   const calibratedLow = primitives.reduce((sum, item) => sum + (item.lowMinutes || Math.round(item.unitMinutes * .75)), 0) + access + route;
   const calibratedHigh = primitives.reduce((sum, item) => sum + (item.highMinutes || Math.round(item.unitMinutes * 1.5)), 0) + access + route + buffer;
-  const unresolved = analysis.questions.filter(question => question.required !== false).map(question => question.label);
+  const unresolved = questions.filter(question => question.required !== false).map(question => question.label);
   const score = Math.max(30, Math.min(95, 92 - unresolved.length * 9 - (analysis.routeNodes.length > 1 && !route ? 12 : 0)));
   const level = score >= 80 ? "high" : score >= 60 ? "medium" : "low";
   const alternatives: JobIntelligence["manpower"]["alternatives"] = [];
@@ -295,7 +348,8 @@ export function buildJobIntelligence(analysis: PlannerAnalysis): PlannerAnalysis
     alternatives.push({ people, estimatedMinutes, label: people === minimum ? "Safe minimum" : people === recommended ? "Recommended balance" : people < recommended ? "Lower-cost team" : "Faster practical team" });
   }
   const assumptions = [
-    analysis.routeNodes.length > 1 ? "Travel time is recalculated from Google Routes after exact addresses are validated" : "All execution is at one property; no driving between work locations is included",
+    routePending ? "Travel time is calculated after pickup and installation locations are confirmed"
+      : analysis.routeNodes.length > 1 ? "Travel time is recalculated from Google Routes after exact addresses are validated" : "All execution is at one property; no driving between work locations is included",
     "All listed parts and items are ready unless the work order says otherwise",
     "Unexpected access, site or item conditions can change the range",
   ];
@@ -313,11 +367,11 @@ export function buildJobIntelligence(analysis: PlannerAnalysis): PlannerAnalysis
     workstreams,
     fulfillment,
     manpower: { minimum, recommended, reason: manpowerReason, alternatives },
-    estimate: { ready: unresolved.length === 0, personMinutes, executionMinutes: execution, accessMinutes: access, routeMinutes: route, bufferMinutes: buffer, totalMinutes: total, rangeLow: Math.max(15, Math.floor(calibratedLow / 5) * 5), rangeHigh: Math.ceil(calibratedHigh / 5) * 5, equation: route > 0 ? `${execution} min phase model + ${access} min access + ${route} min route + ${buffer} min uncertainty = ${total} min likely total` : `${execution} min phase model + ${access} min access + ${buffer} min uncertainty = ${total} min likely total · one property, no driving leg`, assumptions },
+    estimate: { ready: unresolved.length === 0 && !routePending, personMinutes, executionMinutes: execution, accessMinutes: access, routeMinutes: route, bufferMinutes: buffer, totalMinutes: total, rangeLow: Math.max(15, Math.floor(calibratedLow / 5) * 5), rangeHigh: Math.ceil(calibratedHigh / 5) * 5, equation: route > 0 ? `${execution} min phase model + ${access} min access + ${route} min route + ${buffer} min uncertainty = ${total} min likely total` : `${execution} min phase model + ${access} min access + ${buffer} min uncertainty = ${total} min likely total · ${routePending ? "travel time pending" : "one property, no driving leg"}`, assumptions },
     confidence: { level, score, reason: unresolved.length ? `${unresolved.length} operational detail${unresolved.length > 1 ? "s are" : " is"} still required before matching and pricing.` : "Critical scope, access, schedule and resource inputs passed the Doneeo Rules Gate." },
     unresolved,
   };
-  return { ...analysis, recommendedTeamSize: recommended, estimate: { ...analysis.estimate, serviceMinutesPerVisit: personMinutes, people: recommended }, intelligence };
+  return { ...analysis, questions, taskBlocks, recommendedTeamSize: recommended, estimate: { ...analysis.estimate, serviceMinutesPerVisit: personMinutes, people: recommended }, intelligence };
 }
 
 export function answerContext(questions: PlannerQuestion[], answers: Record<string, string | boolean>) {

@@ -159,6 +159,46 @@ test("informal dishwasher pickup and installation asks for missing route and tec
   assert.ok(!questionIds.includes("dishwasher_details"));
 });
 
+test("a misspelled dishwasher pickup followed by a passive box request opens two task blocks before either is fully clarified", () => {
+  const request = "i want someone to pickup dishwasher form coscto enjou and bring it to my appartement and unstale it after this i have 10 boxes need to to be taken from my appartment to my garage in the bassment";
+  const result = plan(request);
+  assert.equal(result.sourceText, request);
+  assert.deepEqual(result.routeNodes, [{ location: "costco enjou", actions: ["Pick up dishwasher"] }]);
+  assert.deepEqual(result.taskBlocks?.map(block => [block.id, block.sequence, block.title]), [
+    ["dishwasher_pickup_installation", 1, "Pick up, deliver, and install the dishwasher"],
+    ["onsite_boxes", 2, "Carry 10 boxes from the apartment to the basement garage"],
+  ]);
+  assert.match(result.tasks[2], /install.*installation address/i);
+  assert.ok(result.questions.some(question => question.id === "service_address" && question.taskBlockId === "dishwasher_pickup_installation"));
+  assert.ok(!result.questions.some(question => question.id === "pickup_address"));
+  assert.deepEqual(result.questions.filter(question => question.taskBlockId === "onsite_boxes").map(question => question.id),
+    ["handling_access", "handling_size_weight", "handling_contents"]);
+  assert.equal(result.questions.slice(-3).every(question => question.taskBlockId === "onsite_boxes"), true);
+  const move = result.intelligence?.workstreams.find(stream => stream.phaseIds.includes("onsite_box_move"));
+  assert.deepEqual(move?.phaseIds, ["onsite_box_assess", "onsite_box_move", "onsite_box_finish"]);
+  assert.ok(!move?.resourceIds.includes("vehicle"));
+});
+
+test("confirmed apartment address builds two stops while the box path stays separate from the appliance access", () => {
+  const request = "Pick up a dishwasher from Costco Anjou, deliver it to my apartment and install it. After this, carry 10 boxes from my apartment to my basement garage down two flights.";
+  const simple = plan(request, { service_address: "200 Sample Road, Toronto, apartment 5" });
+  const heavy = plan(request, { service_address: "200 Sample Road, Toronto, apartment 5", handling_size_weight: "The heaviest box is 27 kg." });
+  assert.deepEqual(simple.routeNodes.map(node => node.location), ["Costco Anjou", "200 Sample Road, Toronto, apartment 5"]);
+  assert.ok(simple.questions.some(question => question.id === "stop_2_floor"));
+  assert.ok(!simple.questions.some(question => question.id === "handling_access"));
+  assert.ok(!heavy.questions.some(question => question.id === "handling_size_weight"));
+  const simpleCarry = simple.intelligence?.primitives.find(phase => phase.id === "onsite_box_move");
+  const heavyCarry = heavy.intelligence?.primitives.find(phase => phase.id === "onsite_box_move");
+  assert.ok(simpleCarry && heavyCarry && heavyCarry.unitMinutes > simpleCarry.unitMinutes);
+  assert.equal(heavyCarry.minimumCrew, 2);
+});
+
+test("mixed intake asks about the box carry first when the customer requests it first", () => {
+  const result = plan("Carry 10 boxes from my apartment to my basement garage first. Then pick up a dishwasher from Costco Anjou, deliver it to my apartment and install it.");
+  assert.deepEqual(result.taskBlocks?.map(block => block.id), ["onsite_boxes", "dishwasher_pickup_installation"]);
+  assert.equal(result.questions[0]?.taskBlockId, "onsite_boxes");
+});
+
 test("confirmed dishwasher locations build the route and an existing unit branches to disposition", () => {
   const result = plan("Pick up a dishwasher and install it in my apartment.", {
     pickup_address: "100 Example Avenue, Toronto",

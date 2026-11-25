@@ -7,6 +7,14 @@ export type PlannerQuestion = {
   type: "text" | "choice" | "boolean";
   options?: string[];
   required?: boolean;
+  taskBlockId?: string;
+};
+
+export type CustomerTaskBlock = {
+  id: string;
+  sequence: number;
+  title: string;
+  workstreamIds: string[];
 };
 
 export type RulesGateDomain = "request" | "scope" | "locations" | "people" | "equipment" | "safety" | "schedule" | "routing" | "commercial" | "execution";
@@ -37,9 +45,12 @@ export type PlannerAnalysis = {
   summary: string;
   safetyNote: string;
   questions: PlannerQuestion[];
-  answeredQuestions?: Pick<PlannerQuestion, "id" | "label">[];
+  answeredQuestions?: Pick<PlannerQuestion, "id" | "label" | "taskBlockId">[];
   extractedAnswers: Record<string, string | boolean>;
   tasks: string[];
+  taskBlocks?: CustomerTaskBlock[];
+  planEdits?: Array<{ stepId: string; title: string; revision: string }>;
+  planConfirmed?: boolean;
   stops: string[];
   routeNodes: RouteNode[];
   scheduleWindow: ScheduleWindow | null;
@@ -208,6 +219,7 @@ const clockPattern = String.raw`(\d{1,2})(?::(\d{2}))?\s*(a\.?m\.?|p\.?m\.?)`;
 export function normalizeIntakeForInference(sourceText: string) {
   return sourceText
     .replace(/\b(?:coscto|costico|costo)\b/gi, "costco")
+    .replace(/\bform(?=\s+(?:costco|ikea|walmart|home depot|rona|the (?:store|warehouse|retailer))\b)/gi, "from")
     .replace(/\bstive\b/gi, "stove")
     .replace(/\b(?:kia|ika)\b(?=\s+bouchervil(?:le)?\b)/gi, "IKEA")
     .replace(/\bbouchervile\b/gi, "Boucherville")
@@ -238,8 +250,8 @@ export function normalizeIntakeForInference(sourceText: string) {
     .replace(/\bplz\b/gi, "please")
     .replace(/\bpreferblu\b/gi, "preferably")
     .replace(/\bmu(?=\s+apartment\b)/gi, "my")
-    .replace(/\bthe\s+unstall?\b/gi, "then install")
-    .replace(/\bunstall?\b/gi, "install")
+    .replace(/\bthe\s+unstall?e?\b/gi, "then install")
+    .replace(/\bunstall?e?\b/gi, "install")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -645,7 +657,7 @@ export function isCompositeDishwasherRequest(sourceText: string) {
   const installation = /\b(?:install|connect|hook\s*up|fit)\b/.test(text)
     && !/\b(?:no installation|(?:do not|don't) install)\b/.test(text);
   const transport = /\b(?:pick\s*up|collect|deliver|bring|transport)\b|\bfrom\b.{0,180}\bto\b/.test(text);
-  const pickupWithinProperty = /\b(?:pick\s*up|collect|bring|move)\b[^.;]{0,90}\bfrom\s+(?:(?:my|our|the)\s+)?(?:garage|basement|kitchen|storage room|upstairs|downstairs)\b/.test(text)
+  const pickupWithinProperty = /\b(?:pick\s*up|collect|bring|move)\b[^.;]{0,35}\bdish\s*washer\b[^.;]{0,25}\bfrom\s+(?:(?:my|our|the)\s+)?(?:garage|basement|kitchen|storage room|upstairs|downstairs)\b/.test(text)
     && !/\b(?:another|different)\s+(?:property|building|house|apartment)\b/.test(text)
     && extractStreetAddresses(sourceText).length < 2;
   return dishwasher && installation && transport && !pickupWithinProperty;
@@ -689,7 +701,8 @@ function compositeDishwasherRoute(sourceText: string, existing: RouteNode[], ans
 
 function enrichCompositeRequest(analysis: PlannerAnalysis): PlannerAnalysis {
   if (!isCompositeDishwasherRequest(analysis.sourceText)) return analysis;
-  const alreadyStructuredByOntology = analysis.tasks.some(task => /^Pick up the dishwasher at\b/i.test(task));
+  const alreadyStructuredByOntology = analysis.tasks.some(task => /^Pick up the dishwasher\b/i.test(task))
+    && analysis.tasks.some(task => /^Install, connect and test the dishwasher\b/i.test(task));
   const source = normalizeIntakeForInference(analysis.sourceText).toLowerCase();
   const extractedAnswers = { ...analysis.extractedAnswers };
   const routeNodes = compositeDishwasherRoute(analysis.sourceText, analysis.routeNodes || [], extractedAnswers);
@@ -849,7 +862,10 @@ export function requestAlreadyAnswersQuestion(question: PlannerQuestion, analysi
   if (stopQuestion) {
     const index = Math.max(0, Number(stopQuestion[1]) - 1);
     const routeStops = analysis.routeNodes.length ? analysis.routeNodes.map(node => node.location) : analysis.stops;
-    const context = `${stopContext(source, routeStops, index)} ${routeStops[index] || ""}`;
+    const stopSource = isCompositeDishwasherRequest(source)
+      ? source.split(/\b(?:after (?:this|that)|before leaving|then|next)\b(?=[^.;]{0,100}\bboxes?\b)/i)[0]
+      : source;
+    const context = `${stopContext(stopSource, routeStops, index)} ${routeStops[index] || ""}`;
     if (stopQuestion[2] === "floor" && contextHasFloor(context)) return true;
     if (stopQuestion[2] === "elevator" && (/\belevator\b/i.test(context) || contextMakesElevatorIrrelevant(context))) return true;
     if (stopQuestion[2] === "vehicle_access" && /\b(?:loading zone|parking|vehicle|truck|van|driveway|curb|entrance|remote parking)\b/i.test(context)) return true;
@@ -860,7 +876,7 @@ export function requestAlreadyAnswersQuestion(question: PlannerQuestion, analysi
   if (/(order|item).*(paid|ready)|(paid|ready).*(order|item)/.test(concept) && /\border\b[^.]{0,60}\bpaid\b[^.]{0,60}\bready\b|\bpaid\b[^.]{0,60}\bready\b/i.test(sourceText)) return true;
   if (/(customer|you).*(help|carry|lift)|(help|carry|lift).*(customer|you)/.test(concept) && /(?:cannot|can't|can not|unable|won't)\s+(?:help|assist|carry|lift)/i.test(source)) return true;
   const itemScopeQuestion = /(what.*(?:move|deliver|assemble|install)|items?|quantity|how many)/.test(concept)
-    && !/(where|destination|room|area|receive|place|path|access)/.test(concept);
+    && !/(where|address|location|destination|room|area|receive|place|path|access)/.test(concept);
   if (!/(floor|elevator|stairs|access|weight|size|dimension|condition|content|fragile|special handling|anchor|mount|hardware|parts?|instructions?)/.test(concept) && itemScopeQuestion && analysis.items.length > 0 && /\b(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|\d+)\b/i.test(sourceText)) return true;
   if (schedulingTopic === "arrival" && suppliedSchedule?.arrivalTime) return true;
   if (schedulingTopic === "deadline" && suppliedSchedule?.deadlineTime) return true;
