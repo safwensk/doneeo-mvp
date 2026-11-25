@@ -1,4 +1,5 @@
 import type { PlannerAnalysis } from "../planner";
+import { isReadyForPlanReview } from "../planning-continuity";
 import {
   ContractInvariantError,
   carryLifecycleForward,
@@ -104,12 +105,7 @@ export class D1IntelligenceControlService {
       now: input.now,
     });
 
-    const isReady =
-      intelligence.estimate.ready &&
-      intelligence.unresolved.length === 0 &&
-      input.analysis.rulesGate?.status === "cleared";
-
-    if (!isReady) {
+    if (!isReadyForPlanReview(input.analysis)) {
       return this.result(recorded.workCase, false, null);
     }
 

@@ -1,0 +1,96 @@
+@font-face {
+  font-family:'Doneeo Recruitment';
+  src:url('/fonts/dmsans-latin.woff2') format('woff2');
+  font-style:normal;
+  font-weight:400 1000;
+  font-display:swap;
+}
+.recruitment-callout {
+  display:grid;
+  grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);
+  gap:32px;
+  align-items:center;
+  margin-top:27px;
+  padding:37px 32px;
+  border-radius:25px;
+  background:#effcf8;
+  color:#0a1037;
+  font-family:'Doneeo Recruitment','DM Sans',Arial,sans-serif;
+  scroll-margin-top:24px;
+}
+.recruitment-copy { min-width:0; }
+.recruitment-copy h2 {
+  margin:0 0 12px;
+  font-family:inherit;
+  font-size:clamp(30px,4.1vw,52px);
+  font-weight:900;
+  letter-spacing:-.04em;
+  line-height:1.12;
+}
+.recruitment-copy p { margin:0 0 21px; max-width:510px; font-size:22px; line-height:1.35; }
+.recruitment-copy p strong { color:#009c8c; font-family:inherit; font-weight:800; white-space:nowrap; }
+.recruitment-join.primary {
+  min-height:54px;
+  padding:12px 30px;
+  gap:24px;
+  font-size:24px;
+  line-height:1.2;
+  font-weight:900;
+  background:#00a996;
+  box-shadow:none;
+}
+.recruitment-join.primary:hover { background:#008c80; }
+.recruitment-join:focus-visible { outline:3px solid #087e75; outline-offset:5px; }
+.recruitment-roles { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; min-width:0; }
+.recruitment-role { margin:0; min-width:0; overflow:hidden; border:1px solid #dce4ee; border-radius:17px; background:#fff; }
+.recruitment-role>img { display:block; width:100%; height:auto; aspect-ratio:8/5; object-fit:cover; object-position:center; }
+.recruitment-role figcaption { display:flex; align-items:center; gap:11px; padding:10px 12px 12px; }
+.recruitment-role figcaption>svg { width:33px; height:33px; flex:none; color:#00ae98; stroke-width:1.8; }
+.recruitment-role figcaption>div { min-width:0; }
+.recruitment-role strong { display:block; font-family:inherit; font-size:20px; line-height:1.15; font-weight:900; letter-spacing:-.025em; }
+.recruitment-role figcaption span { display:block; margin-top:3px; color:#25314f; font-size:14px; line-height:1.3; }
+@media(max-width:1100px) {
+  .recruitment-callout { padding:29px 25px; gap:25px; }
+  .recruitment-copy h2 { font-size:38px; }
+  .recruitment-copy p { font-size:16px; }
+  .recruitment-roles { gap:13px; }
+  .recruitment-role figcaption { padding:9px; gap:8px; }
+  .recruitment-role figcaption>svg { width:27px; height:27px; }
+  .recruitment-role strong { font-size:16px; }
+  .recruitment-role figcaption span { font-size:12px; }
+}
+@media(max-width:900px) {
+  .recruitment-callout { grid-template-columns:minmax(0,1fr); gap:24px; padding:28px; }
+  .recruitment-copy h2 { font-size:38px; }
+  .recruitment-copy p { max-width:590px; font-size:17px; }
+  .recruitment-line-break { display:none; }
+  .recruitment-roles { gap:18px; }
+  .recruitment-role figcaption { padding:12px; gap:12px; }
+  .recruitment-role figcaption>svg { width:33px; height:33px; }
+  .recruitment-role strong { font-size:20px; }
+  .recruitment-role figcaption span { font-size:14px; }
+}
+@media(max-width:520px) {
+  .recruitment-callout { padding:25px 18px; gap:23px; border-radius:22px; }
+  .recruitment-copy h2 { font-size:32px; margin-bottom:11px; }
+  .recruitment-copy p { font-size:16px; line-height:1.45; margin-bottom:19px; }
+  .recruitment-join.primary { min-height:49px; font-size:19px; padding:11px 26px; gap:20px; }
+  .recruitment-roles { gap:12px; }
+  .recruitment-role { border-radius:13px; }
+  .recruitment-role figcaption { padding:10px 9px 11px; }
+  .recruitment-role figcaption>svg { display:none; }
+  .recruitment-role strong { font-size:16px; }
+  .recruitment-role figcaption span { font-size:12px; }
+}
+@media(max-width:360px) {
+  .navbar .nav-inner { gap:12px; }
+  .navbar .brand img { width:125px; }
+  .navbar .nav-actions { gap:8px; }
+  .navbar .nav-get { padding-inline:11px; }
+  .recruitment-callout { padding-inline:14px; }
+  .recruitment-copy h2 { font-size:29px; }
+  .recruitment-role strong { font-size:14px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .recruitment-join.primary { transition:none; }
+}

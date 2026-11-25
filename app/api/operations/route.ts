@@ -100,6 +100,8 @@ async function advanceToFulfillment(db: D1Binding, input: WorkOrderInput, now: s
   });
 
   if (current.currentLayerId === "L02") {
+    const analysis = await store.getLatestAnalysis(current.workCaseId) as { planConfirmed?: boolean } | null;
+    if (analysis?.planConfirmed !== true) throw new Error("Confirm the job plan before choosing and ordering an option.");
     current = (await service.advanceLayer({
       commandKey: `work-order:${input.public_reference}:governance`,
       workCaseId: current.workCaseId,

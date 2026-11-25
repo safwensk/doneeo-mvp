@@ -25,6 +25,75 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  preview-container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Build the real preview image
+        run: docker build -f Dockerfile.preview -t doneeo-preview .
+      - name: Start an isolated preview with persistent test data
+        run: |
+          docker volume create doneeo-preview-ci
+          docker run -d --name doneeo-preview -p 3000:3000 \
+            -v doneeo-preview-ci:/data \
+            -e DONEEO_COOKIE_SECURE=false \
+            -e DONEEO_PREVIEW_EXPIRES_AT="$(node -p 'new Date(Date.now()+3600000).toISOString()')" \
+            doneeo-preview
+      - name: Check public access and authenticated native planning
+        run: node deploy/preview/smoke.mjs init
+      - name: Check persistence after replacing the container
+        run: |
+          docker rm -f doneeo-preview
+          docker run -d --name doneeo-preview -p 3000:3000 \
+            -v doneeo-preview-ci:/data \
+            -e DONEEO_COOKIE_SECURE=false \
+            -e DONEEO_PREVIEW_EXPIRES_AT="$(node -p 'new Date(Date.now()+3600000).toISOString()')" \
+            doneeo-preview
+          node deploy/preview/smoke.mjs resume
+      - name: Show failure diagnostics
+        if: failure()
+        run: docker logs --tail 100 doneeo-preview || true
+      - name: Clean up the test instance
+        if: always()
+        run: |
+          docker rm -f doneeo-preview || true
+          docker volume rm doneeo-preview-ci || true
+
+  customer-frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            customer-app/frontend/package-lock.json
+      - run: npm ci
+      - run: npm ci
+        working-directory: customer-app/frontend
+      - run: npm run build
+        working-directory: customer-app/frontend
+
+  customer-api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - run: mvn --batch-mode test
+        working-directory: customer-app/backend
+
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 20

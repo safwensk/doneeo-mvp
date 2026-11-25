@@ -144,6 +144,98 @@ test("dishwasher delivery and installation remains a composite work order", () =
   assert.ok(!result.questions.some(question => ["retailer_pickup_status", "dishwasher_connection_scope", "old_dishwasher"].includes(question.id)));
 });
 
+test("informal dishwasher pickup and installation asks for missing route and technical facts", () => {
+  const request = "i wantyou to pick up dishwasher and unstal it in to y appartement";
+  const result = plan(request);
+  assert.equal(result.sourceText, request);
+  assert.deepEqual(result.routeNodes, []);
+  assert.equal(result.rulesGate?.status, "needs_information");
+  const questionIds = result.questions.filter(question => question.required !== false).map(question => question.id);
+  assert.deepEqual(questionIds.slice(0, 4), ["pickup_address", "service_address", "stop_2_floor", "stop_2_elevator"]);
+  for (const id of ["dishwasher_model", "dishwasher_connection_scope", "dishwasher_power_connection", "dishwasher_parts", "old_dishwasher"]) {
+    assert.ok(questionIds.includes(id), id);
+  }
+  assert.ok(!questionIds.includes("old_dishwasher_removal"));
+  assert.ok(!questionIds.includes("dishwasher_details"));
+});
+
+test("a misspelled dishwasher pickup followed by a passive box request opens two task blocks before either is fully clarified", () => {
+  const request = "i want someone to pickup dishwasher form coscto enjou and bring it to my appartement and unstale it after this i have 10 boxes need to to be taken from my appartment to my garage in the bassment";
+  const result = plan(request);
+  assert.equal(result.sourceText, request);
+  assert.deepEqual(result.routeNodes, [{ location: "costco enjou", actions: ["Pick up dishwasher"] }]);
+  assert.deepEqual(result.taskBlocks?.map(block => [block.id, block.sequence, block.title]), [
+    ["dishwasher_pickup_installation", 1, "Pick up, deliver, and install the dishwasher"],
+    ["onsite_boxes", 2, "Carry 10 boxes from the apartment to the basement garage"],
+  ]);
+  assert.match(result.tasks[2], /install.*installation address/i);
+  assert.ok(result.questions.some(question => question.id === "service_address" && question.taskBlockId === "dishwasher_pickup_installation"));
+  assert.ok(!result.questions.some(question => question.id === "pickup_address"));
+  assert.deepEqual(result.questions.filter(question => question.taskBlockId === "onsite_boxes").map(question => question.id),
+    ["handling_access", "handling_size_weight", "handling_contents"]);
+  assert.equal(result.questions.slice(-3).every(question => question.taskBlockId === "onsite_boxes"), true);
+  const move = result.intelligence?.workstreams.find(stream => stream.phaseIds.includes("onsite_box_move"));
+  assert.deepEqual(move?.phaseIds, ["onsite_box_assess", "onsite_box_move", "onsite_box_finish"]);
+  assert.ok(!move?.resourceIds.includes("vehicle"));
+});
+
+test("confirmed apartment address builds two stops while the box path stays separate from the appliance access", () => {
+  const request = "Pick up a dishwasher from Costco Anjou, deliver it to my apartment and install it. After this, carry 10 boxes from my apartment to my basement garage down two flights.";
+  const simple = plan(request, { service_address: "200 Sample Road, Toronto, apartment 5" });
+  const heavy = plan(request, { service_address: "200 Sample Road, Toronto, apartment 5", handling_size_weight: "The heaviest box is 27 kg." });
+  assert.deepEqual(simple.routeNodes.map(node => node.location), ["Costco Anjou", "200 Sample Road, Toronto, apartment 5"]);
+  assert.ok(simple.questions.some(question => question.id === "stop_2_floor"));
+  assert.ok(!simple.questions.some(question => question.id === "handling_access"));
+  assert.ok(!heavy.questions.some(question => question.id === "handling_size_weight"));
+  const simpleCarry = simple.intelligence?.primitives.find(phase => phase.id === "onsite_box_move");
+  const heavyCarry = heavy.intelligence?.primitives.find(phase => phase.id === "onsite_box_move");
+  assert.ok(simpleCarry && heavyCarry && heavyCarry.unitMinutes > simpleCarry.unitMinutes);
+  assert.equal(heavyCarry.minimumCrew, 2);
+});
+
+test("mixed intake asks about the box carry first when the customer requests it first", () => {
+  const result = plan("Carry 10 boxes from my apartment to my basement garage first. Then pick up a dishwasher from Costco Anjou, deliver it to my apartment and install it.");
+  assert.deepEqual(result.taskBlocks?.map(block => block.id), ["onsite_boxes", "dishwasher_pickup_installation"]);
+  assert.equal(result.questions[0]?.taskBlockId, "onsite_boxes");
+});
+
+test("confirmed dishwasher locations build the route and an existing unit branches to disposition", () => {
+  const result = plan("Pick up a dishwasher and install it in my apartment.", {
+    pickup_address: "100 Example Avenue, Toronto",
+    service_address: "200 Sample Road, Toronto, apartment 5",
+    stop_2_floor: "Ground floor",
+    old_dishwasher: true,
+  });
+  assert.deepEqual(result.routeNodes.map(node => node.location), ["100 Example Avenue, Toronto", "200 Sample Road, Toronto, apartment 5"]);
+  const questionIds = result.questions.map(question => question.id);
+  assert.ok(questionIds.includes("old_dishwasher_removal"));
+  assert.ok(questionIds.includes("dishwasher_parts"));
+  assert.ok(!questionIds.some(id => ["pickup_address", "service_address", "stop_2_floor", "stop_2_elevator", "old_dishwasher"].includes(id)));
+});
+
+test("an incomplete installation address remains a question and a civic street name can repair it", () => {
+  const request = "Pick up a dishwasher from Costco Anjou and install it in my apartment.";
+  const incomplete = plan(request, { service_address: "my apartment" });
+  assert.equal(incomplete.routeNodes.length, 1);
+  assert.ok(incomplete.questions.some(question => question.id === "service_address"));
+  assert.equal(incomplete.intelligence?.estimate.ready, false);
+  const corrected = plan(request, { service_address: "12395 Roland Paradis" });
+  assert.equal(corrected.routeNodes.at(-1)?.location, "12395 Roland Paradis");
+  assert.ok(!corrected.questions.some(question => question.id === "service_address"));
+});
+
+test("a supplied installation address never answers the separate pickup question", () => {
+  const result = plan("Pick up a dishwasher and bring it to 200 Sample Road, Toronto, then install it there.");
+  assert.ok(result.questions.some(question => question.id === "pickup_address"));
+  assert.ok(!result.questions.some(question => question.id === "service_address"));
+});
+
+test("a delivery-only dishwasher request respects the explicit installation exclusion", () => {
+  const result = plan("Pick up a dishwasher and deliver it to my apartment. Do not install it.");
+  assert.ok(!result.intelligence?.domains?.some(domain => domain.id === "appliance_installation"));
+  assert.ok(!result.questions.some(question => ["dishwasher_parts", "dishwasher_connection_scope", "old_dishwasher"].includes(question.id)));
+});
+
 test("Costco refrigerator delivery uses item-specific intelligence without inventing installation", () => {
   const result = plan("Saturday at 10 a.m., pick up a fridge from Costco Anjou and deliver it to my apartment at 12385 Test Avenue.");
   const concepts = questionConcepts(result);
@@ -266,6 +358,56 @@ test("misspelled refrigerator and schedule are normalized before questions", () 
   assert.equal(result.scheduleWindow?.arrivalTime, "10:00 AM");
   assert.ok(result.items.some(item => /refrigerator/i.test(item)));
   assert.ok(!result.questions.some(question => /when|schedule|date|time/i.test(`${question.id} ${question.label}`)));
+});
+
+test("misspelled cleaning request retains the original words, address, and timing", () => {
+  const request = "Need somone clena my kithcen and 2 bathroms at 100 Example Avenue, Toronto tomorow at 10 a.m.";
+  const fallback = fallbackAnalysis(request);
+  const result = plan(request);
+  const questions = result.questions.map(question => question.id);
+
+  assert.equal(fallback.sourceText, request);
+  assert.equal(result.category, "cleaning");
+  assert.deepEqual(extractStreetAddresses(request), ["100 Example Avenue"]);
+  assert.deepEqual(fallback.stops, ["100 Example Avenue"]);
+  assert.equal(result.routeNodes.length, 0);
+  assert.equal(result.scheduleWindow?.arrivalLabel, "Tomorrow at 10:00 AM");
+  assert.ok(questions.includes("cleaning_depth"));
+  assert.ok(!questions.some(id => ["cleaning_scope", "service_address", "item", "schedule"].includes(id)));
+});
+
+test("fallback cleaning asks about unknown areas and level without suppressing material product questions", () => {
+  const draft = fallbackAnalysis("Please send someone to clean at 100 Example Avenue on Friday at 10 a.m.");
+  const questions = [
+    ...draft.questions,
+    { id: "product_instructions", label: "What cleaning products must be avoided on the marble?", type: "text" as const, required: true },
+  ];
+  const result = enforceSafety({ ...draft, questions });
+  const ids = result.questions.map(question => question.id);
+
+  assert.ok(ids.includes("cleaning_scope"));
+  assert.ok(ids.includes("cleaning_depth"));
+  assert.ok(ids.includes("product_instructions"));
+  const specified = fallbackAnalysis("I need a standard clean of the kitchen at 100 Example Avenue on Friday at 10 a.m.");
+  assert.ok(!specified.questions.some(question => ["cleaning_scope", "cleaning_depth"].includes(question.id)));
+});
+
+test("known arrival time does not answer the leak history or a completion deadline", () => {
+  const original = fallbackAnalysis("Repair the leak under my kitchen sink at 100 Example Avenue on Friday at 10 a.m.");
+  const questions = [
+    { id: "arrival_window", label: "What arrival window works best?", type: "text" as const, required: true },
+    { id: "leak_start", label: "When did the leak start?", type: "text" as const, required: true },
+    { id: "deadline", label: "What time must the work be completed?", type: "text" as const, required: true },
+  ];
+  const result = enforceSafety({ ...original, questions });
+
+  assert.deepEqual(result.questions.map(question => question.id), ["leak_start", "deadline"]);
+});
+
+test("a vague request opens with a scope question instead of assuming there is a task", () => {
+  const result = plan("Could someone help me with something?");
+  assert.equal(result.questions[0]?.id, "task_details");
+  assert.equal(result.rulesGate?.status, "needs_information");
 });
 
 test("supplied refrigerator facts remove only the questions they answer", () => {

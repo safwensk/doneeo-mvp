@@ -1,6 +1,8 @@
-import { derivePreparationStart, enforceSafety, fallbackAnalysis, type JobCategory } from "../../../lib/planner";
+import { confirmedDishwasherAddress, derivePreparationStart, dishwasherAddressIds, enforceSafety, fallbackAnalysis, isCompositeDishwasherRequest, type JobCategory, type PlannerAnalysis } from "../../../lib/planner";
+import { attachPlanEdits, planEditFor, revisePlanSource, revisedBoxDestination } from "../../../lib/customer-plan-review";
 import { applyDoneeoRulesGate } from "../../../lib/rules-gate";
 import { applyCustomerAnswers, buildJobIntelligence } from "../../../lib/job-intelligence";
+import { canContinueIntake, canReviewSavedPlan, isReadyForPlanReview, rememberClarifications, retainKnownIntakeFacts, savedPlanningFallback } from "../../../lib/planning-continuity";
 import { architecturePosition } from "../../../lib/canonical-architecture";
 import { augmentWithHouseholdKnowledge } from "../../../lib/work-ontology";
 import {
@@ -18,10 +20,17 @@ import {
 export const runtime = "edge";
 
 const allowedCategories = new Set<JobCategory>(["moving", "installation", "cleaning", "elder_support", "general"]);
+const architectDeadlineMs = 25_000;
+const firstQuestionDeadlineMs = 5_000;
+const reviewDeadlineMs = 3_500;
 
 const systemPrompt = `You are Doneeo's universal job architect for real-world household and physical services. Understand the whole customer outcome before classifying it; an incidental word such as "deliver" must not turn grocery support into moving. Treat category as only a primary display label, never as a limit on the work order. Decompose every request into all independent service domains and dependent outcomes it contains: physical handling and delivery, organizing/decluttering, cleaning, appliance installation, plumbing, electrical, painting, lawn/garden work, mounting, furniture assembly, general maintenance and practical elder support. A single request may require several domains and several separately eligible executors. Preserve every fact the customer already gave. Moving items between rooms, floors, a basement, garage or attic within the same property is one on-site handling location: do not invent driving stops, travel time, vehicle access, pickup/delivery questions or recurrence. Recurrence is true only when the customer explicitly states a repeating cadence.
 
 You are not limited to the domains listed above or to any fixed catalog of job types — reason about the actual request the way a competent human dispatcher would, including situations you have not been given explicit instructions for. If a request describes property damage, water, mold, fire, structural, pest, or any situation where severity or scope genuinely cannot be judged from the words given, do not guess a category, team size or price to fill the schema. Instead, ask real diagnostic questions specific to that exact situation — the kind a professional would actually need answered to assess it (for water: how much, how long ago, source stopped or ongoing, any smell, which materials are affected; adapt this pattern to whatever the actual hazard is, do not reuse this example verbatim) — and state plainly in summary that scope will be confirmed once those answers are in. An honest "I need to understand this better before I can plan it" is correct behavior, not a failure to fill out the form.
+
+Interpret spelling mistakes, informal grammar and incomplete sentences in context without asking for a rewrite. Preserve names, addresses, numbers and stated constraints. If two plausible readings would change the work, ask one focused question that distinguishes them. A partial answer to a combined question establishes only what was actually stated. Keep any remaining detail that matters to scope, safety, access, price or matching; do not mark it as confirmed from an assumption.
+
+For a dishwasher pickup and installation, separate the pickup address from the installation address. A request can require both even before either location is supplied. Ask for missing apartment floor and elevator access, the model or fit information, the existing water, drain and electrical connections, the installation kit, and whether there is an existing appliance and how it should be handled. Preserve this checklist regardless of whether the origin is a retailer or another pickup point. Never invent an address or treat a technical assumption as confirmed.
 
 Return JSON only with: category, title, summary, safetyNote, tasks, stops, routeNodes, scheduleWindow, preparation, items, customerCanHelp, extractedAnswers, questions, equipment, recurrence, recommendedTeamSize, skillRequirements, executionSteps, understoodFacts, and estimate. routeNodes is the ordered execution route as [{location,actions}], where actions lists every pickup, delivery, handoff or service performed at that exact location. scheduleWindow is {dateLabel,arrivalTime,deadlineTime,arrivalLabel,deadlineLabel}; keep the arrival/start commitment separate from the completion deadline. If a request says “Tomorrow at 9 a.m.” and “finish before 1 p.m.”, arrivalTime is 9:00 AM and deadlineTime is 1:00 PM—the deadline must never replace the start. When “then take the old item to X” follows a delivery at Y, Y has both “Deliver new item” and “Pick up old item,” while X has “Deliver old item.” Preserve this chain even when the customer uses pronouns such as it or them.
 
@@ -34,7 +43,18 @@ For recurring support, useful missing details may include exact address, preferr
 function normalizeAnalysis(text: string, fallback: ReturnType<typeof fallbackAnalysis>) {
   const parsed = JSON.parse(text.replace(/^```json\s*|\s*```$/g, ""));
   const category = allowedCategories.has(parsed.category) ? parsed.category : fallback.category;
-  const extracted = parsed.extractedAnswers && typeof parsed.extractedAnswers === "object" ? { ...fallback.extractedAnswers, ...parsed.extractedAnswers } : fallback.extractedAnswers;
+  const modelAnswers = parsed.extractedAnswers && typeof parsed.extractedAnswers === "object" ? parsed.extractedAnswers : {};
+  const extracted = { ...fallback.extractedAnswers, ...modelAnswers };
+  const dishwasherPickupAndInstall = isCompositeDishwasherRequest(fallback.sourceText);
+  if (dishwasherPickupAndInstall) {
+    // A model draft cannot establish missing route or installation facts.
+    // The intake rules and confirmed replies supply them during the audit.
+    for (const id of Object.keys(extracted)) {
+      if (!/^(?:pickup_address$|service_address$|delivery_address$|stop_\d+_|dishwasher_|old_dishwasher|retailer_|building_permission$)/.test(id)) continue;
+      if (Object.hasOwn(fallback.extractedAnswers, id)) extracted[id] = fallback.extractedAnswers[id];
+      else delete extracted[id];
+    }
+  }
   const customerCanHelp = typeof parsed.customerCanHelp === "boolean" ? parsed.customerCanHelp : fallback.customerCanHelp;
   if (customerCanHelp !== null) extracted.customer_help = customerCanHelp;
   const modelRouteNodes = Array.isArray(parsed.routeNodes) ? parsed.routeNodes
@@ -45,7 +65,8 @@ function normalizeAnalysis(text: string, fallback: ReturnType<typeof fallbackAna
       actions: Array.isArray(node.actions) ? node.actions.filter((action: unknown) => typeof action === "string").slice(0, 6).map((action: string) => action.slice(0, 180)) : [],
     }))
     .filter((node: { location: string; actions: string[] }) => node.location && node.actions.length) : [];
-  const routeNodes = fallback.routeNodes.length >= 2 ? fallback.routeNodes : modelRouteNodes.length ? modelRouteNodes : fallback.routeNodes;
+  const routeNodes = dishwasherPickupAndInstall || fallback.routeNodes.length >= 2
+    ? fallback.routeNodes : modelRouteNodes.length ? modelRouteNodes : fallback.routeNodes;
   const parsedSchedule = parsed.scheduleWindow && typeof parsed.scheduleWindow === "object" ? {
     dateLabel: typeof parsed.scheduleWindow.dateLabel === "string" ? parsed.scheduleWindow.dateLabel.slice(0, 60) : "Requested date",
     arrivalTime: typeof parsed.scheduleWindow.arrivalTime === "string" ? parsed.scheduleWindow.arrivalTime.slice(0, 30) : "",
@@ -69,7 +90,7 @@ function normalizeAnalysis(text: string, fallback: ReturnType<typeof fallbackAna
   // Arrival is a commitment to the customer. Preparation is scheduled backward
   // from it in code, never left to the model to arrive at by itself.
   const scheduleWithPreparation = derivePreparationStart(scheduleWindow, preparation);
-  return enforceSafety({
+  return {
     category,
     title: typeof parsed.title === "string" ? parsed.title.slice(0, 90) : fallback.title,
     summary: typeof parsed.summary === "string" ? parsed.summary.slice(0, 500) : fallback.summary,
@@ -84,7 +105,7 @@ function normalizeAnalysis(text: string, fallback: ReturnType<typeof fallbackAna
     })) : fallback.questions,
     extractedAnswers: extracted,
     tasks: Array.isArray(parsed.tasks) ? parsed.tasks.filter((v: unknown) => typeof v === "string").slice(0, 8) : fallback.tasks,
-    stops: routeNodes.length ? routeNodes.map((node: { location: string }) => node.location) : Array.isArray(parsed.stops) ? parsed.stops.filter((v: unknown) => typeof v === "string").slice(0, 8) : fallback.stops,
+    stops: dishwasherPickupAndInstall ? fallback.stops : routeNodes.length ? routeNodes.map((node: { location: string }) => node.location) : Array.isArray(parsed.stops) ? parsed.stops.filter((v: unknown) => typeof v === "string").slice(0, 8) : fallback.stops,
     routeNodes,
     scheduleWindow: scheduleWithPreparation,
     preparation,
@@ -106,18 +127,27 @@ function normalizeAnalysis(text: string, fallback: ReturnType<typeof fallbackAna
     estimate: parsed.estimate && typeof parsed.estimate === "object" ? { serviceMinutesPerVisit: typeof parsed.estimate.serviceMinutesPerVisit === "number" ? Math.max(15, Math.min(600, Math.round(parsed.estimate.serviceMinutesPerVisit))) : fallback.estimate.serviceMinutesPerVisit, travelMinutes: typeof parsed.estimate.travelMinutes === "number" ? Math.max(0, Math.min(240, Math.round(parsed.estimate.travelMinutes))) : fallback.estimate.travelMinutes, people: typeof parsed.estimate.people === "number" ? Math.max(1, Math.min(4, Math.round(parsed.estimate.people))) : fallback.estimate.people, recurringVisits: typeof parsed.estimate.recurringVisits === "string" ? parsed.estimate.recurringVisits.slice(0, 80) : fallback.estimate.recurringVisits, materialsSummary: typeof parsed.estimate.materialsSummary === "string" ? parsed.estimate.materialsSummary.slice(0, 240) : fallback.estimate.materialsSummary } : fallback.estimate,
     sourceText: fallback.sourceText,
     audit: fallback.audit,
-  });
+  };
 }
 
-function deterministicAudit(analysis: ReturnType<typeof fallbackAnalysis>, pipeline = "RULE-BASED PLANNER → RULES GATE", customerAnswers: Record<string, string | boolean> = {}) {
+function deterministicAudit(
+  analysis: ReturnType<typeof fallbackAnalysis>,
+  pipeline: string,
+  customerAnswers: Record<string, string | boolean>,
+  history: ReturnType<typeof rememberClarifications>,
+) {
   const issues: string[] = [...(analysis.audit?.issues || [])];
   if (!analysis.tasks.length) issues.push("No execution tasks were produced");
   if (!analysis.equipment.length && analysis.category !== "elder_support") issues.push("No equipment or materials were identified");
   if (analysis.recommendedTeamSize < 1 || analysis.recommendedTeamSize > 4) issues.push("Team size is outside operating limits");
-  const answered = applyCustomerAnswers(augmentWithHouseholdKnowledge(analysis), customerAnswers);
+  const draft = isCompositeDishwasherRequest(analysis.sourceText)
+    ? enforceSafety({ ...analysis, extractedAnswers: { ...analysis.extractedAnswers, ...customerAnswers } })
+    : analysis;
+  const known = retainKnownIntakeFacts(augmentWithHouseholdKnowledge(draft), customerAnswers, history);
+  const answered = applyCustomerAnswers(known, customerAnswers);
   const normalized = enforceSafety({ ...answered, recommendedTeamSize: Math.max(1, Math.min(4, answered.recommendedTeamSize)) });
   const firstGate = applyDoneeoRulesGate(normalized);
-  const finalAnalysis = applyDoneeoRulesGate(enforceSafety(firstGate));
+  const finalAnalysis = applyDoneeoRulesGate(retainKnownIntakeFacts(enforceSafety(firstGate), customerAnswers, history));
   issues.push(...finalAnalysis.rulesGate!.issues.filter(issue => issue.severity !== "information").map(issue => issue.title));
   return buildJobIntelligence({ ...finalAnalysis, audit: {
     status: analysis.audit?.status || "deterministic" as const,
@@ -167,6 +197,7 @@ async function claudeFinalCheck(userRequest: string, intelligence: ReturnType<ty
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
+      signal: AbortSignal.timeout(reviewDeadlineMs),
       headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
       body: JSON.stringify({
         model: process.env.CLAUDE_MODEL || "claude-sonnet-5",
@@ -198,6 +229,7 @@ async function grokFinalCheck(userRequest: string, intelligence: ReturnType<type
   try {
     const response = await fetch("https://api.x.ai/v1/chat/completions", {
       method: "POST",
+      signal: AbortSignal.timeout(reviewDeadlineMs),
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: process.env.GROK_MODEL || "grok-4.5",
@@ -225,6 +257,7 @@ async function openAIFinalCheck(userRequest: string, intelligence: ReturnType<ty
   try {
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
+      signal: AbortSignal.timeout(reviewDeadlineMs),
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-5-mini",
@@ -291,7 +324,7 @@ async function describeHttpFailure(response: Response) {
   return `HTTP ${response.status}${apiMessage ? ` — ${String(apiMessage).slice(0, 160)}` : ""}`;
 }
 
-async function analyzeWithGemini(userRequest: string, fallback: ReturnType<typeof fallbackAnalysis>) {
+async function analyzeWithGemini(userRequest: string, fallback: ReturnType<typeof fallbackAnalysis>, deadlineMs: number) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return null;
   const model = process.env.GEMINI_MODEL || "gemini-3.6-flash";
@@ -303,6 +336,7 @@ async function analyzeWithGemini(userRequest: string, fallback: ReturnType<typeo
   const thinkingLevel = process.env.GEMINI_THINKING_LEVEL || "medium";
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
     method: "POST",
+    signal: AbortSignal.timeout(deadlineMs),
     headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: systemPrompt }] },
@@ -357,6 +391,11 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
 
   const requestedWorkCaseId = cleanIdentifier(body.workCaseId);
+  const confirmingPlan = body.confirmPlan === true;
+  const editingPlan = body.planEdit !== undefined;
+  if ((confirmingPlan || editingPlan) && (!requestedWorkCaseId || body.resume === true || body.answers || (confirmingPlan && editingPlan))) {
+    return Response.json({ error: "Send one change or confirmation for the current plan." }, { status: 400 });
+  }
   const clientRequest =
     typeof body.request === "string"
       ? body.request.trim().slice(0, 2000)
@@ -415,6 +454,7 @@ export async function POST(request: Request) {
       analysis,
       answers,
       mode: "read-only-resume",
+      planConfirmed: (analysis as PlannerAnalysis).planConfirmed === true,
       architectNotes: [],
       workCaseId: current.workCaseId,
       jobOrderId: current.jobOrderId,
@@ -524,9 +564,34 @@ export async function POST(request: Request) {
         : clientRequest) || clientRequest;
   }
 
-  const storedAnswers = requestedWorkCaseId
-    ? await workCaseStore.getConfirmedAnswers(requestedWorkCaseId)
-    : {};
+  const [storedAnswers, previousSnapshot] = requestedWorkCaseId
+    ? await Promise.all([
+        workCaseStore.getConfirmedAnswers(requestedWorkCaseId),
+        workCaseStore.getLatestAnalysis(requestedWorkCaseId),
+      ])
+    : [{}, null] as const;
+
+  if (confirmingPlan) {
+    const reference = workCase.current.requirementContractRef;
+    if (!reference) return Response.json({ error: "Complete and review the current job plan before confirming it." }, { status: 409 });
+    const analysis = await workCaseStore.confirmCurrentPlan(workCase.workCaseId, expectedAnalysisVersion);
+    if (!analysis) return Response.json({ error: "Complete and review the current job plan before confirming it." }, { status: 409 });
+    return Response.json({
+      analysis, answers: storedAnswers, mode: "plan-confirmed", architectNotes: [],
+      workCaseId: workCase.workCaseId, jobOrderId: workCase.jobOrderId,
+      state: workCase.state, stateVersion: workCase.stateVersion,
+      currentLayerId: workCase.currentLayerId, architecture: architecturePosition(workCase.currentLayerId),
+      correlationId, requirementReady: true, planConfirmed: true, requirementContractRef: reference,
+      requirementContractVersion: Number(reference.slice(reference.lastIndexOf("@") + 1)),
+    });
+  }
+
+  const newEdit = editingPlan && planEditFor(previousSnapshot as PlannerAnalysis | null, body.planEdit);
+  if (editingPlan && (!newEdit || workCase.state !== "REQUIREMENT_READY" || workCase.currentLayerId !== "L02")) {
+    return Response.json({ error: "Open the current plan and enter a change of 3 to 300 characters for that step." }, { status: 400 });
+  }
+  const previousEdits = (previousSnapshot as PlannerAnalysis | null)?.planEdits ?? [];
+  const planEdits = newEdit ? [...previousEdits.filter(edit => edit.stepId !== newEdit.stepId), newEdit] : previousEdits;
 
   const submittedAnswers =
     body.answers && typeof body.answers === "object"
@@ -535,7 +600,7 @@ export async function POST(request: Request) {
             ([key, value]) =>
               /^[a-z0-9_]{1,64}$/i.test(key) &&
               (typeof value === "boolean" ||
-                (typeof value === "string" && value.trim().length <= 300)),
+                (typeof value === "string" && value.trim().length > 0 && value.trim().length <= 300)),
           ),
         ) as Record<string, string | boolean>
       : {};
@@ -545,18 +610,48 @@ export async function POST(request: Request) {
     ...submittedAnswers,
   };
 
+  const confirmedScope = customerAnswers.task_details;
+  const scopeClarification = typeof confirmedScope === "string" ? confirmedScope.trim() : "";
+  const clarifiedRequest = revisePlanSource(scopeClarification
+    ? `${authoritativeRequest}\n\n${scopeClarification}`
+    : authoritativeRequest, planEdits);
+  let reopenedLocation = false;
+  if (isCompositeDishwasherRequest(clarifiedRequest)) {
+    for (const id of dishwasherAddressIds) {
+      if (!Object.hasOwn(customerAnswers, id) || confirmedDishwasherAddress(id, customerAnswers[id])) continue;
+      if (Object.hasOwn(submittedAnswers, id)) {
+        const error = id === "pickup_address"
+          ? "Enter the pickup street address, or the store name and branch."
+          : "Enter the delivery building number and street name. Add the unit number if applicable.";
+        return Response.json({ error }, { status: 422 });
+      }
+      delete customerAnswers[id];
+      reopenedLocation = true;
+    }
+  }
+  if (newEdit && revisedBoxDestination(newEdit) !== revisedBoxDestination(previousEdits.find(edit => edit.stepId === newEdit.stepId))) {
+    // A different destination changes the path and equipment requirements.
+    delete customerAnswers.handling_access;
+    delete customerAnswers.handling_destination;
+  }
+  const savedFallback = savedPlanningFallback(previousSnapshot, clarifiedRequest);
+  const history = rememberClarifications(savedFallback, customerAnswers);
+  const labels = new Map(history.map(question => [question.id, question.label]));
+
   const answerLines = Object.entries(customerAnswers).map(
     ([key, value]) =>
-      `${key}: ${
+      `${labels.has(key) ? `${labels.get(key)} [${key}]` : key}: ${
         typeof value === "boolean" ? (value ? "Yes" : "No") : value
       }`,
   );
 
-  const planningRequest = answerLines.length
-    ? `${authoritativeRequest}\n\nCUSTOMER ANSWERS COLLECTED AFTER THE ORIGINAL REQUEST:\n${answerLines.join("\n")}\nTreat these as confirmed facts. Do not ask them again. Recalculate the job and ask only the next missing operational details.`
-    : authoritativeRequest;
+  const answerContext = answerLines.length
+    ? `\n\nCUSTOMER ANSWERS COLLECTED AFTER THE ORIGINAL REQUEST:\n${answerLines.join("\n")}\nPreserve what each answer actually confirms. Do not repeat answered details under any wording or ID. Keep the IDs of remaining questions unless narrowing a partially answered question to the detail still needed.` : "";
+  const reviewContext = planEdits.length
+    ? `\n\nCUSTOMER REVISIONS TO THE JOB PLAN:\n${planEdits.map(edit => `${edit.title}: ${edit.revision}`).join("\n")}\nApply each change to its step. Preserve the other requested outcomes, their order and any required safety and completion checks.` : "";
+  const planningRequest = `${clarifiedRequest}${answerContext}${reviewContext}`;
 
-  const fallback = fallbackAnalysis(authoritativeRequest);
+  const fallback = fallbackAnalysis(clarifiedRequest);
 
   const architectNotes: string[] = [];
   const noteFailure = (name: string, error: unknown) => {
@@ -567,46 +662,81 @@ export async function POST(request: Request) {
     );
   };
 
-  let analysis: ReturnType<typeof fallbackAnalysis> = fallback;
-  let pipeline = "RULE-BASED PLANNER";
-  let mode = "safe-fallback";
+  const stored = storedAnswers as Record<string, string | boolean>;
+  const changed = Object.fromEntries(Object.entries(submittedAnswers).filter(([key, value]) => stored[key] !== value));
+  // A reply that defines the work must reach the fallback planner too.
+  const recheckingPlan = Boolean(requestedWorkCaseId) && !newEdit && Object.keys(submittedAnswers).length === 0;
+  const refreshRuleDraft = recheckingPlan
+    && savedFallback?.audit.pipeline?.startsWith("RULE-BASED PLANNER");
+  const editChangesScope = newEdit && clarifiedRequest !== (previousSnapshot as PlannerAnalysis | null)?.sourceText;
+  const reuseSavedPlan = changed.task_details === undefined && !refreshRuleDraft && !editChangesScope ? savedFallback : null;
+  const savedIntelligence = reuseSavedPlan && deterministicAudit(
+    reuseSavedPlan, "SAVED PLAN CONTINUITY → RULES GATE → JOB INTELLIGENCE", customerAnswers, history,
+  );
+  const continueQueue = !newEdit && savedIntelligence && canContinueIntake(savedIntelligence, reuseSavedPlan, changed);
+  const reviewSaved = !newEdit && savedIntelligence && canReviewSavedPlan(savedIntelligence, reuseSavedPlan, changed);
+  const freshIntelligence = !requestedWorkCaseId || (recheckingPlan && !savedIntelligence) ? deterministicAudit(
+    fallback, "RULE-BASED PLANNER → RULES GATE → JOB INTELLIGENCE", customerAnswers, history,
+  ) : null;
+  const checkedDraft = savedIntelligence || freshIntelligence;
+  const recheckLocally = !newEdit && (recheckingPlan || reopenedLocation) && checkedDraft
+    && (isReadyForPlanReview(checkedDraft) || checkedDraft.questions.some(question => question.required !== false));
+  const useCheckedDraft = continueQueue || reviewSaved || recheckLocally;
+  const firstIntake = !requestedWorkCaseId ? freshIntelligence : null;
+  const domains = firstIntake?.intelligence?.domains;
+  // Only shorten the wait when the rules can already ask a focused question.
+  // Changes the rules cannot resolve still give the architect its full budget.
+  const canAskEarly = firstIntake?.rulesGate?.status === "needs_information"
+    && firstIntake.rulesGate.riskLevel === "standard"
+    && domains?.length === 1
+    && domains[0].id !== "general_maintenance"
+    && firstIntake.questions.some(question => question.required !== false
+      && !["service_address", "schedule", "task_details"].includes(question.id))
+    && !/\b(?:damage[d]?|flood\w*|leak\w*|mou?ld|broken|smoke|urgent|emergency|not sure)\b/i.test(authoritativeRequest);
+  let analysis: ReturnType<typeof fallbackAnalysis> = reuseSavedPlan || fallback;
+  let pipeline = reuseSavedPlan ? "SAVED PLAN CONTINUITY" : "RULE-BASED PLANNER";
+  let mode = continueQueue ? "saved-plan-intake" : reviewSaved ? "saved-plan-review"
+    : recheckLocally ? "plan-readiness-check" : reuseSavedPlan ? "saved-plan-fallback" : "safe-fallback";
 
-  if (!process.env.GEMINI_API_KEY) {
-    architectNotes.push("Gemini skipped: GEMINI_API_KEY not set");
-  }
-
-  try {
-    const geminiAnalysis = await analyzeWithGemini(planningRequest, fallback);
-    if (geminiAnalysis) {
-      analysis = geminiAnalysis;
-      pipeline = "GEMINI ARCHITECT";
-      mode = "gemini-architect";
+  if (!useCheckedDraft) {
+    if (!process.env.GEMINI_API_KEY) architectNotes.push("Gemini skipped: GEMINI_API_KEY not set");
+    try {
+      const geminiAnalysis = await analyzeWithGemini(
+        planningRequest, fallback, canAskEarly ? firstQuestionDeadlineMs : architectDeadlineMs,
+      );
+      if (geminiAnalysis) {
+        analysis = geminiAnalysis;
+        pipeline = "GEMINI ARCHITECT";
+        mode = "gemini-architect";
+      }
+    } catch (error) {
+      noteFailure("Gemini", error);
     }
-  } catch (error) {
-    noteFailure("Gemini", error);
   }
 
-  const intelligence = deterministicAudit(
+  const carriedIntelligence = useCheckedDraft ? checkedDraft : mode === "safe-fallback" ? firstIntake : null;
+  const intelligence = attachPlanEdits(carriedIntelligence ?? deterministicAudit(
     analysis,
     `${pipeline} → RULES GATE → JOB INTELLIGENCE`,
     customerAnswers,
-  );
+    history,
+  ), planEdits);
 
-  const finalChecked = await runIndependentValidation(
-    planningRequest,
-    intelligence,
-  );
+  // Review the completed intake, not each question on the way there.
+  const finalChecked = isReadyForPlanReview(intelligence)
+    ? await runIndependentValidation(planningRequest, intelligence)
+    : intelligence;
 
   const withDiagnostics =
-    mode === "safe-fallback" && architectNotes.length
+    mode.includes("fallback") && architectNotes.length
       ? {
           ...finalChecked,
           audit: {
             ...finalChecked.audit,
-            issues: [
+            issues: Array.from(new Set([
               ...(finalChecked.audit?.issues || []),
               ...architectNotes,
-            ],
+            ])),
           },
         }
       : finalChecked;
@@ -624,8 +754,10 @@ export async function POST(request: Request) {
 
     return Response.json({
       analysis: withDiagnostics,
-      mode: `${mode}+rules-gate+job-intelligence+independent-validation`,
+      answers: customerAnswers,
+      mode: `${mode}+rules-gate+job-intelligence${finalChecked !== intelligence ? "+independent-validation" : ""}`,
       architectNotes,
+      planConfirmed: false,
       workCaseId: control.workCaseId,
       jobOrderId: control.jobOrderId,
       state: control.state,

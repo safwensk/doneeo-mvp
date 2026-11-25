@@ -1,0 +1,135 @@
+@font-face {
+  font-family: 'Doneeo Help';
+  src: url('/fonts/dmsans-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400 1000;
+  font-display: swap;
+}
+
+.customer-help {
+  margin-top: 36px;
+  scroll-margin-top: 24px;
+  color: #0a1037;
+  font-family: 'Doneeo Help', 'DM Sans', Arial, sans-serif;
+}
+
+.customer-help h2,
+.customer-help h3,
+.customer-help h4 {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 900;
+  letter-spacing: -.035em;
+  line-height: 1.12;
+}
+
+.customer-help h2 { font-size: clamp(30px, 4.05vw, 49px); }
+.customer-help h2 em { color: #007d73; }
+.customer-help h3 { font-size: clamp(24px, 2.55vw, 34px); }
+.customer-help h4 { font-size: clamp(18px, 1.9vw, 24px); }
+.customer-help p { margin: 0; line-height: 1.42; }
+.customer-help-heading { margin-bottom: 22px; }
+.customer-help-heading p { margin-top: 6px; font-size: clamp(16px, 2vw, 23px); }
+
+.customer-help-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.customer-help-needs,
+.customer-help-people { min-width: 0; border-radius: 18px; }
+.customer-help-needs { border: 1px solid #d6e2e8; padding: 18px 12px 12px; }
+.customer-help-needs > h3 { margin: 0 8px 20px; }
+.customer-help-people { padding: 19px 18px 13px; background: #e8f9f5; }
+.customer-help-people > h3 { margin-bottom: 15px; }
+.customer-help ul { list-style: none; margin: 0; padding: 0; }
+
+.customer-help-examples {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.customer-help-examples > li {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #d6e2e8;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.customer-help img { display: block; width: 100%; height: auto; object-fit: cover; }
+.customer-help-examples img { aspect-ratio: 5 / 4; }
+.customer-help-examples li > div { padding: 13px 14px 17px; }
+.customer-help-examples h4 { min-height: 2.24em; margin-bottom: 5px; }
+.customer-help-examples p,
+.customer-help-providers p { font-size: 16px; }
+
+.customer-help-providers > li {
+  display: grid;
+  grid-template-columns: minmax(0, .36fr) minmax(0, .64fr);
+  align-items: center;
+  gap: 15px;
+  padding-block: 11px;
+}
+
+.customer-help-providers > li + li { border-top: 1px solid #c9e2df; }
+.customer-help-providers img { aspect-ratio: 8 / 5; border-radius: 12px; }
+.customer-help-providers p { margin-top: 4px; }
+
+.customer-help-callout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 20px;
+  padding: 17px 19px 17px 26px;
+  border-radius: 18px;
+  background: #eaf9f6;
+}
+
+.customer-help-callout p { max-width: 68ch; font-size: 17px; }
+.customer-help-callout button {
+  flex: none;
+  min-height: 48px;
+  gap: 12px;
+  padding: 10px 19px;
+  background: #00837b;
+  box-shadow: none;
+  font: 850 16px/1.3 'Doneeo Help', 'DM Sans', Arial, sans-serif;
+  white-space: normal;
+}
+
+.customer-help-callout button svg { flex: none; }
+.customer-help-callout button:focus-visible { outline: 3px solid #075f58; outline-offset: 4px; }
+
+@media (max-width: 960px) {
+  .customer-help-layout { grid-template-columns: 1fr; }
+  .customer-help-people { padding-inline: 20px; }
+  .customer-help-providers > li { grid-template-columns: 132px minmax(0, 1fr); }
+  .customer-help-callout { flex-wrap: wrap; gap: 13px; }
+}
+
+@media (max-width: 620px) {
+  .customer-help { margin-top: 30px; }
+  .customer-help-heading { margin-bottom: 16px; }
+  .customer-help-examples { grid-template-columns: 1fr; }
+  .customer-help-examples > li { display: grid; grid-template-columns: 34% minmax(0, 1fr); }
+  .customer-help-examples img { height: 100%; min-height: 100px; }
+  .customer-help-examples li > div { padding: 12px; }
+  .customer-help-examples h4 { min-height: 0; }
+  .customer-help-examples p,
+  .customer-help-providers p { font-size: 14px; }
+  .customer-help-needs > h3 { margin-bottom: 14px; }
+  .customer-help-people { padding: 16px 14px 8px; }
+  .customer-help-people > h3 { margin-bottom: 7px; }
+  .customer-help-providers > li { grid-template-columns: 31% minmax(0, 1fr); gap: 12px; }
+  .customer-help-callout { padding: 17px 15px; }
+  .customer-help-callout p { font-size: 15px; }
+  .customer-help-callout button { max-width: 100%; font-size: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customer-help-callout button { transition: none; transform: none; }
+}

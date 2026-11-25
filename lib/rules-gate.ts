@@ -1,4 +1,4 @@
-import { extractStreetAddresses, type PlannerAnalysis, type PlannerQuestion, type RulesGateDomain, type RulesGateIssue, type RulesGateResult } from "./planner";
+import { extractStreetAddresses, isCompositeDishwasherRequest, normalizeIntakeForInference, type PlannerAnalysis, type PlannerQuestion, type RulesGateDomain, type RulesGateIssue, type RulesGateResult } from "./planner";
 
 const domainLabels: Record<RulesGateDomain, string> = {
   request: "Request integrity",
@@ -35,7 +35,7 @@ function uniqueStrings(values: string[]) {
 }
 
 export function applyDoneeoRulesGate(input: PlannerAnalysis): PlannerAnalysis {
-  const source = input.sourceText.toLowerCase();
+  const source = normalizeIntakeForInference(input.sourceText).toLowerCase();
   const answers = input.extractedAnswers || {};
   const questions = [...input.questions];
   const issues: RulesGateIssue[] = [];
@@ -73,12 +73,16 @@ export function applyDoneeoRulesGate(input: PlannerAnalysis): PlannerAnalysis {
     addIssue({ code: "request.prohibited", domain: "request", severity: "block", title: "Request cannot be fulfilled", detail: "The described activity is unlawful or cannot be safely authorized through Doneeo." });
   }
 
-  const mixedApplianceInstallation = /dish\s*washer|stove|range\b|oven|cooker|refrigerator|fridge|freezer|washing machine|washer|dryer|appliance/i.test(source) && /\b(?:install|instal|connect|hook\s*up|fit|set\s*up|commission)\b/i.test(source) && (input.routeNodes.length > 1 || /\b(?:pick\s*up|deliver|from|to)\b/i.test(source));
+  const mixedApplianceInstallation = /dish\s*washer|stove|range\b|oven|cooker|refrigerator|fridge|freezer|washing machine|washer|dryer|appliance/i.test(source)
+    && /\b(?:install|instal|connect|hook\s*up|fit|set\s*up|commission)\b/i.test(source)
+    && !/\b(?:no installation|(?:do not|don't) install)\b/i.test(source)
+    && (input.routeNodes.length > 1 || /\b(?:pick\s*up|deliver|from|to)\b/i.test(source));
   let providerClass: RulesGateResult["providerClass"] = input.category === "installation" || mixedApplianceInstallation ? "skilled_executor" : "general_helper";
   let riskLevel: RulesGateResult["riskLevel"] = "standard";
 
   const regulatedCare = /(administer|give).{0,20}(?:medication|medicine)|personal care|bathing|dressing|clinical|nursing|medical procedure/i.test(source) || answers.medication === true || answers.personal_care === true;
   const connectionScope = String(answers.dishwasher_connection_scope || "").toLowerCase();
+  const dishwasherPower = String(answers.dishwasher_power_connection || "").toLowerCase();
   const plumbingScope = String(answers.plumbing_modification || "").toLowerCase();
   const electricalScope = String(answers.electrical_scope || "").toLowerCase();
   const applianceEnergy = String(answers.range_energy_source || "").toLowerCase();
@@ -86,7 +90,7 @@ export function applyDoneeoRulesGate(input: PlannerAnalysis): PlannerAnalysis {
   const simpleBulbOnly = /(?:change|replace).{0,24}(?:bulb|plug-in lamp)/i.test(source) && !/(hardwire|fixture|switch|outlet|circuit|panel|wiring)/i.test(source);
   const plumbingWork = /\bplumb(?:ing|er)?\b|water line|drain line|pipe|faucet|toilet|water heater/i.test(source);
   const electricalWork = !simpleBulbOnly && /\belectrical?\b|hardwire|wiring|outlet|switch|breaker|circuit|panel|light fixture/i.test(source);
-  const regulatedTrade = plumbingWork || electricalWork || /(electrical panel|new circuit|rewir|gas line|gas appliance|plumb(?:ing)? connection|water line|load-bearing|structural wall|fire alarm|refrigerant)/i.test(source) || /new or modified/.test(connectionScope) || /new or modified/.test(plumbingScope) || /new or modified|gas/.test(rangeConnectionScope) || /hardwired|circuit|panel|wiring/.test(electricalScope) || /gas|dual fuel/.test(applianceEnergy) || answers.utilities === true || answers.regulated === true;
+  const regulatedTrade = plumbingWork || electricalWork || /(electrical panel|new circuit|rewir|gas line|gas appliance|plumb(?:ing)? connection|water line|load-bearing|structural wall|fire alarm|refrigerant)/i.test(source) || /new or modified/.test(connectionScope) || /hardwired/.test(dishwasherPower) || /new or modified/.test(plumbingScope) || /new or modified|gas/.test(rangeConnectionScope) || /hardwired|circuit|panel|wiring/.test(electricalScope) || /gas|dual fuel/.test(applianceEnergy) || answers.utilities === true || answers.regulated === true;
   const specialistRisk = /(asbestos|lead paint|black mold|biohazard|chemical spill|roof work|tree.{0,35}power line|pest infestation)/i.test(source);
   const elevatedWork = /(roof|ladder|ceiling|high wall|above.{0,10}(?:3|three) metres?|exterior window)/i.test(source);
 
@@ -134,13 +138,29 @@ export function applyDoneeoRulesGate(input: PlannerAnalysis): PlannerAnalysis {
   }
 
   const addresses = extractStreetAddresses(input.sourceText);
+  const dishwasherDelivery = isCompositeDishwasherRequest(source);
   const unresolvedExternalRoute = input.routeNodes.length === 1
     && /\b(?:pick\s*up|collect)\b.{0,180}\b(?:from|at)\s+(?:costco|ikea|walmart|home depot|rona|store|shop|retailer|warehouse|marketplace|seller)\b/i.test(input.sourceText);
-  const hasDrivingRoute = input.routeNodes.length > 1 || addresses.length >= 2 || unresolvedExternalRoute;
+  const hasDrivingRoute = dishwasherDelivery || input.routeNodes.length > 1 || addresses.length >= 2 || unresolvedExternalRoute;
+  const transportsItems = input.category === "moving" || unresolvedExternalRoute
+    || /\b(?:move|deliver|transport|carry|haul|pick\s*up|drop\s*off)\b/i.test(source);
   const hasServiceAnswer = ["service_address", "pickup_address", "delivery_address"].some(id => hasMeaningfulValue(answers[id]));
-  const scheduleKnown = hasMeaningfulValue(answers.schedule) || /\b(?:today|tomorrow|next\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|every\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|at\s+\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))/i.test(input.sourceText);
+  const scheduleKnown = hasMeaningfulValue(answers.schedule) || /\b(?:today|tomorrow|next\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|every\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|at\s+\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))/i.test(source);
 
-  if (hasDrivingRoute) {
+  if (dishwasherDelivery && input.routeNodes.length < 2) {
+    if (!input.routeNodes.some(node => node.actions.some(action => /^pick\s*up\b/i.test(action)))) {
+      addQuestion(
+        { id: "pickup_address", label: "Where should we pick up the dishwasher?", help: "Enter a street address or the store name and branch.", type: "text", required: true },
+        { code: "locations.pickup", domain: "locations", severity: "information", title: "Pickup location missing", detail: "Doneeo needs the origin before calculating travel." },
+      );
+    }
+    if (!input.routeNodes.some(node => node.actions.some(action => /^(?:deliver|install)\b/i.test(action)))) {
+      addQuestion(
+        { id: "service_address", label: "What is the delivery and installation address?", help: "Enter the building number and street name, with your unit if applicable.", type: "text", required: true },
+        { code: "locations.delivery", domain: "locations", severity: "information", title: "Installation address missing", detail: "Doneeo needs the destination before calculating travel." },
+      );
+    }
+  } else if (hasDrivingRoute && transportsItems) {
     if (input.stops.length < 2 && addresses.length < 2) {
       if (unresolvedExternalRoute) addIssue({ code: "routing.destination_pending", domain: "routing", severity: "information", title: "Delivery route is incomplete", detail: "The retailer pickup is known, but the destination must be supplied before Doneeo can calculate or coordinate the driving route." });
       if (!/(pick\s*up|collect).{0,180}\b\d{1,6}\s+/i.test(input.sourceText)) addQuestion(
