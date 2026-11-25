@@ -223,15 +223,38 @@ export function retainKnownIntakeFacts(analysis: PlannerAnalysis, answers: Recor
 function isRoutineReply(value: Answer) {
   if (typeof value === "boolean") return true;
   const text = normalizeIntakeForInference(value).replace(/\b(?:[ap]\.m\.|apt\.|st\.|ave\.|rd\.|dr\.|blvd\.)(?=\s|$)/gi, "");
-  const changeOrRisk = /\b(?:actually|instead|also|forget that|in addition|one more thing|change (?:the|my)|but|however|broken|cracked|damaged|unstable|hazard\w*|exposed wiring|gas leak)\b/i;
+  const changeOrRisk = /\b(?:actually|instead|also|forget that|in addition|one more thing|change (?:the|my)|but|however|broken|cracked|damaged|unstable|hazard\w*|asbestos|mou?ld|flood\w*|smoke|exposed wir(?:e|es|ing)|gas (?:leak|smell))\b/i;
   const multipleStatements = /[.!?]\s+(?=[\p{L}\p{N}])|\n\s*\S/u;
   return !changeOrRisk.test(text) && !multipleStatements.test(text);
 }
 
-export function canContinueIntake(analysis: PlannerAnalysis, previous: PlannerAnalysis | null, changes: Record<string, Answer>) {
+function routineReplies(previous: PlannerAnalysis | null, changes: Record<string, Answer>) {
   const replies = Object.entries(changes);
   return previous !== null && replies.length > 0
-    && replies.every(([id, value]) => previous.questions.some(question => question.id === id) && isRoutineReply(value))
-    && analysis.rulesGate?.status === "needs_information"
+    && replies.every(([id, value]) => previous.questions.some(question => question.id === id) && isRoutineReply(value));
+}
+
+export function canContinueIntake(analysis: PlannerAnalysis, previous: PlannerAnalysis | null, changes: Record<string, Answer>) {
+  return routineReplies(previous, changes) && analysis.rulesGate?.status === "needs_information"
     && analysis.rulesGate.riskLevel !== "high";
+}
+
+export function isReadyForPlanReview(analysis: PlannerAnalysis) {
+  return analysis.rulesGate?.status === "cleared" && analysis.intelligence?.estimate.ready === true
+    && analysis.intelligence.unresolved.length === 0;
+}
+
+// These facts are applied by the deterministic planner to an existing draft.
+// An open-ended scope or safety answer still needs the architect.
+const deterministicReviewAnswers = new Set([
+  "schedule", "arrival_window", "home_access", "cleaning_depth", "pets",
+  "handling_access", "handling_size_weight", "handling_contents",
+  "retailer_pickup_status", "retailer_release_details", "dishwasher_parts", "dishwasher_access_fit",
+  "pickup_address", "service_address", "delivery_address",
+]);
+
+export function canReviewSavedPlan(analysis: PlannerAnalysis, previous: PlannerAnalysis | null, changes: Record<string, Answer>) {
+  return isReadyForPlanReview(analysis) && analysis.rulesGate?.riskLevel !== "high"
+    && routineReplies(previous, changes)
+    && Object.keys(changes).every(id => deterministicReviewAnswers.has(id) || /^stop_\d+_(?:floor|elevator|vehicle_access)$/.test(id));
 }

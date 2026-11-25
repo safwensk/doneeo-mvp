@@ -186,13 +186,9 @@ export default function Workspace({ accountId, initialRequest, onStarted, onSign
   const answeredEndpoints = [String(answers.pickup_address || "").trim(), String(answers.service_address || "").trim()].filter(value => value.length > 4);
   const exactRouteAddresses = routeStops.length >= 2 ? routeStops : answeredEndpoints;
   const googleMapsUrl = exactRouteAddresses.length >= 2 ? `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(exactRouteAddresses[0])}&destination=${encodeURIComponent(exactRouteAddresses[exactRouteAddresses.length - 1])}${exactRouteAddresses.length > 2 ? `&waypoints=${encodeURIComponent(exactRouteAddresses.slice(1, -1).join("|"))}` : ""}&travelmode=driving` : "";
-  // The planner can require route details before it can build the route.
-  const visibleQuestions = analysis?.questions.filter(question => question.required !== false) ?? [];
-  const questionAnswered = (question: PlannerQuestion) => {
-    const value = answers[question.id];
-    return typeof value === "boolean" || (typeof value === "string" && value.trim().length > 1);
-  };
-  const nextQuestion = visibleQuestions.find(question => !questionAnswered(question));
+  // The server question queue can reopen a detail that needs correction.
+  const pendingQuestions = analysis?.questions.filter(question => question.required !== false) ?? [];
+  const [nextQuestion] = pendingQuestions;
   const gateBlocked = analysis?.rulesGate?.status === "blocked";
   const readyToReview = Boolean(analysis && planControl?.requirementReady && !nextQuestion && !gateBlocked);
   const showReview = stage === 1 && readyToReview && !reviewDismissed;
@@ -815,7 +811,7 @@ export default function Workspace({ accountId, initialRequest, onStarted, onSign
     <ServiceStatus mode={mode} />
     {stage <= 1 && !showReview && <ConversationScreen
       request={request} setRequest={setRequest} analysis={analysis}
-      messages={discussion} question={nextQuestion}
+      messages={discussion} question={nextQuestion} questionCount={pendingQuestions.length}
       busy={(plannerState === "thinking" && !restoring) || answerState === "validating"}
       restoring={restoring}
       ready={readyToReview}

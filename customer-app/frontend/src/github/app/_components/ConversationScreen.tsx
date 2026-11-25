@@ -15,6 +15,7 @@ type Props = {
   analysis: PlannerAnalysis | null;
   messages: DiscussionMessage[];
   question?: PlannerQuestion;
+  questionCount: number;
   busy: boolean;
   restoring: boolean;
   ready: boolean;
@@ -28,7 +29,7 @@ type Props = {
 };
 
 export function ConversationScreen({
-  request, setRequest, analysis, messages, question, busy, restoring, ready,
+  request, setRequest, analysis, messages, question, questionCount, busy, restoring, ready,
   blocked, error, onRequest, onAnswer, onReviewPlan, onNewRequest, onRecheck,
 }: Props) {
   const [answer, setAnswer] = useState("");
@@ -41,6 +42,10 @@ export function ConversationScreen({
   const taskBlock = analysis?.taskBlocks?.find(block => block.id === question?.taskBlockId);
   const canType = !busy && !restoring && (!hasPlan || Boolean(question));
   const draft = hasPlan ? answer : request;
+  const busyMessage = !hasPlan ? "Reviewing your request…"
+    : !question ? "Checking if your job plan is ready…"
+      : questionCount === 1 ? "Checking your last answer and preparing your job plan…"
+        : "Checking your answer…";
 
   useEffect(() => {
     if (hasPlan || pending) bottom.current?.scrollIntoView({ block: "nearest" });
@@ -135,13 +140,13 @@ export function ConversationScreen({
         </div>}
       </div>}
       {pending && <div className={userClass}><strong className="sr-only">You</strong><p className="whitespace-pre-wrap">{pending}</p></div>}
-      {busy && <p role="status" className="px-2 text-sm text-muted-r">Doneeo is thinking…</p>}
+      {busy && <p role="status" className="px-2 text-sm text-muted-r">{busyMessage}</p>}
       {hasPlan && !question && !busy && <div className={assistantClass}>
         <strong className="mb-2 block text-xs text-brand-600-r">Doneeo</strong>
         <p>{blocked
           ? analysis.rulesGate?.summary || analysis.safetyNote || "This request needs review before I can offer an execution plan."
           : ready ? "Your plan is ready to review."
-          : "I’m checking the last details before preparing your plan."}</p>
+          : "Your answers are saved. The job plan is still in draft."}</p>
       </div>}
     </div>
 
@@ -171,7 +176,7 @@ export function ConversationScreen({
       <p className="mt-3 leading-relaxed">{analysis.summary}</p>
       <ol className="mt-3 list-decimal space-y-2 pl-5">{analysis.tasks.map((task, index) => <li key={`${index}-${task}`}>{task}</li>)}</ol>
     </details>}
-    {hasPlan && !question && !ready && !blocked && !busy && <Button className="mt-6" variant="secondary" onClick={() => void onRecheck()}>Check plan readiness</Button>}
+    {hasPlan && !question && !ready && !blocked && !busy && <Button className="mt-6" variant="secondary" onClick={() => void onRecheck()}>Try preparing the plan again</Button>}
     {hasPlan && !busy && <p className="mt-4 flex items-center justify-center gap-1 text-xs text-muted-r"><Check size={13} aria-hidden="true" />Saved to your account</p>}
     <div ref={bottom} />
   </section>;

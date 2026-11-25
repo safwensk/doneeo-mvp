@@ -505,7 +505,6 @@ function EquipmentCheck({
 function AdaptiveQuestions({
   visibleQuestions,
   displayedQuestions,
-  questionAnswered,
   workstreams,
   taskBlocks,
   answers,
@@ -516,7 +515,6 @@ function AdaptiveQuestions({
 }: {
   visibleQuestions: PlannerQuestion[];
   displayedQuestions: PlannerQuestion[];
-  questionAnswered: (question: PlannerQuestion) => boolean;
   workstreams: Workstream[];
   taskBlocks: NonNullable<PlannerAnalysis["taskBlocks"]>;
   answers: Answers;
@@ -525,7 +523,7 @@ function AdaptiveQuestions({
   answerState: "idle" | "validating";
   validateAnswer: (question: PlannerQuestion, value: string | boolean) => void | Promise<void>;
 }) {
-  const remaining = visibleQuestions.filter(question => !questionAnswered(question)).length;
+  const remaining = visibleQuestions.length;
   return (
     <div className="grid gap-4">
       {visibleQuestions.length > 0 ? (
@@ -539,7 +537,7 @@ function AdaptiveQuestions({
         </div>
       ) : (
         <div className="rounded-xl-r bg-brand-50-r px-4 py-3 text-sm font-semibold text-brand-600-r">
-          ✓ Enough information was provided.
+          All current questions have been answered.
         </div>
       )}
 
@@ -580,8 +578,10 @@ function AdaptiveQuestions({
       </div>
 
       {answerState === "validating" && (
-        <p className="text-xs text-muted-r">
-          Doneeo is locking the fact, recalculating the job and checking which question is relevant next.
+        <p role="status" className="text-xs text-muted-r">
+          {remaining === 0 ? "Checking if your job plan is ready…"
+            : remaining === 1 ? "Checking your last answer and preparing your job plan…"
+              : "Checking your answer…"}
         </p>
       )}
     </div>
@@ -604,12 +604,12 @@ export function AnalysisScreen({
   validateAnswer,
   visibleQuestions,
   displayedQuestions,
-  questionAnswered,
   requiredComplete,
   equipmentComplete,
   gateBlocked,
   requirementReady,
   onReview,
+  onRecheck,
   error,
 }: {
   analysis: PlannerAnalysis;
@@ -627,12 +627,12 @@ export function AnalysisScreen({
   validateAnswer: (question: PlannerQuestion, value: string | boolean) => void | Promise<void>;
   visibleQuestions: PlannerQuestion[];
   displayedQuestions: PlannerQuestion[];
-  questionAnswered: (question: PlannerQuestion) => boolean;
   requiredComplete: boolean;
   equipmentComplete: boolean;
   gateBlocked: boolean;
   requirementReady: boolean;
   onReview: () => void;
+  onRecheck: () => Promise<void>;
   error: string;
 }) {
   return (
@@ -679,7 +679,6 @@ export function AnalysisScreen({
         <AdaptiveQuestions
           visibleQuestions={visibleQuestions}
           displayedQuestions={displayedQuestions}
-          questionAnswered={questionAnswered}
           workstreams={workstreams}
           taskBlocks={analysis.taskBlocks ?? []}
           answers={answers}
@@ -692,16 +691,16 @@ export function AnalysisScreen({
         <Button
           variant="primary"
           size="lg"
-          disabled={answerState === "validating" || gateBlocked || !requiredComplete || !equipmentComplete || !requirementReady}
-          onClick={onReview}
+          disabled={answerState === "validating" || gateBlocked || !requiredComplete || !equipmentComplete}
+          onClick={requirementReady ? onReview : () => void onRecheck()}
         >
           {gateBlocked
             ? "Request blocked by Doneeo Rules Gate"
             : answerState === "validating"
-              ? "Validating the work order…"
-              : !requirementReady
-                ? "Finalizing Requirement Contract…"
-                : "Review job plan"}
+              ? "Checking your details…"
+              : !requiredComplete
+                ? "Finish the questions to review your plan"
+                : requirementReady ? "Review job plan" : "Try preparing the plan again"}
           <span aria-hidden="true">→</span>
         </Button>
         {error && (

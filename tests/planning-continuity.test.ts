@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { canContinueIntake, rememberClarifications, retainKnownIntakeFacts, savedPlanningFallback } from "../lib/planning-continuity";
+import { canContinueIntake, canReviewSavedPlan, rememberClarifications, retainKnownIntakeFacts, savedPlanningFallback } from "../lib/planning-continuity";
 import { fallbackAnalysis } from "../lib/planner";
-import { applyCustomerAnswers } from "../lib/job-intelligence";
+import { applyCustomerAnswers, buildJobIntelligence } from "../lib/job-intelligence";
 import { applyDoneeoRulesGate } from "../lib/rules-gate";
 
 test("an AI outage preserves the last architecture and applies the new confirmed answer", () => {
@@ -160,4 +160,15 @@ test("reuse the saved queue for an ordinary answer, but reevaluate scope changes
   assert.equal(canContinueIntake(draft, previous, {}), false);
   const finished = applyDoneeoRulesGate(applyCustomerAnswers(previous, { cleaning_depth: "Standard", home_access: "I will open the door" }));
   assert.equal(canContinueIntake(finished, previous, { home_access: "I will open the door" }), false);
+});
+
+test("a completed draft can open review after a routine answer without another model draft", () => {
+  const previous = fallbackAnalysis("Clean the kitchen at 100 Example Avenue tomorrow at 10 a.m.");
+  previous.questions = [{ id: "home_access", label: "Who will open the door?", type: "text", required: true }];
+  const answer = { home_access: "I will open the door" };
+  const analysis = buildJobIntelligence(applyDoneeoRulesGate(applyCustomerAnswers(previous, answer)));
+  assert.equal(canReviewSavedPlan(analysis, previous, answer), true);
+  assert.equal(canReviewSavedPlan(analysis, previous, { home_access: "I will open the door but there is exposed wiring" }), false);
+  assert.equal(canReviewSavedPlan(analysis, previous, { task_details: "Add painting" }), false);
+  assert.equal(canReviewSavedPlan({ ...analysis, intelligence: undefined }, previous, answer), false);
 });

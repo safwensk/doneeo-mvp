@@ -668,8 +668,21 @@ function dishwasherLocation(value: unknown, pickup = false) {
   const location = cleanRouteText(value);
   if (!location || isTimingFragment(location)) return "";
   if (extractStreetAddresses(location).length) return location;
-  const generic = /^(?:(?:my|our|the|a|an)\s+)?(?:apartment|house|home|store|shop|seller|retailer|warehouse|pickup|destination|location|address)(?:\s+(?:#\s*)?\d{1,5})?$/i;
+  const generic = /^(?:(?:my|our|the|a|an|some)\s+)?(?:apartment|house|home|store|shop|seller|retailer|warehouse|pickup|destination|location|address)(?:\s+(?:#\s*)?\d{1,5})?$|\b(?:not sure|don.t know|unknown|to be confirmed|somewhere)\b/i;
   return pickup && !generic.test(location) && /\p{L}+\s+\p{L}+/u.test(location) ? location : "";
+}
+
+export const dishwasherAddressIds = ["pickup_address", "service_address", "delivery_address"] as const;
+
+export function confirmedDishwasherAddress(id: typeof dishwasherAddressIds[number], value: unknown) {
+  const pickup = id === "pickup_address";
+  const known = dishwasherLocation(value, pickup);
+  if (known || typeof value !== "string") return known;
+  // A customer can give a building number and a multi-word street name
+  // without spelling out Avenue, Rue, or another street type.
+  const location = cleanRouteText(value).replace(/^at\s+/i, "");
+  const namedStreet = /^\d{1,6}[a-z]?\s+\p{L}[\p{L}\p{M}'’.-]+\s+\p{L}[\p{L}\p{M}'’.-]+/iu;
+  return namedStreet.test(location) && !countedObjectPattern.test(location) ? location : "";
 }
 
 function dishwasherDeliveryIndex(nodes: RouteNode[]) {
@@ -689,9 +702,9 @@ function compositeDishwasherRoute(sourceText: string, existing: RouteNode[], ans
     || sourceText.match(/\b(?:to|in|inside|into|install\s+(?:it|the\s+dish\s*washer)\s+at)\s+(?:(?:my|our|the)\s+)?(?:(?:apartment|home|house)\s+(?:(?:at|in)\s+)?)?(\d{1,6}\s+.+?)(?=,?\s+(?:and\s+)?(?:then\s+)?(?:install|connect|hook|on the)\b|[.;]|$)/i);
   const pickupNode = nodes.find(node => node.actions.some(action => /^pick\s*up\b/i.test(action)));
   const destinationNode = nodes[dishwasherDeliveryIndex(nodes)];
-  const pickup = dishwasherLocation(answers.pickup_address, true) || dishwasherLocation(pickupMatch?.[1], true)
+  const pickup = confirmedDishwasherAddress("pickup_address", answers.pickup_address) || dishwasherLocation(pickupMatch?.[1], true)
     || dishwasherLocation(pickupNode?.location, true);
-  const destination = dishwasherLocation(answers.service_address) || dishwasherLocation(answers.delivery_address)
+  const destination = confirmedDishwasherAddress("service_address", answers.service_address) || confirmedDishwasherAddress("delivery_address", answers.delivery_address)
     || dishwasherLocation(destinationMatch?.[1]) || dishwasherLocation(destinationNode?.location);
   return [
     ...(pickup ? [{ location: pickup, actions: ["Pick up dishwasher"] }] : []),
@@ -705,6 +718,9 @@ function enrichCompositeRequest(analysis: PlannerAnalysis): PlannerAnalysis {
     && analysis.tasks.some(task => /^Install, connect and test the dishwasher\b/i.test(task));
   const source = normalizeIntakeForInference(analysis.sourceText).toLowerCase();
   const extractedAnswers = { ...analysis.extractedAnswers };
+  for (const id of dishwasherAddressIds) {
+    if (!confirmedDishwasherAddress(id, extractedAnswers[id])) delete extractedAnswers[id];
+  }
   const routeNodes = compositeDishwasherRoute(analysis.sourceText, analysis.routeNodes || [], extractedAnswers);
   const pickup = routeNodes.findIndex(node => node.actions.some(action => /^pick\s*up\b/i.test(action)));
   const delivery = dishwasherDeliveryIndex(routeNodes);
@@ -872,6 +888,9 @@ export function requestAlreadyAnswersQuestion(question: PlannerQuestion, analysi
     if (stopQuestion[2] === "access" && contextHasFloor(context) && /\b(?:elevator|stairs?|loading zone|parking|vehicle|truck|van|driveway|curb|entrance|close access|remote parking)\b/i.test(context)) return true;
   }
 
+  // Composite address prompts are removed when their own route node exists.
+  // A number supplied for one stop must not answer the other stop.
+  if (dishwasherAddressIds.some(id => id === question.id) && isCompositeDishwasherRequest(sourceText)) return false;
   if (requestProvidesAddressForQuestion(question, sourceText, analysis.category)) return true;
   if (/(order|item).*(paid|ready)|(paid|ready).*(order|item)/.test(concept) && /\border\b[^.]{0,60}\bpaid\b[^.]{0,60}\bready\b|\bpaid\b[^.]{0,60}\bready\b/i.test(sourceText)) return true;
   if (/(customer|you).*(help|carry|lift)|(help|carry|lift).*(customer|you)/.test(concept) && /(?:cannot|can't|can not|unable|won't)\s+(?:help|assist|carry|lift)/i.test(source)) return true;
@@ -1029,7 +1048,8 @@ export function enforceSafety(analysis: PlannerAnalysis): PlannerAnalysis {
   const derivedRoute = dishwasherDelivery ? analysis.routeNodes : deriveRouteNodes(normalizedSource);
   const routeNodes = dishwasherDelivery || derivedRoute.length >= 2 ? derivedRoute : (analysis.routeNodes || []);
   const stops = routeNodes.length ? routeNodes.map(node => node.location) : analysis.stops;
-  const scheduleWindow = extractScheduleWindow(analysis.sourceText) || analysis.scheduleWindow || null;
+  const confirmedSchedule = typeof answered.schedule === "string" ? extractScheduleWindow(answered.schedule) : null;
+  const scheduleWindow = extractScheduleWindow(analysis.sourceText) || confirmedSchedule || analysis.scheduleWindow || null;
   const useNumberedStops = !dishwasherDelivery || routeNodes.length > 2;
   const requiredStopAccess = useNumberedStops && routeNodes.length >= 2 ? stopAccessQuestions(stops) : [];
   const requiredStopAddresses: PlannerQuestion[] = (useNumberedStops ? routeNodes : []).flatMap((node, index) => {

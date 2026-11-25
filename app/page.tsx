@@ -211,15 +211,10 @@ export default function Home() {
   const exactRouteAddresses = routeStops.length >= 2 ? routeStops : answeredEndpoints;
   const googleMapsUrl = exactRouteAddresses.length >= 2 ? `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(exactRouteAddresses[0])}&destination=${encodeURIComponent(exactRouteAddresses[exactRouteAddresses.length - 1])}${exactRouteAddresses.length > 2 ? `&waypoints=${encodeURIComponent(exactRouteAddresses.slice(1, -1).join("|"))}` : ""}&travelmode=driving` : "";
   const progress = ((stage + 1) / 4) * 100;
-  // The planner can require route details before it can build the route.
+  // The server question queue can reopen a detail that needs correction.
   const visibleQuestions = analysis?.questions.filter(question => question.required !== false) ?? [];
-  const questionAnswered = (question: PlannerQuestion) => {
-    const value = answers[question.id];
-    return typeof value === "boolean" || (typeof value === "string" && value.trim().length > 1);
-  };
-  const nextUnansweredId = visibleQuestions.find(question => !questionAnswered(question))?.id;
-  const displayedQuestions = visibleQuestions.filter(question => question.id === nextUnansweredId);
-  const requiredComplete = visibleQuestions.every(questionAnswered);
+  const displayedQuestions = visibleQuestions.slice(0, 1);
+  const requiredComplete = visibleQuestions.length === 0;
   // Reusable operating equipment belongs to the matched provider or rental
   // workflow. Customer equipment declarations are useful but never block the
   // customer from seeing matching options.
@@ -560,12 +555,14 @@ export default function Home() {
       );
       setAnalysis(data.analysis);
       setReviewOpen(control.requirementReady);
-      setAnswers(current => ({
-        ...current,
-        ...(data.analysis?.extractedAnswers || {}),
-        [question.id]: value,
-        ...data.answers,
-      }));
+      const { extractedAnswers, questions } = data.analysis;
+      setAnswers(current => {
+        const updated = { ...current, ...extractedAnswers, ...data.answers };
+        for (const pending of questions) {
+          if (pending.required !== false) delete updated[pending.id];
+        }
+        return updated;
+      });
 
       if (question.type === "text") {
         setTextDrafts(current => {
@@ -585,14 +582,14 @@ export default function Home() {
     }
   };
 
-  const updateReview = async (command: { planEdit: PlanReviewEditor } | { confirmPlan: true }) => {
+  const updateReview = async (command: { planEdit: PlanReviewEditor } | { confirmPlan: true } | null) => {
     if (!planControl || reviewBusy) return null;
     setReviewBusy(true);
     setError("");
-    const operationId = stableOperationId(
+    const operationId = command ? stableOperationId(
       `review-${planControl.workCaseId}-v${planControl.stateVersion}`,
       JSON.stringify(command),
-    );
+    ) : crypto.randomUUID();
     try {
       const response = await fetch("/api/plan", {
         method: "POST",
@@ -618,7 +615,7 @@ export default function Home() {
       setAnalysis(data.analysis);
       setAnswers({ ...data.analysis.extractedAnswers, ...data.answers });
       setReviewOpen(control.requirementReady);
-      if ("planEdit" in command) {
+      if (command && "planEdit" in command) {
         setGoogleRoute(null);
         setRouteState("idle");
       }
@@ -629,6 +626,16 @@ export default function Home() {
       return null;
     } finally {
       setReviewBusy(false);
+    }
+  };
+
+  const recheckPlanReadiness = async () => {
+    if (answerState === "validating") return;
+    setAnswerState("validating");
+    try {
+      await updateReview(null);
+    } finally {
+      setAnswerState("idle");
     }
   };
 
@@ -861,12 +868,12 @@ export default function Home() {
         validateAnswer={validateAnswer}
         visibleQuestions={visibleQuestions}
         displayedQuestions={displayedQuestions}
-        questionAnswered={questionAnswered}
         requiredComplete={requiredComplete}
         equipmentComplete={equipmentComplete}
         gateBlocked={gateBlocked}
         requirementReady={Boolean(planControl?.requirementReady)}
         onReview={() => { setError(""); setReviewOpen(true); }}
+        onRecheck={recheckPlanReadiness}
         error={error}
       />
     )}

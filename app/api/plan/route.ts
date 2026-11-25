@@ -1,8 +1,8 @@
-import { derivePreparationStart, enforceSafety, fallbackAnalysis, isCompositeDishwasherRequest, type JobCategory, type PlannerAnalysis } from "../../../lib/planner";
+import { confirmedDishwasherAddress, derivePreparationStart, dishwasherAddressIds, enforceSafety, fallbackAnalysis, isCompositeDishwasherRequest, type JobCategory, type PlannerAnalysis } from "../../../lib/planner";
 import { attachPlanEdits, planEditFor, revisePlanSource, revisedBoxDestination } from "../../../lib/customer-plan-review";
 import { applyDoneeoRulesGate } from "../../../lib/rules-gate";
 import { applyCustomerAnswers, buildJobIntelligence } from "../../../lib/job-intelligence";
-import { canContinueIntake, rememberClarifications, retainKnownIntakeFacts, savedPlanningFallback } from "../../../lib/planning-continuity";
+import { canContinueIntake, canReviewSavedPlan, isReadyForPlanReview, rememberClarifications, retainKnownIntakeFacts, savedPlanningFallback } from "../../../lib/planning-continuity";
 import { architecturePosition } from "../../../lib/canonical-architecture";
 import { augmentWithHouseholdKnowledge } from "../../../lib/work-ontology";
 import {
@@ -615,6 +615,20 @@ export async function POST(request: Request) {
   const clarifiedRequest = revisePlanSource(scopeClarification
     ? `${authoritativeRequest}\n\n${scopeClarification}`
     : authoritativeRequest, planEdits);
+  let reopenedLocation = false;
+  if (isCompositeDishwasherRequest(clarifiedRequest)) {
+    for (const id of dishwasherAddressIds) {
+      if (!Object.hasOwn(customerAnswers, id) || confirmedDishwasherAddress(id, customerAnswers[id])) continue;
+      if (Object.hasOwn(submittedAnswers, id)) {
+        const error = id === "pickup_address"
+          ? "Enter the pickup street address, or the store name and branch."
+          : "Enter the delivery building number and street name. Add the unit number if applicable.";
+        return Response.json({ error }, { status: 422 });
+      }
+      delete customerAnswers[id];
+      reopenedLocation = true;
+    }
+  }
   if (newEdit && revisedBoxDestination(newEdit) !== revisedBoxDestination(previousEdits.find(edit => edit.stepId === newEdit.stepId))) {
     // A different destination changes the path and equipment requirements.
     delete customerAnswers.handling_access;
@@ -651,7 +665,8 @@ export async function POST(request: Request) {
   const stored = storedAnswers as Record<string, string | boolean>;
   const changed = Object.fromEntries(Object.entries(submittedAnswers).filter(([key, value]) => stored[key] !== value));
   // A reply that defines the work must reach the fallback planner too.
-  const refreshRuleDraft = !newEdit && Object.keys(submittedAnswers).length === 0
+  const recheckingPlan = Boolean(requestedWorkCaseId) && !newEdit && Object.keys(submittedAnswers).length === 0;
+  const refreshRuleDraft = recheckingPlan
     && savedFallback?.audit.pipeline?.startsWith("RULE-BASED PLANNER");
   const editChangesScope = newEdit && clarifiedRequest !== (previousSnapshot as PlannerAnalysis | null)?.sourceText;
   const reuseSavedPlan = changed.task_details === undefined && !refreshRuleDraft && !editChangesScope ? savedFallback : null;
@@ -659,12 +674,18 @@ export async function POST(request: Request) {
     reuseSavedPlan, "SAVED PLAN CONTINUITY → RULES GATE → JOB INTELLIGENCE", customerAnswers, history,
   );
   const continueQueue = !newEdit && savedIntelligence && canContinueIntake(savedIntelligence, reuseSavedPlan, changed);
-  const firstIntake = !requestedWorkCaseId ? deterministicAudit(
+  const reviewSaved = !newEdit && savedIntelligence && canReviewSavedPlan(savedIntelligence, reuseSavedPlan, changed);
+  const freshIntelligence = !requestedWorkCaseId || (recheckingPlan && !savedIntelligence) ? deterministicAudit(
     fallback, "RULE-BASED PLANNER → RULES GATE → JOB INTELLIGENCE", customerAnswers, history,
   ) : null;
+  const checkedDraft = savedIntelligence || freshIntelligence;
+  const recheckLocally = !newEdit && (recheckingPlan || reopenedLocation) && checkedDraft
+    && (isReadyForPlanReview(checkedDraft) || checkedDraft.questions.some(question => question.required !== false));
+  const useCheckedDraft = continueQueue || reviewSaved || recheckLocally;
+  const firstIntake = !requestedWorkCaseId ? freshIntelligence : null;
   const domains = firstIntake?.intelligence?.domains;
   // Only shorten the wait when the rules can already ask a focused question.
-  // Scope changes and completed intakes still give the architect its full budget.
+  // Changes the rules cannot resolve still give the architect its full budget.
   const canAskEarly = firstIntake?.rulesGate?.status === "needs_information"
     && firstIntake.rulesGate.riskLevel === "standard"
     && domains?.length === 1
@@ -674,9 +695,10 @@ export async function POST(request: Request) {
     && !/\b(?:damage[d]?|flood\w*|leak\w*|mou?ld|broken|smoke|urgent|emergency|not sure)\b/i.test(authoritativeRequest);
   let analysis: ReturnType<typeof fallbackAnalysis> = reuseSavedPlan || fallback;
   let pipeline = reuseSavedPlan ? "SAVED PLAN CONTINUITY" : "RULE-BASED PLANNER";
-  let mode = continueQueue ? "saved-plan-intake" : reuseSavedPlan ? "saved-plan-fallback" : "safe-fallback";
+  let mode = continueQueue ? "saved-plan-intake" : reviewSaved ? "saved-plan-review"
+    : recheckLocally ? "plan-readiness-check" : reuseSavedPlan ? "saved-plan-fallback" : "safe-fallback";
 
-  if (!continueQueue) {
+  if (!useCheckedDraft) {
     if (!process.env.GEMINI_API_KEY) architectNotes.push("Gemini skipped: GEMINI_API_KEY not set");
     try {
       const geminiAnalysis = await analyzeWithGemini(
@@ -692,7 +714,7 @@ export async function POST(request: Request) {
     }
   }
 
-  const carriedIntelligence = continueQueue ? savedIntelligence : mode === "safe-fallback" ? firstIntake : null;
+  const carriedIntelligence = useCheckedDraft ? checkedDraft : mode === "safe-fallback" ? firstIntake : null;
   const intelligence = attachPlanEdits(carriedIntelligence ?? deterministicAudit(
     analysis,
     `${pipeline} → RULES GATE → JOB INTELLIGENCE`,
@@ -701,7 +723,7 @@ export async function POST(request: Request) {
   ), planEdits);
 
   // Review the completed intake, not each question on the way there.
-  const finalChecked = intelligence.rulesGate?.status === "cleared"
+  const finalChecked = isReadyForPlanReview(intelligence)
     ? await runIndependentValidation(planningRequest, intelligence)
     : intelligence;
 

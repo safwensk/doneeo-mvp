@@ -213,6 +213,23 @@ test("confirmed dishwasher locations build the route and an existing unit branch
   assert.ok(!questionIds.some(id => ["pickup_address", "service_address", "stop_2_floor", "stop_2_elevator", "old_dishwasher"].includes(id)));
 });
 
+test("an incomplete installation address remains a question and a civic street name can repair it", () => {
+  const request = "Pick up a dishwasher from Costco Anjou and install it in my apartment.";
+  const incomplete = plan(request, { service_address: "my apartment" });
+  assert.equal(incomplete.routeNodes.length, 1);
+  assert.ok(incomplete.questions.some(question => question.id === "service_address"));
+  assert.equal(incomplete.intelligence?.estimate.ready, false);
+  const corrected = plan(request, { service_address: "12395 Roland Paradis" });
+  assert.equal(corrected.routeNodes.at(-1)?.location, "12395 Roland Paradis");
+  assert.ok(!corrected.questions.some(question => question.id === "service_address"));
+});
+
+test("a supplied installation address never answers the separate pickup question", () => {
+  const result = plan("Pick up a dishwasher and bring it to 200 Sample Road, Toronto, then install it there.");
+  assert.ok(result.questions.some(question => question.id === "pickup_address"));
+  assert.ok(!result.questions.some(question => question.id === "service_address"));
+});
+
 test("a delivery-only dishwasher request respects the explicit installation exclusion", () => {
   const result = plan("Pick up a dishwasher and deliver it to my apartment. Do not install it.");
   assert.ok(!result.intelligence?.domains?.some(domain => domain.id === "appliance_installation"));

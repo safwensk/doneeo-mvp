@@ -148,7 +148,18 @@ export function applyDoneeoRulesGate(input: PlannerAnalysis): PlannerAnalysis {
   const scheduleKnown = hasMeaningfulValue(answers.schedule) || /\b(?:today|tomorrow|next\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|every\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|at\s+\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))/i.test(source);
 
   if (dishwasherDelivery && input.routeNodes.length < 2) {
-    addIssue({ code: "routing.dishwasher_locations_pending", domain: "routing", severity: "information", title: "Dishwasher locations still needed", detail: "Confirm the pickup location and installation address before calculating travel or pricing." });
+    if (!input.routeNodes.some(node => node.actions.some(action => /^pick\s*up\b/i.test(action)))) {
+      addQuestion(
+        { id: "pickup_address", label: "Where should we pick up the dishwasher?", help: "Enter a street address or the store name and branch.", type: "text", required: true },
+        { code: "locations.pickup", domain: "locations", severity: "information", title: "Pickup location missing", detail: "Doneeo needs the origin before calculating travel." },
+      );
+    }
+    if (!input.routeNodes.some(node => node.actions.some(action => /^(?:deliver|install)\b/i.test(action)))) {
+      addQuestion(
+        { id: "service_address", label: "What is the delivery and installation address?", help: "Enter the building number and street name, with your unit if applicable.", type: "text", required: true },
+        { code: "locations.delivery", domain: "locations", severity: "information", title: "Installation address missing", detail: "Doneeo needs the destination before calculating travel." },
+      );
+    }
   } else if (hasDrivingRoute && transportsItems) {
     if (input.stops.length < 2 && addresses.length < 2) {
       if (unresolvedExternalRoute) addIssue({ code: "routing.destination_pending", domain: "routing", severity: "information", title: "Delivery route is incomplete", detail: "The retailer pickup is known, but the destination must be supplied before Doneeo can calculate or coordinate the driving route." });
