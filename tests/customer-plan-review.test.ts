@@ -25,3 +25,12 @@ test("review edits must identify a current plan step", () => {
   assert.equal(planEditFor(outline, { stepId: "preparation-1", revision: "Collect the supplies at the front counter." })?.title, "Collect supplies");
   assert.equal(planEditFor(outline, { stepId: "invented-step", revision: "Replace this step." }), null);
 });
+
+test("an external box-delivery question stays on an existing task block", () => {
+  const analysis = fallbackAnalysis("Pick up five boxes from 100 Main Street and deliver them to 20 Lake Road.");
+  analysis.questions.push({ id: "packing_check", label: "Are the boxes packed for transport?", type: "boolean", required: true });
+  const result = buildJobIntelligence(analysis);
+  const question = result.questions.find(item => item.id === "packing_check");
+  assert.ok(question?.taskBlockId);
+  assert.ok(result.taskBlocks?.some(block => block.id === question.taskBlockId));
+});

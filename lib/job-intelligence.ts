@@ -179,8 +179,10 @@ function groupTaskIntake(analysis: PlannerAnalysis, workstreams: JobIntelligence
   const questions = analysis.questions.map(question => {
     const domain = questionDomain(question.id);
     const dishwasherQuestion = /^(?:dishwasher_|old_dishwasher|retailer_|stop_\d+_|pickup_address$|service_address$|delivery_address$|building_permission$)/.test(question.id);
-    const boxQuestion = blocks.has(boxBlockId) && (/^(?:handling_|(?:onsite_)?box_)/.test(question.id)
-      || /\bbox(?:es)?\b/i.test(question.label) && !/packaging|dishwasher/i.test(question.label));
+    const boxQuestion = blocks.has(boxBlockId) && (
+      /^(?:handling_|(?:onsite_)?box_)/.test(question.id)
+      || (/\bbox(?:es)?\b/i.test(question.label) && !/packaging|dishwasher/i.test(question.label))
+    );
     const taskBlockId = question.taskBlockId && blocks.has(question.taskBlockId) ? question.taskBlockId
       : boxQuestion ? boxBlockId
         : blocks.has(dishwasherBlockId) && dishwasherQuestion ? dishwasherBlockId
